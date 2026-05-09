@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>為什麼要學資料結構？— DS課程</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+:root {
+  --gold:#ffd600;--gold-glow:rgba(255,214,0,0.18);
+  --purple:#a78bfa;--purple-glow:rgba(167,139,250,0.18);
+  --teal:#2dd4bf;--teal-glow:rgba(45,212,191,0.18);
+  --pink:#f472b6;--pink-glow:rgba(244,114,182,0.18);
+}
+.page-wrapper{position:relative;z-index:1;}
+/* ── Hero ── */
+.hero{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
+.hero-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:24px;opacity:0;animation:fadeUp 0.6s 0.1s ease forwards;}
+.hero-title{font-size:clamp(32px,7vw,72px);font-weight:700;line-height:1.1;margin-bottom:20px;opacity:0;animation:fadeUp 0.6s 0.25s ease forwards;}
+.hero-title .hl-gold{color:var(--gold);}.hero-title .hl-cyan{color:var(--array-color);}.hero-title .hl-purple{color:var(--purple);}
+.hero-subtitle{font-size:clamp(15px,2.5vw,20px);color:var(--text-dim);max-width:600px;line-height:1.8;opacity:0;animation:fadeUp 0.6s 0.4s ease forwards;margin-bottom:40px;}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp 0.6s 0.55s ease forwards;}
+.cta-primary{padding:14px 32px;border-radius:10px;background:var(--gold);color:#0d0f14;font-weight:700;font-size:15px;cursor:pointer;border:none;font-family:var(--font-ui);transition:all 0.2s;white-space:nowrap;}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--gold-glow);}
+.cta-secondary{padding:14px 28px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text-dim);font-size:15px;cursor:pointer;font-family:var(--font-ui);transition:all 0.2s;white-space:nowrap;}
+.cta-secondary:hover{border-color:var(--text-dim);color:var(--text);}
+.float-tag{position:absolute;font-family:var(--font-mono);font-size:12px;padding:6px 14px;border-radius:20px;border:1px solid;opacity:0;animation:floatBob 4s ease-in-out infinite,fadeIn 0.8s ease forwards;pointer-events:none;white-space:nowrap;}
+.ft1{top:18%;left:8%;color:var(--array-color);border-color:var(--array-color);background:var(--array-glow);animation-delay:0.6s,0.6s;}
+.ft2{top:22%;right:10%;color:var(--purple);border-color:var(--purple);background:var(--purple-glow);animation-delay:1.2s,1.2s;}
+.ft3{bottom:28%;left:6%;color:var(--teal);border-color:var(--teal);background:var(--teal-glow);animation-delay:0.9s,0.9s;}
+.ft4{bottom:32%;right:7%;color:var(--pink);border-color:var(--pink);background:var(--pink-glow);animation-delay:1.5s,1.5s;}
+.ft5{top:48%;left:3%;color:var(--gold);border-color:var(--gold);background:var(--gold-glow);animation-delay:1.8s,1.8s;}
+@media(max-width:700px){.float-tag{display:none;}}
+.scroll-hint{position:absolute;bottom:28px;font-size:12px;color:var(--text-dim);font-family:var(--font-mono);letter-spacing:2px;animation:bounce 2s ease-in-out infinite;}
+/* ── Section ── */
+.section{max-width:1000px;margin:0 auto;padding:80px 24px;}
+.section-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:4px;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;}
+.section-title{font-size:clamp(24px,4vw,40px);font-weight:700;line-height:1.2;margin-bottom:12px;}
+.section-sub{font-size:15px;color:var(--text-dim);line-height:1.8;max-width:640px;margin-bottom:40px;}
+.divider{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0;}
+.theory-tag{display:inline-block;font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;background:rgba(255,214,0,0.08);color:var(--gold);border:1px solid rgba(255,214,0,0.3);}
+/* ── Daily Cards ── */
+.daily-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px;}
+.daily-card{background:var(--surface);border-radius:12px;border:1.5px solid var(--border);padding:20px 18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;user-select:none;}
+.daily-card:hover{transform:translateY(-3px);border-color:var(--gold);}
+.daily-card.flipped{cursor:default;}.daily-card.flipped:hover{transform:none;}
+.daily-card.flipped .dc-front{display:none;}.daily-card:not(.flipped) .dc-back{display:none;}
+.dc-emoji{font-size:32px;margin-bottom:10px;}.dc-action{font-size:14px;font-weight:600;margin-bottom:6px;}
+.dc-q{font-size:12px;color:var(--text-dim);}.dc-tap{font-size:10px;color:var(--text-dim);font-family:var(--font-mono);margin-top:10px;opacity:0.6;}
+.dc-struct{font-size:13px;font-weight:700;margin-bottom:6px;}.dc-explain{font-size:12px;color:var(--text-dim);line-height:1.6;}
+.daily-score-bar{background:var(--surface);border-radius:10px;padding:14px 20px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.dsb-label{font-size:12px;color:var(--text-dim);font-family:var(--font-mono);}
+.dsb-val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--gold);}
+.dsb-msg{font-size:13px;color:var(--text-dim);flex:1;}
+/* ── Speed Demo ── */
+.speed-demo{background:var(--surface);border-radius:16px;border:1px solid var(--border);overflow:hidden;margin-bottom:24px;}
+.speed-demo-header{padding:16px 24px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.speed-demo-body{padding:24px;}
+.speed-scenario{font-size:14px;color:var(--text-dim);line-height:1.8;margin-bottom:20px;padding:14px 18px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--gold);}
+.speed-n-ctrl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;}
+.speed-n-ctrl label{font-size:13px;color:var(--text-dim);}
+.speed-slider{-webkit-appearance:none;width:200px;height:4px;border-radius:2px;background:var(--border);outline:none;}
+.speed-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);cursor:pointer;}
+.speed-n-val{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--gold);min-width:60px;}
+.speed-bars-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:550px){.speed-bars-wrap{grid-template-columns:1fr;}}
+.spb-label{font-size:12px;margin-bottom:8px;font-weight:600;}
+.spb-label.bad-col{color:var(--red);}.spb-label.good-col{color:var(--green);}
+.spb-track{background:var(--surface2);border-radius:6px;height:36px;overflow:hidden;position:relative;}
+.spb-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 12px;font-family:var(--font-mono);font-size:12px;font-weight:700;transition:width 0.6s cubic-bezier(0.4,0,0.2,1);white-space:nowrap;min-width:60px;}
+.spb-fill.bad{background:linear-gradient(90deg,var(--red),#ff6688);color:#fff;}
+.spb-fill.good{background:linear-gradient(90deg,var(--green),#5affaa);color:#0d0f14;}
+.speed-verdict{margin-top:16px;padding:12px 18px;border-radius:8px;background:var(--surface2);font-size:13px;line-height:1.7;border:1px solid var(--border);}
+.speed-verdict b{color:var(--gold);}
+/* ── Theater ── */
+.story-theater{background:var(--surface);border-radius:16px;border:1px solid var(--border);overflow:hidden;}
+.theater-screen{min-height:160px;padding:28px 32px;background:var(--surface2);display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--border);font-size:15px;line-height:1.8;}
+.theater-bubble{display:flex;gap:12px;align-items:flex-start;animation:fadeUp 0.4s ease;}
+.theater-bubble .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);}
+.bubble-text{background:var(--surface);border-radius:10px;padding:10px 16px;font-size:14px;line-height:1.7;border:1px solid var(--border);max-width:520px;}
+.bubble-text.eng-a{border-color:var(--red);background:rgba(255,68,102,0.06);}
+.bubble-text.eng-b{border-color:var(--green);background:rgba(57,255,130,0.06);}
+.bubble-text.narrator{border-color:var(--gold);background:var(--gold-glow);font-style:italic;color:var(--text-dim);}
+.theater-controls{padding:18px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.theater-step-dots{display:flex;gap:6px;margin-left:auto;}
+.tsd{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.2s;}
+.tsd.active{background:var(--gold);}
+/* ── AI Section ── */
+.ai-collab-intro{background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(0,229,255,0.05));border-radius:16px;border:1px solid var(--purple);padding:28px 32px;margin-bottom:28px;}
+.ai-collab-intro h3{font-size:20px;color:var(--purple);margin-bottom:10px;}
+.ai-collab-intro p{font-size:14px;color:var(--text-dim);line-height:1.8;}
+.code-scene{background:var(--surface);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
+.code-scene-header{padding:12px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.code-scene-title{font-size:14px;font-weight:700;flex:1;}
+.cs-tag{font-family:var(--font-mono);font-size:10px;padding:3px 10px;border-radius:10px;font-weight:700;}
+.cs-tag.confused{background:rgba(255,68,102,0.12);color:var(--red);border:1px solid var(--red);}
+.cs-tag.skilled{background:rgba(57,255,130,0.12);color:var(--green);border:1px solid var(--green);}
+.cs-tag.ai{background:rgba(167,139,250,0.12);color:var(--purple);border:1px solid var(--purple);}
+.code-scene-body{display:grid;grid-template-columns:1fr 1fr;}
+@media(max-width:650px){.code-scene-body{grid-template-columns:1fr;}}
+.code-col-label{padding:8px 16px;font-size:11px;letter-spacing:2px;font-family:var(--font-mono);border-bottom:1px solid var(--border);}
+.code-col-label.left{background:rgba(255,68,102,0.06);color:var(--red);border-right:1px solid var(--border);}
+.code-col-label.right{background:rgba(57,255,130,0.06);color:var(--green);}
+.code-col:first-child{border-right:1px solid var(--border);}
+pre.code-block{margin:0;padding:16px;font-family:var(--font-mono);font-size:12.5px;line-height:1.75;overflow-x:auto;background:transparent;color:var(--text);}
+.code-line{display:block;}
+.code-line.hl-bad{background:rgba(255,68,102,0.12);border-left:3px solid var(--red);padding-left:6px;margin-left:-3px;border-radius:2px;}
+.code-line.hl-good{background:rgba(57,255,130,0.10);border-left:3px solid var(--green);padding-left:6px;margin-left:-3px;border-radius:2px;}
+.code-line.hl-note{background:rgba(255,214,0,0.08);border-left:3px solid var(--gold);padding-left:6px;margin-left:-3px;border-radius:2px;}
+.kw{color:var(--purple);font-weight:600;}.fn{color:var(--array-color);}.cm{color:var(--text-dim);font-style:italic;}.str{color:var(--teal);}.num{color:var(--gold);}.tp{color:var(--pink);}
+.annotation{margin:0 16px 16px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.6;border-left:3px solid var(--gold);}
+.annotation b{color:var(--gold);}
+.ai-chat{background:var(--surface);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
+.ai-chat-header{padding:12px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.ai-chat-dot{width:8px;height:8px;border-radius:50%;}
+.ai-chat-messages{padding:16px 20px;display:flex;flex-direction:column;gap:12px;}
+.chat-msg{display:flex;gap:10px;align-items:flex-start;}
+.chat-msg.user{flex-direction:row-reverse;}
+.chat-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--surface2);border:1px solid var(--border);}
+.chat-bubble{max-width:75%;padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.7;}
+.chat-msg.user .chat-bubble{background:rgba(167,139,250,0.12);border:1px solid var(--purple);color:var(--text);}
+.chat-msg.ai .chat-bubble{background:var(--surface2);border:1px solid var(--border);}
+.chat-bubble code{font-family:var(--font-mono);font-size:11px;background:var(--bg);padding:1px 5px;border-radius:3px;color:var(--array-color);}
+.chat-label{font-size:10px;color:var(--text-dim);font-family:var(--font-mono);margin-bottom:4px;}
+.chat-msg.user .chat-label{text-align:right;}
+.scene-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.scene-tab{padding:8px 18px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:13px;transition:all 0.2s;font-family:var(--font-ui);}
+.scene-tab:hover{border-color:var(--purple);color:var(--purple);}
+.scene-tab.active{background:var(--purple);color:#fff;border-color:var(--purple);font-weight:700;}
+.scene-panel{display:none;}.scene-panel.active{display:block;}
+/* ── Final CTA ── */
+.final-cta{text-align:center;padding:80px 24px;background:linear-gradient(180deg,transparent,rgba(0,229,255,0.04));}
+.final-cta h2{font-size:clamp(24px,5vw,44px);font-weight:700;margin-bottom:14px;}
+.final-cta p{font-size:16px;color:var(--text-dim);margin-bottom:32px;line-height:1.8;}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+/* ── 動畫 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:0.9;}}
+@keyframes floatBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- HERO：情境興趣 Hidi & Renninger (2006)；避免心理抗拒 Brehm (1966) -->
+<section class="hero">
+  <div class="float-tag ft1">上一首歌 → Linked List</div>
+  <div class="float-tag ft2">Ctrl+Z 復原 → Stack</div>
+  <div class="float-tag ft3">排隊結帳 → Queue</div>
+  <div class="float-tag ft4">搜尋附近餐廳 → Tree</div>
+  <div class="float-tag ft5">Google 搜尋 → Hash Table</div>
+  <div class="hero-eyebrow">你每天都在用，只是不知道名字</div>
+  <h1 class="hero-title">
+    資料結構<br>
+    <span class="hl-gold">不是考試科目</span><br>
+    <span class="hl-cyan">是你手機裡每個 App</span><br>
+    <span class="hl-purple">背後的骨架</span>
+  </h1>
+  <p class="hero-subtitle">
+    Instagram 的演算法、YouTube 的推薦、導航 App 的最短路徑——<br>
+    這些你每天體驗的東西，都是資料結構在運作。<br>
+    而且，你早就在用資料結構<b>思考</b>了，只是還不知道它的名字。
+  </p>
+  <div class="hero-cta">
+    <button class="cta-primary" onclick="scrollToSection('section-daily')">讓我猜猜你用過哪些 →</button>
+    <button class="cta-secondary" onclick="scrollToSection('section-ai')">AI 時代為什麼還要學？</button>
+  </div>
+  <div class="scroll-hint">↓ 往下看</div>
+</section>
+
+<hr class="divider">
+
+<!-- SECTION 1：日常猜一猜；測驗效應 Roediger & Karpicke (2006)；先備知識激活 Ausubel (1968) -->
+<section class="section reveal" id="section-daily">
+  <div class="section-eyebrow">你早就在用了</div>
+  <h2 class="section-title">翻翻看：<span style="color:var(--gold)">這些動作背後是哪種資料結構？</span></h2>
+  <p class="section-sub">每張卡片是你每天都做的事。先猜猜背後的資料結構，再點開看答案。<span class="theory-tag">先備知識激活</span></p>
+  <div class="daily-grid" id="daily-grid"></div>
+  <div class="daily-score-bar">
+    <span class="dsb-label">你翻開了</span>
+    <span class="dsb-val" id="daily-count">0</span>
+    <span class="dsb-label">/ 8 張</span>
+    <span class="dsb-msg" id="daily-msg">點擊卡片翻開，看看你的直覺對不對！</span>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SECTION 2：速度震撼；情境興趣 Hidi & Renninger (2006)；主動處理 Mayer (2009) -->
+<section class="section reveal" id="section-speed">
+  <div class="section-eyebrow">為什麼差這麼多</div>
+  <h2 class="section-title">Google 要在 <span style="color:var(--red)">100 億筆</span>資料裡<br>找到你的關鍵字——</h2>
+  <p class="section-sub">
+    沒有資料結構：平均要比對 50 億次。有了正確的資料結構：最多只需要 33 次。<br>
+    拉動下方滑桿，親眼看這個差距。<span class="theory-tag">主動處理原則 Mayer 2009</span>
+  </p>
+  <div class="speed-demo">
+    <div class="speed-demo-header"><span style="font-size:18px">⚡</span><span style="font-weight:700">搜尋速度比較：Linear Search vs Binary Search</span></div>
+    <div class="speed-demo-body">
+      <div class="speed-scenario">情境：資料庫裡有 <b id="sn-n">1,000</b> 筆資料，你要找其中一筆。</div>
+      <div class="speed-n-ctrl">
+        <label>資料量 n =</label>
+        <input class="speed-slider" type="range" id="speed-slider" min="1" max="8" value="3" oninput="updateSpeed()">
+        <span class="speed-n-val" id="speed-n-label">1,000</span>
+      </div>
+      <div class="speed-bars-wrap">
+        <div>
+          <div class="spb-label bad-col">❌ 沒有資料結構（Linear Search）</div>
+          <div class="spb-track"><div class="spb-fill bad" id="spb-linear" style="width:50%">500 次</div></div>
+        </div>
+        <div>
+          <div class="spb-label good-col">✅ 有資料結構（Binary Search / BST）</div>
+          <div class="spb-track"><div class="spb-fill good" id="spb-binary" style="width:3%">10 次</div></div>
+        </div>
+      </div>
+      <div class="speed-verdict" id="speed-verdict"><b>差了 50 倍</b>——n 越大，差距越誇張。把滑桿拉到最右邊看看！</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SECTION 3：工程師劇場；敘事說服 Green & Brock (2000)；自我概念說服 -->
+<section class="section reveal" id="section-story">
+  <div class="section-eyebrow">兩個工程師的故事</div>
+  <h2 class="section-title">同樣的任務，<span style="color:var(--gold)">差了一億次多餘的操作</span></h2>
+  <p class="section-sub">敘事說服理論告訴我們：故事比說教更能讓人真正理解。看看兩個工程師面對同一個問題時，思路有什麼不同。<span class="theory-tag">敘事說服 Green &amp; Brock 2000</span></p>
+  <div class="story-theater">
+    <div class="theater-screen" id="theater-screen"></div>
+    <div class="theater-controls">
+      <button class="btn btn-neutral" id="theater-prev" onclick="theaterPrev()" style="padding:8px 18px;font-size:13px">← 上一步</button>
+      <button class="btn btn-arr"     id="theater-next" onclick="theaterNext()" style="padding:8px 18px;font-size:13px">下一步 →</button>
+      <div class="theater-step-dots" id="theater-dots"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SECTION 4：AI 協作；效用價值 Eccles et al. (1983) -->
+<section class="section reveal" id="section-ai">
+  <div class="section-eyebrow">AI 時代的關鍵問題</div>
+  <h2 class="section-title">「ChatGPT 都能幫我寫程式了，<br><span style="color:var(--purple)">我為什麼還要學？</span>」</h2>
+  <p class="section-sub">AI 能幫你<b>生成</b>程式碼，但看不懂、改不動、不知道哪裡錯——這些問題 AI 解決不了。下面三個情境，讓你親眼看見「基礎知識的缺口」在哪裡。<span class="theory-tag">效用價值 Eccles et al. 1983</span></p>
+  <div class="ai-collab-intro">
+    <h3>🤖 AI 是你的協作夥伴，不是替代品</h3>
+    <p>能有效使用 AI 輔助寫程式的人，都具備一個關鍵能力：<b>「看懂 AI 給的程式碼，並判斷它是否正確」</b>。這需要你懂得：資料結構的選擇邏輯、演算法的時間複雜度、程式語法的意義。沒有這些基礎，你只能「複製貼上然後祈禱」——而不是真正的協作。</p>
+  </div>
+  <div class="scene-tabs">
+    <button class="scene-tab active" onclick="switchScene(this,'scene-bug')">😵 情境一：看不懂 Bug</button>
+    <button class="scene-tab"        onclick="switchScene(this,'scene-slow')">🐢 情境二：不知道為何很慢</button>
+    <button class="scene-tab"        onclick="switchScene(this,'scene-ask')">🤝 情境三：無法問對問題</button>
+  </div>
+
+  <!-- 情境一 -->
+  <div class="scene-panel active" id="scene-bug">
+    <div class="code-scene">
+      <div class="code-scene-header"><span class="code-scene-title">AI 生成了一個「管理學生名單」的程式</span><span class="cs-tag ai">AI 生成</span></div>
+      <div class="code-scene-body">
+        <div class="code-col">
+          <div class="code-col-label left">😵 不懂基礎的人看到的</div>
+          <pre class="code-block"><span class="code-line"><span class="cm">// 這是什麼？不知道</span></span>
+<span class="code-line"><span class="kw">struct</span> <span class="tp">Node</span> {</span>
+<span class="code-line">  <span class="tp">string</span> name;</span>
+<span class="code-line hl-bad">  <span class="tp">Node</span>* next;  <span class="cm">// ← 這行是什麼？</span></span>
+<span class="code-line">};</span>
+<span class="code-line"><span class="kw">void</span> <span class="fn">insertFront</span>(<span class="tp">Node</span>*&amp; head, <span class="tp">string</span> n){</span>
+<span class="code-line hl-bad">  <span class="tp">Node</span>* p = <span class="kw">new</span> <span class="tp">Node</span>();  <span class="cm">// ← new？</span></span>
+<span class="code-line">  p->name = n;</span>
+<span class="code-line hl-bad">  p->next = head;  <span class="cm">// ← 為什麼這樣？</span></span>
+<span class="code-line">  head = p;</span>
+<span class="code-line">}</span>
+<span class="code-line"><span class="cm">// 名單順序全錯了 😭</span></span>
+<span class="code-line"><span class="cm">// 不知道哪裡出問題</span></span></pre>
+        </div>
+        <div class="code-col">
+          <div class="code-col-label right">💡 懂 Linked List 的人看到的</div>
+          <pre class="code-block"><span class="code-line"><span class="cm">// Node = 資料 + 指向下一個的指標</span></span>
+<span class="code-line"><span class="kw">struct</span> <span class="tp">Node</span> {</span>
+<span class="code-line">  <span class="tp">string</span> name;</span>
+<span class="code-line hl-good">  <span class="tp">Node</span>* next;  <span class="cm">// ← 指標，指向下一節點</span></span>
+<span class="code-line">};</span>
+<span class="code-line"><span class="kw">void</span> <span class="fn">insertFront</span>(<span class="tp">Node</span>*&amp; head, <span class="tp">string</span> n){</span>
+<span class="code-line hl-good">  <span class="tp">Node</span>* p = <span class="kw">new</span> <span class="tp">Node</span>(); <span class="cm">// 動態建立節點</span></span>
+<span class="code-line">  p->name = n;</span>
+<span class="code-line hl-good">  p->next = head; <span class="cm">// 新節點指向舊 head</span></span>
+<span class="code-line">  head = p;</span>
+<span class="code-line">}</span>
+<span class="code-line"><span class="cm">// 程式本身沒錯！</span></span>
+<span class="code-line hl-note"><span class="cm">// insertFront 本來就是倒序</span></span>
+<span class="code-line hl-note"><span class="cm">// → 應改用 insertBack 或最後 reverse</span></span></pre>
+        </div>
+      </div>
+    </div>
+    <div class="annotation"><b>關鍵差距：</b>不懂 Linked List 的人看到錯誤只能「問 AI 幫我修」——但根本不知道描述什麼問題。懂的人一眼看出：程式碼本身沒錯，是 insertFront 和 insertBack 的行為預期不同。這個判斷需要你懂資料結構，AI 替代不了。</div>
+    <div class="ai-chat">
+      <div class="ai-chat-header"><div class="ai-chat-dot" style="background:var(--red)"></div><span style="font-size:13px;color:var(--text-dim)">沒有基礎的人怎麼問 AI</span></div>
+      <div class="ai-chat-messages">
+        <div class="chat-msg user"><div class="chat-avatar">😵</div><div style="flex:1"><div class="chat-label">學生</div><div class="chat-bubble">我的程式跑出來的名單順序是反的，幫我修一下</div></div></div>
+        <div class="chat-msg ai"><div class="chat-avatar">🤖</div><div style="flex:1"><div class="chat-label">AI</div><div class="chat-bubble">你可以在建立完名單後加一個 <code>reverse()</code> 函式來反轉……（給了可能可行的答案，但學生不知道為什麼，下次一樣的問題還是不會）</div></div></div>
+      </div>
+    </div>
+    <div class="ai-chat">
+      <div class="ai-chat-header"><div class="ai-chat-dot" style="background:var(--green)"></div><span style="font-size:13px;color:var(--text-dim)">有基礎的人怎麼問 AI</span></div>
+      <div class="ai-chat-messages">
+        <div class="chat-msg user"><div class="chat-avatar">💡</div><div style="flex:1"><div class="chat-label">學生</div><div class="chat-bubble">我用 <code>insertFront</code> 建立 Linked List，所以每次插入都在開頭，導致順序反了。我想讓名單按插入順序排列，應該改成 <code>insertBack</code> 還是最後做一次 reverse？哪個比較有效率？</div></div></div>
+        <div class="chat-msg ai"><div class="chat-avatar">🤖</div><div style="flex:1"><div class="chat-label">AI</div><div class="chat-bubble">這是個好問題！如果名單不常重新排列，用 <code>insertBack</code> 加一個 tail pointer 是 O(1)，比每次 reverse 的 O(n) 更有效率。這裡是修改後的程式碼……（給出精確且有品質的解答）</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 情境二 -->
+  <div class="scene-panel" id="scene-slow">
+    <div class="code-scene">
+      <div class="code-scene-header"><span class="code-scene-title">AI 幫你寫了一個「找出重複學號」的程式，但跑起來超慢</span><span class="cs-tag ai">AI 生成</span></div>
+      <div class="code-scene-body">
+        <div class="code-col">
+          <div class="code-col-label left">😵 不懂複雜度的人</div>
+          <pre class="code-block"><span class="code-line"><span class="cm">// AI 給的版本，能跑但很慢</span></span>
+<span class="code-line"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; n; i++) {</span>
+<span class="code-line hl-bad">  <span class="kw">for</span> (<span class="kw">int</span> j = i+<span class="num">1</span>; j &lt; n; j++) {</span>
+<span class="code-line hl-bad">    <span class="kw">if</span> (s[i] == s[j])</span>
+<span class="code-line hl-bad">      cout &lt;&lt; <span class="str">"重複: "</span> &lt;&lt; s[i];</span>
+<span class="code-line hl-bad">  }</span>
+<span class="code-line">}</span>
+<span class="code-line"><span class="cm">// 10,000 個學生跑了 30 秒</span></span>
+<span class="code-line"><span class="cm">// 不知道為什麼這麼慢</span></span>
+<span class="code-line"><span class="cm">// 這是 O(n²) 的寫法</span></span>
+<span class="code-line"><span class="cm">// 但不懂就不知道怎麼改</span></span></pre>
+        </div>
+        <div class="code-col">
+          <div class="code-col-label right">💡 懂資料結構的人</div>
+          <pre class="code-block"><span class="code-line"><span class="cm">// 知道 O(n²) 太慢</span></span>
+<span class="code-line"><span class="cm">// 跟 AI 說：「請用 O(n) 的方法」</span></span>
+<span class="code-line"></span>
+<span class="code-line">unordered_set&lt;<span class="tp">string</span>&gt; seen;</span>
+<span class="code-line hl-good"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; n; i++) {</span>
+<span class="code-line hl-good">  <span class="kw">if</span> (seen.count(s[i]))</span>
+<span class="code-line hl-good">    cout &lt;&lt; <span class="str">"重複: "</span> &lt;&lt; s[i];</span>
+<span class="code-line hl-good">  seen.insert(s[i]);</span>
+<span class="code-line hl-good">}</span>
+<span class="code-line"><span class="cm">// 同樣 10,000 個學生：0.001 秒</span></span>
+<span class="code-line hl-note"><span class="cm">// 差了 30,000 倍</span></span>
+<span class="code-line"><span class="cm">// 因為懂「Set 查找是 O(1)」</span></span></pre>
+        </div>
+      </div>
+    </div>
+    <div class="annotation"><b>關鍵差距：</b>AI 預設給你「能跑的答案」，不一定給你「最有效率的答案」。要讓 AI 給出更好的解，你必須懂得在 prompt 裡說「請用 O(n) 複雜度」、「請用 Hash Set」——這些詞彙來自資料結構的知識。不懂的人只能等著程式跑 30 秒。</div>
+  </div>
+
+  <!-- 情境三 -->
+  <div class="scene-panel" id="scene-ask">
+    <div class="code-scene">
+      <div class="code-scene-header"><span class="code-scene-title">要設計一個「選課系統」，你要怎麼跟 AI 說？</span></div>
+      <div class="code-scene-body">
+        <div class="code-col">
+          <div class="code-col-label left">😵 沒有基礎的 Prompt</div>
+          <pre class="code-block"><span class="code-line"><span class="cm">「幫我寫一個選課系統，</span></span>
+<span class="code-line"><span class="cm"> 可以新增、刪除、查詢課程」</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="cm">AI 可能給你：</span></span>
+<span class="code-line hl-bad"><span class="cm">→ 用 Array 儲存所有課程</span></span>
+<span class="code-line hl-bad"><span class="cm">→ 每次搜尋從頭掃到尾 O(n)</span></span>
+<span class="code-line hl-bad"><span class="cm">→ 等待名單用 Array 亂插</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="cm">你不知道這樣不好，</span></span>
+<span class="code-line"><span class="cm">因為你不知道有更好的選擇。</span></span></pre>
+        </div>
+        <div class="code-col">
+          <div class="code-col-label right">💡 有基礎的 Prompt</div>
+          <pre class="code-block"><span class="code-line"><span class="cm">「幫我寫一個選課系統：</span></span>
+<span class="code-line hl-good"><span class="cm"> - 課程編號唯一，用 Hash Map</span></span>
+<span class="code-line hl-good"><span class="cm">   讓查詢是 O(1)</span></span>
+<span class="code-line hl-good"><span class="cm"> - 等待名單用 Queue（先到先得）</span></span>
+<span class="code-line hl-good"><span class="cm"> - 先修關係用 Tree/Graph 表達」</span></span>
+<span class="code-line"></span>
+<span class="code-line hl-note"><span class="cm">AI 現在能給你</span></span>
+<span class="code-line hl-note"><span class="cm">真正適合這個問題的架構</span></span>
+<span class="code-line"><span class="cm">你也能判斷它給的對不對</span></span>
+<span class="code-line"><span class="cm">因為你知道每個選擇的理由</span></span></pre>
+        </div>
+      </div>
+    </div>
+    <div class="annotation"><b>關鍵差距：</b>AI 是你的<b>實作工具</b>，但<b>你是架構師</b>。要告訴 AI「用什麼」解決問題，需要你先知道「什麼工具適合什麼情境」——這正是資料結構這門課在訓練的思維。沒有這個思維，你給 AI 的 prompt 永遠只能說「幫我做一個系統」，而不是「用這些結構幫我做」。</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FINAL CTA：自我決定理論 Deci & Ryan (2000) -->
+<section class="final-cta reveal">
+  <h2>現在，你有了<span style="color:var(--gold)">動機</span>了嗎？</h2>
+  <p>你每天都在用的東西，背後是資料結構。<br>你想駕馭 AI 而不是被它牽著走，需要資料結構。<br>選一個你最好奇的地方，開始吧。</p>
+  <div class="cta-row">
+    <a href="array-linked.html" style="text-decoration:none"><button class="cta-primary">從 Array vs Linked List 開始 →</button></a>
+    <a href="../index.html"     style="text-decoration:none"><button class="cta-secondary">看課程地圖</button></a>
+  </div>
+</section>
+
+</div>
+<script src="../shared/utils.js"></script>
+<script src="../shared/nav.js"></script>
+<script>
+const DAILY_CARDS=[
+  {emoji:'🎵',action:'按「上一首歌」',q:'你在音樂 App 按上一首。App 怎麼知道上一首是哪首？',struct:'Stack（堆疊）',explain:'播放紀錄是一個 Stack——最後播放的在最上面，按上一首就是 pop()。就像疊盤子，最後放的最先拿到。',color:'var(--array-color)'},
+  {emoji:'↩️',action:'Ctrl+Z 復原',q:'你在 Word 打錯字，按 Ctrl+Z 復原。系統怎麼記住你剛才做了什麼？',struct:'Stack（堆疊）',explain:'每次操作都被 push 進 Stack，Ctrl+Z 就是 pop——取出最後一個操作並撤銷。這就是為什麼復原是「一步一步退」。',color:'var(--array-color)'},
+  {emoji:'🖨️',action:'印表機排列工作',q:'你和同學同時按印表機，誰的先印？',struct:'Queue（佇列）',explain:'印表機用 Queue——先進先出（FIFO）。第一個按列印的第一個印，公平排隊，就像便利商店結帳。',color:'var(--linked-color)'},
+  {emoji:'🔍',action:'Google 搜尋關鍵字',q:'Google 在幾百億個網頁裡，0.1 秒內找到你要的——怎麼辦到的？',struct:'Hash Table + 倒排索引（Tree）',explain:'Google 用 Hash Table 把關鍵字對應到網頁列表，加上 Tree 結構做排名。讓查詢時間接近 O(1)，而不是從頭掃到尾的 O(n)。',color:'var(--gold)'},
+  {emoji:'📁',action:'開啟電腦資料夾',q:'你的資料夾裡有資料夾，電腦怎麼儲存這個結構？',struct:'Tree（樹）',explain:'電腦的檔案系統是一棵 Tree——根目錄是 root，每個資料夾是 node，子資料夾是 children。你每次點「開啟」就是在走訪這棵樹。',color:'var(--teal)'},
+  {emoji:'🗺️',action:'導航找最短路徑',q:'Google Maps 找從 A 到 B 最快的路，它怎麼計算？',struct:'Graph + 最短路徑演算法',explain:'地圖是 Graph（圖）——每個路口是 node，道路是 edge，距離是權重。導航用 Dijkstra 等演算法在 Graph 上找最短路徑。',color:'var(--green)'},
+  {emoji:'📱',action:'Instagram 動態消息',q:'Instagram 怎麼在 0.1 秒內，從你追蹤的 500 人貼文裡挑出最適合你的 20 則？',struct:'Priority Queue + Linked List',explain:'貼文加上喜好分數後放進 Priority Queue，分數高的先出來。貼文串本身是 Linked List，方便快速插入新貼文。',color:'var(--pink)'},
+  {emoji:'🎮',action:'遊戲 AI 找路',q:'你在玩遊戲，人物碰到牆壁時要找另一條路——遊戲引擎怎麼即時計算？',struct:'Graph + 路徑搜尋（BFS / A*）',explain:'遊戲地圖是 Graph，每個格子是 node，相鄰格子是 edge。AI 用 BFS 或 A* 演算法在 Graph 上找到通往目標的最短路徑。',color:'var(--purple)'},
+];
+let flippedCount=0;
+function initDailyCards(){
+  const g=document.getElementById('daily-grid');g.innerHTML='';
+  DAILY_CARDS.forEach((c,i)=>{
+    const card=document.createElement('div');card.className='daily-card';card.id='dc-'+i;
+    card.innerHTML=`<div class="dc-front"><div class="dc-emoji">${c.emoji}</div><div class="dc-action">${c.action}</div><div class="dc-q">${c.q}</div><div class="dc-tap">點擊翻開 →</div></div><div class="dc-back"><div class="dc-emoji">${c.emoji}</div><div class="dc-struct" style="color:${c.color}">${c.struct}</div><div class="dc-explain">${c.explain}</div></div>`;
+    card.addEventListener('click',()=>flipCard(i,c.color));g.appendChild(card);
+  });
+}
+function flipCard(i,color){
+  const card=document.getElementById('dc-'+i);if(card.classList.contains('flipped'))return;
+  card.classList.add('flipped');card.style.borderColor=color;card.style.background=color+'0d';
+  flippedCount++;updateDailyScore();
+}
+function updateDailyScore(){
+  document.getElementById('daily-count').textContent=flippedCount;
+  const msgs=['點擊卡片翻開，看看你的直覺對不對！','繼續翻！你每天都在用這些東西。','已經一半了——你發現這些「日常動作」背後都有邏輯嗎？','快翻完了！你有沒有感覺到資料結構其實不陌生？','全部翻完！這些都是你每天在用的資料結構。你以前只是不知道它們的名字。'];
+  const idx=flippedCount>=8?4:flippedCount>=6?3:flippedCount>=4?2:flippedCount>=1?1:0;
+  document.getElementById('daily-msg').textContent=msgs[idx];
+}
+const N_VALS=[100,1000,10000,100000,1000000,10000000,100000000,1000000000];
+function updateSpeed(){
+  const sl=document.getElementById('speed-slider');const idx=parseInt(sl.value)-1;const n=N_VALS[idx];
+  const fmt=n>=1e8?(n/1e8).toFixed(0)+'億':n>=1e4?(n/10000).toFixed(0)+'萬':n.toLocaleString();
+  document.getElementById('speed-n-label').textContent=fmt;document.getElementById('sn-n').textContent=fmt;
+  const linear=Math.floor(n/2);const binary=Math.ceil(Math.log2(n));
+  const ratio=binary/linear;const bw=Math.max(ratio*90,1.5);
+  document.getElementById('spb-linear').style.width='90%';document.getElementById('spb-linear').textContent=linear.toLocaleString()+' 次';
+  document.getElementById('spb-binary').style.width=bw+'%';document.getElementById('spb-binary').textContent=binary+' 次';
+  const times=Math.round(linear/binary);
+  const ts=times>=1e8?(times/1e8).toFixed(0)+'億':times>=1e4?Math.round(times/10000)+'萬':times.toLocaleString();
+  document.getElementById('speed-verdict').innerHTML=`有正確資料結構只需 <b>${binary} 次</b>，沒有的需要 <b>${linear.toLocaleString()} 次</b>。差了 <b style="color:var(--gold);font-size:16px">${ts} 倍</b>——這就是為什麼工程師選資料結構比寫程式本身更重要。`;
+}
+const THEATER_STEPS=[
+  {bubbles:[{type:'narrator',text:'情境：一家新創公司要做學校選課系統，需要「頻繁新增學生到名單中間、快速找到某個學號」。兩位工程師接到同樣的需求。'}]},
+  {bubbles:[{type:'a',text:'（工程師 A）直接用 Array 存學生名單，反正我學過 Array，很熟悉。'},{type:'narrator',text:'系統上線後，每當有新學生插入名單中間，程式必須把後面所有學生的資料往後搬一格。'}]},
+  {bubbles:[{type:'a',text:'這個月有 500 位學生插入名單，每次平均移動 2,000 筆資料……工程師 A 的程式多跑了 100 萬次多餘的搬移。'},{type:'narrator',text:'期末系統變慢，工程師 A 不知道原因，去問 AI「為什麼我的程式這麼慢」。AI 說「你應該考慮換資料結構」——但工程師 A 不知道要換成什麼。'}]},
+  {bubbles:[{type:'b',text:'（工程師 B）頻繁插入中間？我需要 Linked List。快速找學號？我需要 Hash Map。'},{type:'narrator',text:'工程師 B 跟 AI 說：「請用 Linked List 實作學生名單，插入是 O(1)，並用 unordered_map 讓學號查詢也是 O(1)。」'}]},
+  {bubbles:[{type:'b',text:'AI 照著需求給出架構，工程師 B 能看懂、能修改、能判斷對不對。即使有 100 萬筆資料，插入和查詢都是瞬間完成。'},{type:'narrator',text:'問題不在於誰「比較聰明」，而在於誰知道「用什麼工具解決什麼問題」。這就是資料結構在訓練的事。'}]},
+  {bubbles:[{type:'narrator',text:'你想成為哪種工程師？——不是說 A 很差，而是說：學資料結構，讓你在面對問題時「看得到更多選擇」。'}]},
+];
+let theaterStep=0;
+function renderTheater(){
+  const screen=document.getElementById('theater-screen');screen.innerHTML='';
+  THEATER_STEPS[theaterStep].bubbles.forEach(b=>{
+    const div=document.createElement('div');div.className='theater-bubble';
+    const isA=b.type==='a',isB=b.type==='b';
+    const av=`<div class="avatar">${isA?'😵':isB?'💡':'📖'}</div>`;
+    const bc=isA?'eng-a':isB?'eng-b':'narrator';
+    const lb=isA?'工程師 A（不懂資料結構）':isB?'工程師 B（懂資料結構）':'旁白';
+    div.innerHTML=av+`<div><div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;font-family:var(--font-mono)">${lb}</div><div class="bubble-text ${bc}">${b.text}</div></div>`;
+    screen.appendChild(div);
+  });
+  const dots=document.getElementById('theater-dots');dots.innerHTML='';
+  THEATER_STEPS.forEach((_,i)=>{const d=document.createElement('div');d.className='tsd'+(i===theaterStep?' active':'');dots.appendChild(d);});
+  document.getElementById('theater-prev').style.opacity=theaterStep===0?'0.3':'1';
+  document.getElementById('theater-next').textContent=theaterStep===THEATER_STEPS.length-1?'重頭來過':'下一步 →';
+}
+function theaterNext(){theaterStep=(theaterStep+1)%THEATER_STEPS.length;renderTheater();}
+function theaterPrev(){if(theaterStep>0){theaterStep--;renderTheater();}}
+function switchScene(btn,id){
+  document.querySelectorAll('.scene-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.scene-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(id).classList.add('active');
+}
+function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+initDailyCards();updateSpeed();renderTheater();
+</script>
+</body>
+</html>
