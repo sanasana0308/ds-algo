@@ -1,0 +1,499 @@
+/*
+  ╔══════════════════════════════════════════════════════╗
+  ║  shared/style.css  —  全站共用設計系統               ║
+  ║                                                      ║
+  ║  【如何擴充】                                         ║
+  ║  ① 新增主題色：在 :root 加 --xxx-color               ║
+  ║  ② 新增元件：在對應 section 下方新增，加註解說明      ║
+  ║  ③ 新頁面只需 <link rel="stylesheet" href="../shared/style.css">  ║
+  ╚══════════════════════════════════════════════════════╝
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+/* ─────────────────────────────────────────────
+   § 1. 設計 Token（CSS 變數）
+   【擴充】新增頁面主題色時，在這裡加一組變數
+   例如 Stack/Queue 頁可加 --stack-color: #a78bfa;
+   ───────────────────────────────────────────── */
+:root {
+  /* 背景層次 */
+  --bg:       #0d0f14;
+  --surface:  #161922;
+  --surface2: #1e2330;
+  --border:   #2a3045;
+
+  /* 各資料結構主題色 */
+  --array-color: #00e5ff;
+  --array-glow:  rgba(0, 229, 255, 0.25);
+
+  --linked-color: #ff6b35;
+  --linked-glow:  rgba(255, 107, 53, 0.25);
+
+  /* 【擴充位置】未來新增 Stack/Queue/Tree 在這裡加 */
+  /* --stack-color:  #a78bfa; */
+  /* --stack-glow:   rgba(167,139,250,0.25); */
+  /* --queue-color:  #34d399; */
+  /* --tree-color:   #f59e0b; */
+
+  /* 語意色 */
+  --green:  #39ff82;
+  --red:    #ff4466;
+  --yellow: #ffd600;
+
+  /* 文字 */
+  --text:     #e8eaf0;
+  --text-dim: #7a8099;
+
+  /* 字型 */
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-ui:   'Noto Sans TC', sans-serif;
+
+  /* 導覽列高度（各頁面 padding-top 要對齊這個） */
+  --nav-height: 56px;
+}
+
+/* ─────────────────────────────────────────────
+   § 2. Reset & 全站基礎
+   ───────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 點陣格線背景（所有頁面共用） */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 主要內容容器 */
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ─────────────────────────────────────────────
+   § 3. 導覽列（由 nav.js 動態插入）
+   ───────────────────────────────────────────── */
+.site-nav {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--nav-height);
+  background: rgba(13,15,20,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 0;
+}
+
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 700;
+  color: var(--array-color);
+  text-decoration: none;
+  letter-spacing: 2px;
+  margin-right: 32px;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex; gap: 4px; flex: 1; flex-wrap: wrap;
+}
+
+.nav-link {
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-dim); text-decoration: none;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-link:hover { color: var(--text); background: var(--surface2); }
+.nav-link.active { color: var(--array-color); background: var(--surface2); }
+
+/* 進度點（頁面完成狀態） */
+.nav-link .nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border); flex-shrink: 0;
+  transition: background 0.2s;
+}
+.nav-link.done .nav-dot { background: var(--green); }
+.nav-link.active .nav-dot { background: var(--array-color); }
+
+/* ─────────────────────────────────────────────
+   § 4. 頁面 Header（各頁面自訂內容，但樣式共用）
+   ───────────────────────────────────────────── */
+.page-header { text-align: center; margin-bottom: 40px; }
+
+.page-subtitle {
+  font-family: var(--font-mono);
+  color: var(--array-color);
+  font-size: 12px; letter-spacing: 4px;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+
+.page-title {
+  font-size: clamp(24px, 5vw, 40px);
+  font-weight: 700; line-height: 1.2;
+}
+
+.page-tagline {
+  color: var(--text-dim); font-size: 14px; margin-top: 10px;
+}
+
+/* ─────────────────────────────────────────────
+   § 5. 分頁 Tab 系統（頁面內切換用）
+   ───────────────────────────────────────────── */
+.tabs {
+  display: flex; gap: 8px;
+  justify-content: center;
+  margin-bottom: 32px; flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 22px; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-dim);
+  cursor: pointer; font-family: var(--font-ui);
+  font-size: 14px; font-weight: 500;
+  transition: all 0.2s; white-space: nowrap;
+}
+.tab:hover { border-color: var(--array-color); color: var(--array-color); }
+.tab.active {
+  background: var(--array-color); color: #0d0f14;
+  border-color: var(--array-color); font-weight: 700;
+}
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ─────────────────────────────────────────────
+   § 6. 卡片元件
+   ───────────────────────────────────────────── */
+.card {
+  background: var(--surface); border-radius: 12px;
+  border: 1px solid var(--border); overflow: hidden;
+}
+.card-header {
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.card-body { padding: 20px; }
+
+.card-header h3 { font-size: 15px; font-weight: 700; }
+.card-header h3.arr { color: var(--array-color); }
+.card-header h3.lnk { color: var(--linked-color); }
+
+/* ─────────────────────────────────────────────
+   § 7. 點（彩色 indicator）
+   ───────────────────────────────────────────── */
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.arr-dot { background: var(--array-color); box-shadow: 0 0 8px var(--array-color); }
+.lnk-dot { background: var(--linked-color); box-shadow: 0 0 8px var(--linked-color); }
+/* 【擴充】新增 .stack-dot、.tree-dot 等 */
+
+/* ─────────────────────────────────────────────
+   § 8. 按鈕系統
+   ───────────────────────────────────────────── */
+.btn {
+  padding: 8px 16px; border-radius: 6px; border: none;
+  cursor: pointer; font-family: var(--font-ui);
+  font-size: 13px; font-weight: 600;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn-arr     { background: var(--array-color); color: #0d0f14; }
+.btn-arr:hover { opacity: 0.85; box-shadow: 0 0 12px var(--array-color); }
+
+.btn-lnk     { background: var(--linked-color); color: #fff; }
+.btn-lnk:hover { opacity: 0.85; box-shadow: 0 0 12px var(--linked-color); }
+
+.btn-del     { background: var(--red); color: #fff; }
+.btn-del:hover { opacity: 0.85; }
+
+.btn-neutral { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-neutral:hover { border-color: var(--text); }
+
+/* 【擴充】新增頁面若有專屬按鈕，在該頁的 <style> 裡加 .btn-stack {} 等 */
+
+/* ─────────────────────────────────────────────
+   § 9. 輸入欄位
+   ───────────────────────────────────────────── */
+.controls {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 16px; align-items: center;
+}
+.controls input[type=number] {
+  width: 64px; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text); font-family: var(--font-mono); font-size: 14px;
+}
+.controls input:focus { outline: none; border-color: var(--array-color); }
+.pos-label { font-size: 12px; color: var(--text-dim); }
+
+/* ─────────────────────────────────────────────
+   § 10. Log 輸出列
+   ───────────────────────────────────────────── */
+.log {
+  background: var(--surface2); border-radius: 8px;
+  padding: 10px 14px; font-family: var(--font-mono); font-size: 12px;
+  color: var(--green); min-height: 36px; line-height: 1.6;
+  margin-top: 12px; border: 1px solid var(--border);
+}
+.log .step { color: var(--text-dim); }
+.log .warn { color: var(--yellow); }
+.log .err  { color: var(--red); }
+
+/* ─────────────────────────────────────────────
+   § 11. 故事框（說明情境用）
+   ───────────────────────────────────────────── */
+.story-box {
+  background: var(--surface2); border-radius: 8px;
+  padding: 14px 18px; margin-bottom: 18px;
+  border: 1px solid var(--border);
+  font-size: 13px; line-height: 1.8; color: var(--text);
+}
+.story-box .q {
+  color: var(--yellow); font-weight: 700;
+  display: block; margin-bottom: 6px;
+}
+
+/* ─────────────────────────────────────────────
+   § 12. 類比 Banner
+   ───────────────────────────────────────────── */
+.analogy {
+  background: var(--surface2); border-radius: 8px;
+  padding: 12px 16px; margin-bottom: 18px;
+  border-left: 3px solid currentColor;
+  font-size: 13px; line-height: 1.6;
+}
+.analogy.arr { color: var(--array-color); }
+.analogy.lnk { color: var(--linked-color); }
+.analogy strong { display: block; font-size: 12px; letter-spacing: 1px; opacity: 0.7; margin-bottom: 4px; }
+
+/* ─────────────────────────────────────────────
+   § 13. 視覺化區域
+   ───────────────────────────────────────────── */
+.viz {
+  min-height: 90px; display: flex; align-items: center;
+  flex-wrap: wrap; gap: 6px; position: relative;
+}
+
+/* ─────────────────────────────────────────────
+   § 14. 複雜度表格
+   ───────────────────────────────────────────── */
+.complexity {
+  background: var(--surface); border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden; margin-bottom: 24px;
+}
+.complexity table { width: 100%; border-collapse: collapse; }
+.complexity th {
+  padding: 12px 16px; text-align: left; font-size: 12px;
+  letter-spacing: 1px; background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.complexity th.arr-h { color: var(--array-color); }
+.complexity th.lnk-h { color: var(--linked-color); }
+.complexity td { padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.complexity tr:last-child td { border-bottom: none; }
+.complexity .op { color: var(--text-dim); font-size: 12px; }
+.good { color: var(--green);  font-family: var(--font-mono); font-weight: 700; }
+.bad  { color: var(--red);    font-family: var(--font-mono); font-weight: 700; }
+.ok   { color: var(--yellow); font-family: var(--font-mono); font-weight: 700; }
+
+/* ─────────────────────────────────────────────
+   § 15. Badge（小標籤）
+   ───────────────────────────────────────────── */
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+}
+.badge.arr { background: var(--array-glow); color: var(--array-color); border: 1px solid var(--array-color); }
+.badge.lnk { background: var(--linked-glow); color: var(--linked-color); border: 1px solid var(--linked-color); }
+
+/* ─────────────────────────────────────────────
+   § 16. Section 標題
+   ───────────────────────────────────────────── */
+.section-title {
+  font-size: 11px; letter-spacing: 3px; color: var(--text-dim);
+  text-transform: uppercase; font-family: var(--font-mono);
+  margin-bottom: 12px; margin-top: 28px;
+}
+.section-title:first-child { margin-top: 0; }
+
+/* ─────────────────────────────────────────────
+   § 17. 版面（兩欄並排）
+   ───────────────────────────────────────────── */
+.side-by-side {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; margin-bottom: 24px;
+}
+@media (max-width: 700px) { .side-by-side { grid-template-columns: 1fr; } }
+
+/* ─────────────────────────────────────────────
+   § 18. 效能比較 Bar
+   ───────────────────────────────────────────── */
+.compare-bar {
+  background: var(--surface); border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 20px; margin-bottom: 24px;
+}
+.compare-bar h3 { font-size: 14px; color: var(--text-dim); margin-bottom: 16px; letter-spacing: 1px; }
+.op-select { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.op-btn {
+  padding: 8px 18px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text-dim); cursor: pointer;
+  font-size: 13px; transition: all 0.2s;
+}
+.op-btn.active { border-color: var(--yellow); color: var(--yellow); background: rgba(255,214,0,0.08); }
+.speed-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.speed-item label { font-size: 12px; margin-bottom: 6px; display: block; }
+.speed-item label.arr { color: var(--array-color); }
+.speed-item label.lnk { color: var(--linked-color); }
+.bar-track { background: var(--surface2); border-radius: 4px; height: 22px; overflow: hidden; }
+.bar-fill {
+  height: 100%; border-radius: 4px; display: flex; align-items: center;
+  padding: 0 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.bar-fill.arr { background: linear-gradient(90deg, var(--array-color), #00b8d4); color: #0d0f14; }
+.bar-fill.lnk { background: linear-gradient(90deg, var(--linked-color), #ff9068); color: #fff; }
+.compare-note {
+  margin-top: 14px; font-size: 12px; color: var(--text-dim);
+  line-height: 1.7; padding: 10px 14px;
+  background: var(--surface2); border-radius: 6px;
+}
+
+/* ─────────────────────────────────────────────
+   § 19. 記憶體示意圖
+   ───────────────────────────────────────────── */
+.memory-map { margin-top: 14px; }
+.mem-label {
+  font-size: 11px; color: var(--text-dim); font-family: var(--font-mono);
+  margin-bottom: 6px; letter-spacing: 1px;
+}
+.mem-row { display: flex; gap: 4px; flex-wrap: wrap; }
+.mem-cell {
+  width: 38px; height: 32px; border-radius: 4px;
+  border: 1px solid var(--border); background: var(--surface2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+}
+.mem-cell.used-arr    { border-color: var(--array-color);  color: var(--array-color);           background: var(--array-glow); }
+.mem-cell.used-ll     { border-color: var(--linked-color); color: var(--linked-color);          background: var(--linked-glow); }
+.mem-cell.used-ll-ptr { border-color: var(--linked-color); color: rgba(255,107,53,0.5);        background: rgba(255,107,53,0.05); }
+
+/* ─────────────────────────────────────────────
+   § 20. 連連看遊戲（MatchGame 引擎共用樣式）
+       【擴充】新頁面的連連看只需在資料裡換題目，
+       這些 CSS 全部自動可用
+   ───────────────────────────────────────────── */
+.match-header {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--surface); border-radius: 10px;
+  padding: 14px 20px; margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.match-score-area { display: flex; flex-direction: column; }
+.match-score-label { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; font-family: var(--font-mono); }
+.match-score { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--yellow); }
+.match-streak { flex: 1; font-size: 20px; letter-spacing: 2px; }
+
+.match-arena {
+  display: grid; grid-template-columns: 1fr 220px;
+  gap: 20px; margin-bottom: 20px; align-items: start;
+}
+@media (max-width: 650px) { .match-arena { grid-template-columns: 1fr; } }
+
+.match-col-label {
+  font-size: 11px; letter-spacing: 2px; color: var(--text-dim);
+  font-family: var(--font-mono); margin-bottom: 10px; text-transform: uppercase;
+}
+.match-scenarios { display: flex; flex-direction: column; gap: 8px; }
+
+.scenario-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+  cursor: grab; user-select: none;
+  display: flex; align-items: center; gap: 12px;
+  transition: all 0.2s; animation: slideIn 0.3s ease;
+}
+.scenario-card:hover       { border-color: var(--text-dim); transform: translateX(3px); }
+.scenario-card.dragging    { opacity: 0.4; transform: scale(0.97); }
+.scenario-card.selected    { border-color: var(--yellow); box-shadow: 0 0 0 2px rgba(255,214,0,0.25); transform: translateX(4px); }
+.scenario-card.correct     { border-color: var(--green); background: rgba(57,255,130,0.07); cursor: default; opacity: 0.75; }
+.scenario-card.wrong       { border-color: var(--red); background: rgba(255,68,102,0.07); animation: shake 0.4s ease; }
+.scenario-card.correct:hover { transform: none; }
+
+.sc-emoji { font-size: 24px; flex-shrink: 0; }
+.sc-body  { flex: 1; }
+.sc-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.sc-hint  { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+.sc-check { font-size: 16px; flex-shrink: 0; }
+
+.dropzones-col { display: flex; flex-direction: column; gap: 14px; }
+.dropzone {
+  border-radius: 12px; border: 2px dashed var(--border);
+  background: var(--surface); transition: all 0.2s;
+  cursor: pointer; min-height: 140px;
+}
+.dropzone:hover    { border-color: var(--text-dim); }
+.dropzone.drag-over { border-color: var(--yellow); background: rgba(255,214,0,0.06); }
+.dz-inner    { padding: 16px 14px; }
+.dz-title    { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.dz-subtitle { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); margin-bottom: 10px; }
+.dz-matched  { display: flex; flex-direction: column; gap: 5px; }
+.dz-chip {
+  font-size: 11px; padding: 4px 8px; border-radius: 6px;
+  display: flex; align-items: center; gap: 6px;
+  animation: slideIn 0.25s ease;
+}
+
+.match-feedback {
+  border-radius: 10px; padding: 14px 18px; font-size: 14px; line-height: 1.7;
+  margin-bottom: 20px; animation: slideIn 0.3s ease; border: 1px solid;
+}
+.match-feedback.correct-fb { background: rgba(57,255,130,0.07); border-color: var(--green); color: var(--green); }
+.match-feedback.wrong-fb   { background: rgba(255,68,102,0.07); border-color: var(--red);   color: #ff8099; }
+.match-feedback strong { display: block; font-size: 15px; margin-bottom: 4px; }
+
+.match-complete { text-align: center; padding: 40px 20px; animation: slideIn 0.5s ease; }
+.complete-inner {
+  display: inline-block; background: var(--surface);
+  border-radius: 16px; border: 1px solid var(--border); padding: 36px 48px;
+}
+.complete-emoji { font-size: 56px; margin-bottom: 12px; }
+.complete-inner h3 { font-size: 24px; color: var(--yellow); margin-bottom: 8px; }
+.complete-inner p  { color: var(--text-dim); font-size: 14px; }
+
+/* ─────────────────────────────────────────────
+   § 21. Keyframe 動畫
+   ───────────────────────────────────────────── */
+@keyframes pulse-arr {
+  0%   { box-shadow: 0 0 0 0   var(--array-color); }
+  50%  { box-shadow: 0 0 20px 4px var(--array-color); }
+  100% { box-shadow: 0 0 0 0   var(--array-color); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-4px); }
+  75%     { transform: translateX(4px); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.slide-in { animation: slideIn 0.3s ease; }

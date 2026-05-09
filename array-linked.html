@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Array vs Linked List — DS課程</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+  .arr-cell { width:56px;height:56px;border-radius:6px;border:2px solid var(--array-color);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-mono);position:relative;transition:all 0.3s;background:rgba(0,229,255,0.07);cursor:default; }
+  .arr-cell .val { font-size:18px;font-weight:700;color:var(--array-color); }
+  .arr-cell .idx { font-size:9px;color:var(--text-dim);margin-top:2px; }
+  .arr-cell.highlight { background:var(--array-glow);box-shadow:0 0 16px var(--array-color);animation:pulse-arr 0.6s ease; }
+  .arr-cell.inserting { border-color:var(--green);background:rgba(57,255,130,0.15);box-shadow:0 0 16px var(--green); }
+  .arr-cell.deleting  { border-color:var(--red);background:rgba(255,68,102,0.15);animation:shake 0.4s ease; }
+  .arr-cell.shifting  { border-color:var(--yellow);background:rgba(255,214,0,0.1); }
+  .arr-cell.empty-slot{ border-style:dashed;opacity:0.3;background:transparent; }
+  .ll-container{display:flex;align-items:center;flex-wrap:wrap;gap:0;}
+  .ll-node{display:flex;align-items:center;gap:0;}
+  .node-box{display:flex;border-radius:6px;border:2px solid var(--linked-color);overflow:hidden;background:rgba(255,107,53,0.07);transition:all 0.3s;}
+  .node-data{width:48px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-mono);border-right:1px solid var(--linked-color);}
+  .node-data .val{font-size:17px;font-weight:700;color:var(--linked-color);}
+  .node-ptr{width:28px;height:52px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--linked-color);opacity:0.6;}
+  .arrow-connector{width:28px;height:3px;background:var(--linked-color);position:relative;flex-shrink:0;}
+  .arrow-connector::after{content:'';position:absolute;right:-6px;top:-4px;border:5px solid transparent;border-left-color:var(--linked-color);}
+  .null-end{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);padding:0 8px;border:1px dashed var(--border);border-radius:4px;height:30px;display:flex;align-items:center;}
+  .node-box.highlight{border-color:var(--array-color);box-shadow:0 0 16px var(--array-color);}
+  .node-box.inserting{border-color:var(--green);box-shadow:0 0 16px var(--green);}
+  .node-box.deleting{border-color:var(--red);box-shadow:0 0 16px var(--red);animation:shake 0.4s;}
+  .dz-chip.arr-chip{background:var(--array-glow);color:var(--array-color);border:1px solid var(--array-color);}
+  .dz-chip.lnk-chip{background:var(--linked-glow);color:var(--linked-color);border:1px solid var(--linked-color);}
+  .page-title .vs{color:var(--yellow);margin:0 12px;}
+  .page-title .arr{color:var(--array-color);}
+  .page-title .lnk{color:var(--linked-color);}
+
+  /* ── P3 鷹架理論 Onboarding ── Wood, Bruner & Ross (1976) */
+  .onboard-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;padding:20px;animation:slideIn 0.4s ease;}
+  .onboard-box{background:var(--surface);border-radius:16px;border:1px solid var(--array-color);box-shadow:0 0 40px rgba(0,229,255,0.15);max-width:540px;width:100%;padding:36px 32px;}
+  .onboard-step-indicator{display:flex;gap:6px;margin-bottom:24px;}
+  .onboard-pip{height:4px;border-radius:2px;flex:1;background:var(--border);transition:background 0.3s;}
+  .onboard-pip.done{background:var(--array-color);}
+  .onboard-pip.active{background:var(--yellow);}
+  .onboard-icon{font-size:40px;margin-bottom:12px;}
+  .onboard-title{font-size:20px;font-weight:700;color:var(--array-color);margin-bottom:10px;}
+  .onboard-body{font-size:14px;color:var(--text);line-height:1.8;margin-bottom:20px;}
+  .onboard-task{background:var(--surface2);border-radius:8px;border-left:3px solid var(--yellow);padding:12px 16px;font-size:13px;color:var(--yellow);font-weight:600;margin-bottom:20px;line-height:1.6;}
+  .onboard-task strong{display:block;font-size:11px;letter-spacing:1px;opacity:0.7;margin-bottom:4px;}
+  .onboard-skip{font-size:12px;color:var(--text-dim);background:none;border:none;cursor:pointer;text-decoration:underline;}
+
+  /* ── P1 有益困難 預測框 ── Bjork (1994) */
+  .predict-box{background:var(--surface2);border-radius:8px;border:1px solid var(--yellow);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .predict-label{font-size:12px;color:var(--yellow);font-weight:700;flex-shrink:0;}
+  .predict-input{width:60px;padding:6px 10px;border-radius:6px;border:1px solid var(--yellow);background:var(--bg);color:var(--yellow);font-family:var(--font-mono);font-size:14px;font-weight:700;text-align:center;}
+  .predict-input:focus{outline:none;box-shadow:0 0 8px rgba(255,214,0,0.4);}
+  .predict-hint{font-size:11px;color:var(--text-dim);}
+  .predict-result{margin-top:8px;font-size:12px;padding:6px 12px;border-radius:6px;font-family:var(--font-mono);display:none;}
+  .predict-result.hit{background:rgba(57,255,130,0.1);color:var(--green);border:1px solid var(--green);}
+  .predict-result.miss{background:rgba(255,68,102,0.1);color:#ff8099;border:1px solid var(--red);}
+
+  /* ── P4 概念轉變理論 前概念提問 ── Posner et al. (1982) */
+  .prior-banner{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:24px 28px;margin-bottom:28px;animation:slideIn 0.4s ease;}
+  .prior-banner.hidden{display:none;}
+  .prior-q{font-size:15px;font-weight:700;color:var(--yellow);margin-bottom:6px;}
+  .prior-sub{font-size:13px;color:var(--text-dim);margin-bottom:18px;line-height:1.6;}
+  .prior-choices{display:flex;gap:10px;flex-wrap:wrap;}
+  .prior-btn{padding:10px 20px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s;font-family:var(--font-ui);}
+  .prior-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+  .prior-btn.chosen-array{border-color:var(--array-color);background:var(--array-glow);color:var(--array-color);}
+  .prior-btn.chosen-linked{border-color:var(--linked-color);background:var(--linked-glow);color:var(--linked-color);}
+  .prior-btn.chosen-same{border-color:var(--yellow);background:rgba(255,214,0,0.08);color:var(--yellow);}
+  .prior-review{background:var(--surface2);border-radius:10px;border:1px solid var(--yellow);padding:18px 20px;margin-top:20px;animation:slideIn 0.4s ease;display:none;}
+  .prior-review h4{color:var(--yellow);font-size:14px;margin-bottom:10px;}
+  .prior-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:500px){.prior-compare{grid-template-columns:1fr;}}
+  .prior-col{background:var(--surface);border-radius:8px;padding:12px 14px;}
+  .prior-col-label{font-size:10px;letter-spacing:2px;color:var(--text-dim);font-family:var(--font-mono);margin-bottom:6px;}
+  .prior-col-val{font-size:13px;font-weight:600;}
+
+  /* ── P2 後設認知 反思問答框 ── Flavell (1979); Zimmerman (2002) */
+  .reflect-box{margin-top:28px;background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden;}
+  .reflect-header{padding:14px 18px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+  .reflect-header-icon{font-size:16px;}
+  .reflect-header-text{font-size:13px;font-weight:700;color:var(--text-dim);letter-spacing:1px;}
+  .reflect-header-badge{font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(255,214,0,0.1);color:var(--yellow);border:1px solid rgba(255,214,0,0.3);}
+  .reflect-body{padding:18px;}
+  .reflect-q{font-size:14px;color:var(--text);margin-bottom:12px;line-height:1.7;font-weight:600;}
+  .reflect-textarea{width:100%;min-height:72px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font-ui);font-size:13px;line-height:1.6;resize:vertical;transition:border-color 0.2s;}
+  .reflect-textarea:focus{outline:none;border-color:var(--yellow);}
+  .reflect-submit{margin-top:10px;padding:8px 20px;border-radius:6px;border:1px solid var(--yellow);background:rgba(255,214,0,0.08);color:var(--yellow);cursor:pointer;font-size:13px;font-weight:600;font-family:var(--font-ui);transition:all 0.2s;}
+  .reflect-submit:hover{background:rgba(255,214,0,0.18);}
+  .reflect-answer{margin-top:14px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--green);padding:12px 16px;display:none;animation:slideIn 0.3s ease;}
+  .reflect-answer-label{font-size:10px;letter-spacing:2px;color:var(--green);font-family:var(--font-mono);margin-bottom:6px;}
+  .reflect-answer-text{font-size:13px;color:var(--text);line-height:1.7;}
+  .reflect-self-rate{margin-top:14px;display:none;animation:slideIn 0.3s ease;}
+  .reflect-rate-label{font-size:12px;color:var(--text-dim);margin-bottom:8px;}
+  .rate-btns{display:flex;gap:8px;}
+  .rate-btn{flex:1;padding:8px 4px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);cursor:pointer;font-size:12px;font-family:var(--font-ui);transition:all 0.2s;text-align:center;}
+  .rate-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+  .rate-btn.selected{font-weight:700;}
+  .rate-btn[data-r="1"].selected{border-color:var(--red);background:rgba(255,68,102,0.1);color:#ff8099;}
+  .rate-btn[data-r="2"].selected{border-color:var(--yellow);background:rgba(255,214,0,0.1);color:var(--yellow);}
+  .rate-btn[data-r="3"].selected{border-color:var(--green);background:rgba(57,255,130,0.1);color:var(--green);}
+  .reflect-done-msg{margin-top:10px;font-size:12px;color:var(--green);display:none;font-family:var(--font-mono);}
+
+  /* ── 進度追蹤膠囊 ── Deci & Ryan (2000) 能力感 */
+  .progress-pill{position:fixed;top:64px;right:16px;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-dim);font-family:var(--font-mono);box-shadow:0 2px 12px rgba(0,0,0,0.3);}
+  .pill-dots{display:flex;gap:4px;}
+  .pill-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.4s;}
+  .pill-dot.done{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .pill-dot.active{background:var(--yellow);}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+  P3 鷹架理論 Onboarding — Wood, Bruner & Ross (1976)
+  v1差異：v1 無引導，學生直接面對空白操作區
+  v2改動：首次進入顯示 3 步驟任務引導，完成後解鎖自由模式
+  理論依據：I Do → We Do → You Do 漸進釋放責任模型
+════════════════════════════════════════════════ -->
+<div class="onboard-overlay" id="onboard-overlay">
+  <div class="onboard-box">
+    <div class="onboard-step-indicator" id="onboard-pips"></div>
+    <div class="onboard-icon" id="ob-icon">🎬</div>
+    <div class="onboard-title" id="ob-title">歡迎來到 Array vs Linked List</div>
+    <div class="onboard-body" id="ob-body">這個單元你將學習兩種儲存資料的方式。先完成 3 個小任務，幫你建立基礎感覺！</div>
+    <div class="onboard-task" id="ob-task"></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn btn-arr" id="ob-next-btn" onclick="onboardNext()">我完成了 →</button>
+      <button class="onboard-skip" onclick="onboardSkip()">跳過引導，直接開始</button>
+    </div>
+  </div>
+</div>
+
+<!-- 進度追蹤膠囊（右上角固定） -->
+<div class="progress-pill">
+  <span>進度</span>
+  <div class="pill-dots">
+    <div class="pill-dot active" id="pd-0" title="互動操作"></div>
+    <div class="pill-dot" id="pd-1" title="效能比較"></div>
+    <div class="pill-dot" id="pd-2" title="記憶體示意"></div>
+    <div class="pill-dot" id="pd-3" title="連連看挑戰"></div>
+  </div>
+</div>
+
+<div class="wrapper">
+  <header class="page-header">
+    <div class="page-subtitle">高中資訊科 · 資料結構 · 第一單元</div>
+    <h1 class="page-title"><span class="arr">Array</span><span class="vs">VS</span><span class="lnk">Linked List</span></h1>
+    <p class="page-tagline">同樣存資料，差在哪裡？— 互動視覺化學習 v2</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(this,'playground')">🧪 互動操作</button>
+    <button class="tab"        onclick="switchTab(this,'compare')">⚡ 效能比較</button>
+    <button class="tab"        onclick="switchTab(this,'memory')">🧠 記憶體示意</button>
+    <button class="tab"        onclick="switchTab(this,'usecase')">🎯 連連看挑戰</button>
+  </div>
+
+  <!-- TAB 1 互動操作 -->
+  <div id="tab-playground" class="panel active">
+
+    <!-- ════════════════════════════
+      P4 概念轉變理論 前概念提問
+      Posner, Strike, Hewson & Gertzog (1982)
+      v1差異：v1 直接展示故事框
+      v2改動：先問學生立場，激活前概念，產生認知投入
+      效果：讓學生帶著「我的預測是否正確」的動機學習
+    ════════════════════════════ -->
+    <div class="prior-banner" id="prior-banner">
+      <div class="prior-q">🤔 開始之前，先說說你的直覺判斷</div>
+      <div class="prior-sub">如果你要設計一個「音樂播放清單」——常常要新增歌曲、刪除歌曲、插入到中間——你的直覺覺得哪個比較好用？（先猜，後面一起驗證！）</div>
+      <div class="prior-choices">
+        <button class="prior-btn" onclick="setPrior('array',this)">📋 我選 Array</button>
+        <button class="prior-btn" onclick="setPrior('linked',this)">🔗 我選 Linked List</button>
+        <button class="prior-btn" onclick="setPrior('same',this)">🤷 感覺差不多</button>
+      </div>
+    </div>
+
+    <div class="story-box" id="main-story" style="display:none">
+      <span class="q">🎬 電影院 vs 尋寶遊戲</span>
+      <b>Array</b> 像電影院的座位——位子連續排列、每格有編號，想找第5個直接去 index 4。<br>
+      <b>Linked List</b> 像尋寶遊戲——每張紙條告訴你「下一個在哪裡」，必須一張一張找。
+    </div>
+
+    <div id="playground-content" style="display:none">
+      <div class="side-by-side">
+        <div class="card">
+          <div class="card-header"><div class="dot arr-dot"></div><h3 class="arr">Array（陣列）</h3></div>
+          <div class="card-body">
+            <div class="analogy arr"><strong>🎬 電影院座位比喻</strong>連續的座位，要加人進中間得叫大家都往後移一格。</div>
+            <div class="viz" id="arr-viz"></div>
+            <!-- ════════════════════════
+              P1 有益困難 預測框
+              Bjork (1994) 產生效應 Generation Effect
+              v1差異：v1 直接按插入看結果
+              v2改動：操作前填入猜測，操作後顯示對比
+              效果：預測錯誤產生「驚訝感」，是最強記憶錨點
+            ════════════════════════ -->
+            <div class="predict-box">
+              <span class="predict-label">🔮 你猜</span>
+              <input class="predict-input" type="number" id="arr-predict" min="0" max="8" placeholder="?">
+              <span class="predict-hint">個元素需要被移動（插入前先猜）</span>
+            </div>
+            <div class="predict-result" id="arr-predict-result"></div>
+            <div class="controls">
+              <span class="pos-label">位置</span><input type="number" id="arr-pos" value="0" min="0" max="7" style="width:55px">
+              <span class="pos-label">值</span><input type="number" id="arr-val" value="5" min="0" max="99" style="width:55px">
+              <button class="btn btn-arr" onclick="arrInsert()">插入</button>
+              <button class="btn btn-del" onclick="arrDelete()">刪除</button>
+              <button class="btn btn-neutral" onclick="arrAccess()">存取</button>
+              <button class="btn btn-neutral" onclick="resetArr()">重置</button>
+            </div>
+            <div class="log" id="arr-log">等待操作...</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="dot lnk-dot"></div><h3 class="lnk">Linked List（鏈結串列）</h3></div>
+          <div class="card-body">
+            <div class="analogy lnk"><strong>🗺️ 尋寶遊戲比喻</strong>每個節點帶著「下一個在哪」，插入新節點只要改指標，不用搬別人。</div>
+            <div class="viz" id="ll-viz"></div>
+            <!-- P1 有益困難 — LL 預測步驟數 -->
+            <div class="predict-box">
+              <span class="predict-label">🔮 你猜</span>
+              <input class="predict-input" type="number" id="ll-predict" min="0" max="8" placeholder="?">
+              <span class="predict-hint">步才能走到指定位置（插入前先猜）</span>
+            </div>
+            <div class="predict-result" id="ll-predict-result"></div>
+            <div class="controls">
+              <span class="pos-label">位置</span><input type="number" id="ll-pos" value="0" min="0" max="7" style="width:55px">
+              <span class="pos-label">值</span><input type="number" id="ll-val" value="5" min="0" max="99" style="width:55px">
+              <button class="btn btn-lnk" onclick="llInsert()">插入</button>
+              <button class="btn btn-del" onclick="llDelete()">刪除</button>
+              <button class="btn btn-neutral" onclick="llAccess()">存取</button>
+              <button class="btn btn-neutral" onclick="resetLL()">重置</button>
+            </div>
+            <div class="log" id="ll-log">等待操作...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════
+        P2 後設認知 反思問答 Tab1
+        Flavell (1979); Zimmerman (2002)
+        v1差異：v1 操作完即結束，無引導學生自省
+        v2改動：每個Tab底部加反思問題→參考答案→自評量表
+        效果：主動提取練習（Retrieval Practice），強化長期記憶
+      ════════════════════════ -->
+      <div class="reflect-box">
+        <div class="reflect-header">
+          <span class="reflect-header-icon">💭</span>
+          <span class="reflect-header-text">反思一下</span>
+          <span class="reflect-header-badge">後設認知練習</span>
+        </div>
+        <div class="reflect-body">
+          <div class="reflect-q">操作完之後，試著用自己的話回答：<br>Array 和 Linked List 在「插入」這件事上，根本差異是什麼？</div>
+          <textarea class="reflect-textarea" id="reflect-playground" placeholder="例如：Array 需要移動後面所有元素..."></textarea>
+          <button class="reflect-submit" onclick="showReflectAnswer('playground')">送出，看參考答案</button>
+          <div class="reflect-answer" id="reflect-answer-playground">
+            <div class="reflect-answer-label">REFERENCE ANSWER</div>
+            <div class="reflect-answer-text"><b>Array</b>：必須把後面所有元素物理搬移一格，時間複雜度 O(n)。<br><b>Linked List</b>：只修改前後兩個節點的指標，本身 O(1)；但需先從 head 走到位置，O(n)。<br><b>根本差異</b>：Array 慢在「搬移資料」；Linked List 慢在「尋找位置」，兩者慢的原因不同。</div>
+          </div>
+          <div class="reflect-self-rate" id="reflect-rate-playground">
+            <div class="reflect-rate-label">你覺得自己理解了多少？</div>
+            <div class="rate-btns">
+              <button class="rate-btn" data-r="1" onclick="setRate('playground',1)">😵 還不太懂</button>
+              <button class="rate-btn" data-r="2" onclick="setRate('playground',2)">🤔 大概理解</button>
+              <button class="rate-btn" data-r="3" onclick="setRate('playground',3)">💡 完全清楚</button>
+            </div>
+            <div class="reflect-done-msg" id="reflect-done-playground"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2 效能比較 -->
+  <div id="tab-compare" class="panel">
+    <div class="section-title">時間複雜度一覽</div>
+    <div class="complexity">
+      <table>
+        <thead><tr><th>操作</th><th class="arr-h">Array</th><th class="lnk-h">Linked List</th><th>誰快？</th></tr></thead>
+        <tbody>
+          <tr><td class="op">隨機存取（第 i 個）</td><td class="good">O(1)</td><td class="bad">O(n)</td><td>🏆 <span class="badge arr">Array</span></td></tr>
+          <tr><td class="op">開頭插入</td><td class="bad">O(n) 全部後移</td><td class="good">O(1)</td><td>🏆 <span class="badge lnk">Linked List</span></td></tr>
+          <tr><td class="op">中間插入</td><td class="bad">O(n)</td><td class="ok">O(n)+O(1)</td><td>🤝 差不多</td></tr>
+          <tr><td class="op">尾端插入</td><td class="good">O(1)*</td><td class="ok">O(n)或O(1)**</td><td>⚡ Array 略勝</td></tr>
+          <tr><td class="op">搜尋特定值</td><td class="ok">O(n)</td><td class="ok">O(n)</td><td>🤝 一樣</td></tr>
+          <tr><td class="op">記憶體用量</td><td class="good">緊湊</td><td class="bad">多出指標</td><td>🏆 <span class="badge arr">Array</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:var(--text-dim);margin-bottom:24px;font-family:var(--font-mono)">* 未超出容量　** 若有 tail pointer</p>
+    <div class="compare-bar">
+      <h3>選一個操作，看兩者速度差異（n=100）</h3>
+      <div class="op-select">
+        <button class="op-btn active" onclick="setOp(this,'access')">隨機存取</button>
+        <button class="op-btn" onclick="setOp(this,'front-insert')">開頭插入</button>
+        <button class="op-btn" onclick="setOp(this,'search')">搜尋</button>
+        <button class="op-btn" onclick="setOp(this,'back-insert')">尾端插入</button>
+      </div>
+      <div class="speed-bars">
+        <div class="speed-item"><label class="arr">Array 耗時</label><div class="bar-track"><div class="bar-fill arr" id="bar-arr" style="width:10%">O(1)</div></div></div>
+        <div class="speed-item"><label class="lnk">Linked List 耗時</label><div class="bar-track"><div class="bar-fill lnk" id="bar-ll" style="width:90%">O(n)</div></div></div>
+      </div>
+      <div class="compare-note" id="compare-note">📍 <b>隨機存取</b>：Array 直接計算記憶體位址，一步到位。Linked List 要從 head 走 n 步。</div>
+    </div>
+    <!-- P2 後設認知 Tab2 -->
+    <div class="reflect-box">
+      <div class="reflect-header"><span class="reflect-header-icon">💭</span><span class="reflect-header-text">反思一下</span><span class="reflect-header-badge">後設認知練習</span></div>
+      <div class="reflect-body">
+        <div class="reflect-q">看完效能比較，用一句話總結：什麼情況選 Array，什麼情況選 Linked List？</div>
+        <textarea class="reflect-textarea" id="reflect-compare" placeholder="例如：當我需要頻繁讀取特定位置時，選..."></textarea>
+        <button class="reflect-submit" onclick="showReflectAnswer('compare')">送出，看參考答案</button>
+        <div class="reflect-answer" id="reflect-answer-compare">
+          <div class="reflect-answer-label">REFERENCE ANSWER</div>
+          <div class="reflect-answer-text">選 <b>Array</b>：頻繁隨機存取、資料量已知、希望省記憶體。<br>選 <b>Linked List</b>：頻繁插入/刪除、資料量動態變化。<br>口訣：「<b>讀多選 Array，改多選 Linked List。</b>」</div>
+        </div>
+        <div class="reflect-self-rate" id="reflect-rate-compare">
+          <div class="reflect-rate-label">你覺得自己理解了多少？</div>
+          <div class="rate-btns">
+            <button class="rate-btn" data-r="1" onclick="setRate('compare',1)">😵 還不太懂</button>
+            <button class="rate-btn" data-r="2" onclick="setRate('compare',2)">🤔 大概理解</button>
+            <button class="rate-btn" data-r="3" onclick="setRate('compare',3)">💡 完全清楚</button>
+          </div>
+          <div class="reflect-done-msg" id="reflect-done-compare"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3 記憶體示意 -->
+  <div id="tab-memory" class="panel">
+    <div class="story-box"><span class="q">💡 記憶體到底長什麼樣？</span><b>Array</b> 的資料住在「連棟公寓」——地址是連續的，CPU 找起來超快。<br><b>Linked List</b> 的資料可能住在城市各地——每棟還要貼一張「下一棟在哪」的紙條。</div>
+    <div class="side-by-side">
+      <div class="card">
+        <div class="card-header"><div class="dot arr-dot"></div><h3 class="arr">Array 記憶體配置</h3></div>
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px">每個元素占相同大小、地址連續</p>
+          <div class="memory-map"><div class="mem-label">MEMORY ADDRESS →</div><div class="mem-row" id="mem-arr"></div></div>
+          <div style="margin-top:12px;font-size:12px;color:var(--text-dim);line-height:1.7">✅ 知道 index → 直接算出地址<br>公式：<span style="font-family:var(--font-mono);color:var(--array-color)">位址 = 起始 + index × 元素大小</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="dot lnk-dot"></div><h3 class="lnk">Linked List 記憶體配置</h3></div>
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px">節點散落各處，靠指標串起來</p>
+          <div class="memory-map"><div class="mem-label">MEMORY ADDRESS →</div><div class="mem-row" id="mem-ll"></div></div>
+          <div style="margin-top:12px;font-size:12px;color:var(--text-dim);line-height:1.7">⚠️ 每個節點 = 資料 + 指標（多佔空間）<br><span style="font-family:var(--font-mono);color:var(--linked-color)">data | next →</span> 指向下一節點</div>
+        </div>
+      </div>
+    </div>
+    <!-- P2 後設認知 Tab3 -->
+    <div class="reflect-box">
+      <div class="reflect-header"><span class="reflect-header-icon">💭</span><span class="reflect-header-text">反思一下</span><span class="reflect-header-badge">後設認知練習</span></div>
+      <div class="reflect-body">
+        <div class="reflect-q">從記憶體角度解釋：為什麼 Array 能「一步」存取第 i 個，而 Linked List 必須「一步一步走」？</div>
+        <textarea class="reflect-textarea" id="reflect-memory" placeholder="想想看兩者記憶體儲存方式的根本不同..."></textarea>
+        <button class="reflect-submit" onclick="showReflectAnswer('memory')">送出，看參考答案</button>
+        <div class="reflect-answer" id="reflect-answer-memory">
+          <div class="reflect-answer-label">REFERENCE ANSWER</div>
+          <div class="reflect-answer-text"><b>Array</b>：元素連續排列，大小固定，用公式 <code>起始+index×大小</code> 直接計算位址，O(1)。<br><b>Linked List</b>：節點散落各處，只能從 head 逐一跟隨指標，無法跳過，O(n)。<br>根本原因：Array 靠「數學計算」；Linked List 靠「逐節跟隨指標」。</div>
+        </div>
+        <div class="reflect-self-rate" id="reflect-rate-memory">
+          <div class="reflect-rate-label">你覺得自己理解了多少？</div>
+          <div class="rate-btns">
+            <button class="rate-btn" data-r="1" onclick="setRate('memory',1)">😵 還不太懂</button>
+            <button class="rate-btn" data-r="2" onclick="setRate('memory',2)">🤔 大概理解</button>
+            <button class="rate-btn" data-r="3" onclick="setRate('memory',3)">💡 完全清楚</button>
+          </div>
+          <div class="reflect-done-msg" id="reflect-done-memory"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4 連連看 -->
+  <div id="tab-usecase" class="panel">
+    <div class="story-box"><span class="q">🎯 挑戰：每個情境，你會選哪個？</span>點選一張情境卡片，再點 Array 或 Linked List，立刻得到回饋！支援拖曳。</div>
+    <div class="match-header">
+      <div class="match-score-area"><span class="match-score-label">得分</span><span class="match-score" id="match-score">0 / 8</span></div>
+      <div class="match-streak" id="match-streak"></div>
+      <button class="btn btn-neutral" onclick="game.init()" style="font-size:12px;padding:6px 14px;margin-left:auto">🔄 重新開始</button>
+    </div>
+    <div class="match-arena">
+      <div class="match-col scenarios-col">
+        <div class="match-col-label">📋 情境 — 點選或拖曳</div>
+        <div class="match-scenarios" id="scenarios-list"></div>
+      </div>
+      <div class="match-col dropzones-col">
+        <div class="match-col-label">📦 放到這裡</div>
+        <div class="dropzone" id="drop-array"><div class="dz-inner"><div class="dz-dot arr-dot"></div><div class="dz-title arr">Array</div><div class="dz-subtitle">連續座位</div><div class="dz-matched" id="dz-array-matched"></div></div></div>
+        <div class="dropzone" id="drop-linked"><div class="dz-inner"><div class="dz-dot lnk-dot"></div><div class="dz-title lnk">Linked List</div><div class="dz-subtitle">尋寶串鏈</div><div class="dz-matched" id="dz-linked-matched"></div></div></div>
+      </div>
+    </div>
+    <div class="match-feedback" id="match-feedback" style="display:none"></div>
+
+    <!-- ════════════════════════
+      P4 概念轉變 前後對比回顧
+      Posner et al. (1982)
+      v1差異：v1 完成後只有慶祝畫面
+      v2改動：顯示「你的直覺 vs 實際得分」並給個人化回饋
+      效果：讓學生看見自己概念的轉變歷程
+    ════════════════════════ -->
+    <div class="prior-review" id="prior-review">
+      <h4>📊 你的學習前後對比</h4>
+      <div class="prior-compare">
+        <div class="prior-col"><div class="prior-col-label">開始前的直覺判斷</div><div class="prior-col-val" id="review-before">—</div></div>
+        <div class="prior-col"><div class="prior-col-label">連連看實際得分</div><div class="prior-col-val" id="review-after">—</div></div>
+      </div>
+      <div id="review-msg" style="margin-top:12px;font-size:13px;color:var(--text-dim);line-height:1.7"></div>
+    </div>
+
+    <div class="match-complete" id="match-complete" style="display:none">
+      <div class="complete-inner"><div class="complete-emoji">🎉</div><h3>全部答對！</h3><p>你已掌握 Array 與 Linked List 的適用情境！</p><button class="btn btn-arr" onclick="game.init()" style="margin-top:16px">再挑戰一次</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/utils.js"></script>
+<script src="../shared/nav.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   進度追蹤 & 分頁切換
+   自我決定理論 能力感 — Deci & Ryan (2000)
+═══════════════════════════════════════════ */
+const tabOrder = ['playground','compare','memory','usecase'];
+const visited  = new Set(['playground']);
+function switchTab(btn, name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  visited.add(name);
+  updatePill();
+}
+function updatePill() {
+  tabOrder.forEach((n,i) => {
+    const d = document.getElementById('pd-'+i); if (!d) return;
+    d.classList.remove('done','active');
+    const isActive = document.getElementById('tab-'+n)?.classList.contains('active');
+    if (isActive) d.classList.add('active');
+    else if (visited.has(n)) d.classList.add('done');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   P3 鷹架理論 Onboarding
+   Wood, Bruner & Ross (1976)
+═══════════════════════════════════════════ */
+const ONBOARD_STEPS = [
+  { icon:'🧪', title:'任務一：Array 插入體驗',   body:'先試試看在 Array 開頭插入一個數字，觀察系統做了什麼。', task:'把「位置」設為 <b>0</b>，「值」設為 <b>99</b>，按「插入」。<br>觀察：移動了幾個元素？' },
+  { icon:'🔗', title:'任務二：Linked List 插入',  body:'同樣是插入，Linked List 的動畫和 Array 完全不同！', task:'把「位置」設為 <b>0</b>，「值」設為 <b>99</b>，按橘色「插入」。<br>觀察：動畫哪裡不同？' },
+  { icon:'🔮', title:'任務三：填寫你的預測',       body:'你已看過兩種插入！現在操作前，先填入你的「猜測」。', task:'在黃色「🔮 你猜」欄位輸入數字，再按插入看看對不對。<br>這個步驟能幫你記得更牢。' },
+];
+let obStep = 0;
+function renderOnboard() {
+  const pips = document.getElementById('onboard-pips'); pips.innerHTML = '';
+  ONBOARD_STEPS.forEach((_,i) => {
+    const p = document.createElement('div');
+    p.className = 'onboard-pip' + (i<obStep?' done':i===obStep?' active':'');
+    pips.appendChild(p);
+  });
+  const s = ONBOARD_STEPS[obStep];
+  document.getElementById('ob-icon').textContent  = s.icon;
+  document.getElementById('ob-title').textContent = s.title;
+  document.getElementById('ob-body').textContent  = s.body;
+  document.getElementById('ob-task').innerHTML    = `<strong>📋 任務 ${obStep+1}（共 ${ONBOARD_STEPS.length} 步）</strong>${s.task}`;
+  document.getElementById('ob-next-btn').textContent = obStep < ONBOARD_STEPS.length-1 ? '我完成了 →' : '開始自由探索 🚀';
+}
+function onboardNext() { obStep++; if (obStep >= ONBOARD_STEPS.length) onboardSkip(); else renderOnboard(); }
+function onboardSkip() { document.getElementById('onboard-overlay').style.display='none'; }
+
+/* ═══════════════════════════════════════════
+   P4 概念轉變理論 前概念提問
+   Posner, Strike, Hewson & Gertzog (1982)
+═══════════════════════════════════════════ */
+let priorChoice = null;
+const priorLabels = { array:'選 Array（認為 Array 比較好）', linked:'選 Linked List（認為 Linked List 比較好）', same:'感覺差不多（認為兩者相近）' };
+function setPrior(choice, btn) {
+  priorChoice = choice;
+  document.querySelectorAll('.prior-btn').forEach(b => b.className='prior-btn');
+  btn.classList.add('chosen-'+choice);
+  setTimeout(() => {
+    document.getElementById('prior-banner').classList.add('hidden');
+    document.getElementById('main-story').style.display = '';
+    document.getElementById('playground-content').style.display = '';
+    renderArr(); renderLL(); renderMemArr(); renderMemLL();
+  }, 500);
+}
+
+/* ═══════════════════════════════════════════
+   P4 前後對比回顧（連連看完成後呼叫）
+═══════════════════════════════════════════ */
+function showPriorReview(score, total) {
+  const rev = document.getElementById('prior-review');
+  rev.style.display = 'block';
+  document.getElementById('review-before').textContent = priorChoice ? priorLabels[priorChoice] : '（跳過開場提問）';
+  const afterEl = document.getElementById('review-after');
+  afterEl.textContent = `${score} / ${total} 答對`;
+  afterEl.style.color = score>=6?'var(--green)':score>=4?'var(--yellow)':'#ff8099';
+  const msgs = {
+    array:  score>=6?'你一開始選 Array，現在你知道兩者各有擅長——Linked List 在插入/刪除上更有優勢！':'音樂播放清單這個情境其實更適合 Linked List，因為需要頻繁插入刪除。',
+    linked: score>=6?'你一開始就有感覺 Linked List 適合播放清單——你的直覺是對的！':'方向對了！繼續複習，理解 Linked List 適用的情境。',
+    same:   score>=6?'看！其實兩者差異很大——你用答題結果親自驗證了這件事。':'兩者的確容易混淆，建議回去看「效能比較」再複習一次。',
+    null:   '你跳過了開場提問，但你的連連看表現就是最好的答案！',
+  };
+  document.getElementById('review-msg').textContent = msgs[priorChoice] || msgs.null;
+}
+
+/* ═══════════════════════════════════════════
+   Array 視覺化
+═══════════════════════════════════════════ */
+let arrData = [10,25,37,52,68]; const MAX_ARR = 8;
+function renderArr() {
+  const viz = document.getElementById('arr-viz'); if (!viz) return; viz.innerHTML='';
+  arrData.forEach((v,i) => { const c=document.createElement('div');c.className='arr-cell';c.id=`arr-cell-${i}`;c.innerHTML=`<span class="val">${v}</span><span class="idx">[${i}]</span>`;viz.appendChild(c); });
+  for (let i=arrData.length;i<MAX_ARR;i++) { const c=document.createElement('div');c.className='arr-cell empty-slot';c.innerHTML=`<span class="val" style="color:var(--border)">—</span><span class="idx">[${i}]</span>`;viz.appendChild(c); }
+  renderMemArr();
+}
+/* P1 有益困難：加入預測對比邏輯 */
+async function arrInsert() {
+  const pos=parseInt(document.getElementById('arr-pos').value), val=parseInt(document.getElementById('arr-val').value), log=document.getElementById('arr-log');
+  if (arrData.length>=MAX_ARR){log.innerHTML=`<span class="err">陣列已滿！</span>`;return;}
+  if (pos<0||pos>arrData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  const pv=document.getElementById('arr-predict')?.value, actualMoved=arrData.length-pos;
+  log.innerHTML=`<span class="step">📋 插入 ${val} 到位置 ${pos}，需移動 ${actualMoved} 個元素...</span>`;
+  arrData.splice(pos,0,val); renderArr();
+  for (let i=pos+1;i<arrData.length;i++) document.getElementById(`arr-cell-${i}`)?.classList.add('shifting');
+  await sleep(400);
+  document.querySelectorAll('.arr-cell.shifting').forEach(c=>c.classList.remove('shifting'));
+  const ic=document.getElementById(`arr-cell-${pos}`); ic?.classList.add('inserting','slide-in');
+  await sleep(500); ic?.classList.remove('inserting');
+  const moved=arrData.length-1-pos;
+  log.innerHTML=`✅ 插入完成！移動了 <b>${moved}</b> 個元素。${moved>0?'<span class="warn"> 元素越多越慢！</span>':''}`;
+  const re=document.getElementById('arr-predict-result');
+  if (pv!==''&&!isNaN(parseInt(pv))&&re) {
+    const g=parseInt(pv); re.style.display='block';
+    if (g===moved){re.className='predict-result hit';re.textContent=`🎯 猜對了！你預測 ${g} 個，實際移動 ${moved} 個。這個概念你掌握了！`;}
+    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 個，實際移動 ${moved} 個。插入位置 ${pos} 時，後面 ${moved} 個元素都要後移。`;}
+  }
+}
+async function arrDelete() {
+  const pos=parseInt(document.getElementById('arr-pos').value),log=document.getElementById('arr-log');
+  if (pos<0||pos>=arrData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  log.innerHTML=`<span class="step">🗑️ 刪除位置 ${pos}，後面元素向左移...</span>`;
+  document.getElementById(`arr-cell-${pos}`)?.classList.add('deleting'); await sleep(400);
+  arrData.splice(pos,1); renderArr();
+  for (let i=pos;i<arrData.length;i++) document.getElementById(`arr-cell-${i}`)?.classList.add('shifting');
+  await sleep(300); document.querySelectorAll('.arr-cell.shifting').forEach(c=>c.classList.remove('shifting'));
+  log.innerHTML=`✅ 刪除完成！移動了 <b>${arrData.length-pos}</b> 個元素。`;
+}
+async function arrAccess() {
+  const pos=parseInt(document.getElementById('arr-pos').value),log=document.getElementById('arr-log');
+  if (pos<0||pos>=arrData.length){log.innerHTML=`<span class="err">位置 ${pos} 超出範圍</span>`;return;}
+  log.innerHTML=`<span class="step">🔍 直接計算記憶體位址... index=${pos}</span>`;
+  await highlightEl(`arr-cell-${pos}`,'highlight',700);
+  log.innerHTML=`✅ 一步完成！arr[${pos}] = <b>${arrData[pos]}</b>，時間複雜度 O(1) ⚡`;
+}
+function resetArr() {
+  arrData=[10,25,37,52,68]; renderArr(); document.getElementById('arr-log').innerHTML='已重置';
+  const r=document.getElementById('arr-predict-result'); if(r){r.style.display='none';r.textContent='';}
+  const p=document.getElementById('arr-predict'); if(p) p.value='';
+}
+
+/* ═══════════════════════════════════════════
+   Linked List 視覺化
+═══════════════════════════════════════════ */
+let llData=[10,25,37,52,68];
+function renderLL() {
+  const viz=document.getElementById('ll-viz'); if(!viz) return; viz.innerHTML='';
+  const cont=document.createElement('div'); cont.className='ll-container';
+  llData.forEach((v,i) => {
+    const node=document.createElement('div');node.className='ll-node';
+    const box=document.createElement('div');box.className='node-box';box.id=`ll-node-${i}`;
+    box.innerHTML=`<div class="node-data"><span class="val">${v}</span></div><div class="node-ptr">→</div>`;
+    node.appendChild(box);
+    if (i<llData.length-1){const a=document.createElement('div');a.className='arrow-connector';node.appendChild(a);}
+    cont.appendChild(node);
+  });
+  const ne=document.createElement('div');ne.className='null-end';ne.innerHTML=llData.length>0?'&nbsp;NULL':'NULL';
+  if(llData.length>0){const a=document.createElement('div');a.className='arrow-connector';cont.appendChild(a);}
+  cont.appendChild(ne); viz.appendChild(cont); renderMemLL();
+}
+/* P1 有益困難：llInsert 加入預測步驟數對比 */
+async function llInsert() {
+  const pos=parseInt(document.getElementById('ll-pos').value),val=parseInt(document.getElementById('ll-val').value),log=document.getElementById('ll-log');
+  if(pos<0||pos>llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  const pv=document.getElementById('ll-predict')?.value;
+  log.innerHTML=`<span class="step">🗺️ 從 head 走 ${pos} 步找到位置...</span>`;
+  for(let i=0;i<pos;i++) await highlightEl(`ll-node-${i}`,'highlight',350);
+  llData.splice(pos,0,val); renderLL();
+  const nc=document.getElementById(`ll-node-${pos}`); nc?.classList.add('inserting','slide-in');
+  await sleep(500); nc?.classList.remove('inserting');
+  log.innerHTML=`✅ 插入完成！只改了 <b>2 個指標</b>，不需移動其他節點。<span class="warn"> 但走了 ${pos} 步。</span>`;
+  const re=document.getElementById('ll-predict-result');
+  if(pv!==''&&!isNaN(parseInt(pv))&&re){
+    const g=parseInt(pv); re.style.display='block';
+    if(g===pos){re.className='predict-result hit';re.textContent=`🎯 猜對了！你預測 ${g} 步，實際走了 ${pos} 步。`;}
+    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 步，實際需要走 ${pos} 步。走的步數等於插入的位置編號。`;}
+  }
+}
+async function llDelete() {
+  const pos=parseInt(document.getElementById('ll-pos').value),log=document.getElementById('ll-log');
+  if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  log.innerHTML=`<span class="step">🗺️ 從 head 走到位置 ${pos}...</span>`;
+  for(let i=0;i<=pos;i++) await highlightEl(`ll-node-${i}`,'highlight',300);
+  document.getElementById(`ll-node-${pos}`)?.classList.add('deleting'); await sleep(400);
+  const val=llData[pos]; llData.splice(pos,1); renderLL();
+  log.innerHTML=`✅ 刪除值 <b>${val}</b> 完成！只改指標，其他節點不用動。`;
+}
+async function llAccess() {
+  const pos=parseInt(document.getElementById('ll-pos').value),log=document.getElementById('ll-log');
+  if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 超出範圍</span>`;return;}
+  log.innerHTML=`<span class="step">🗺️ 從 head 開始，一步一步走...</span>`;
+  for(let i=0;i<=pos;i++) await highlightEl(`ll-node-${i}`,'highlight',400);
+  log.innerHTML=`✅ 找到！走了 <b>${pos+1}</b> 步，值為 <b>${llData[pos]}</b>。時間複雜度 O(n) 😅`;
+}
+function resetLL() {
+  llData=[10,25,37,52,68]; renderLL(); document.getElementById('ll-log').innerHTML='已重置';
+  const r=document.getElementById('ll-predict-result'); if(r){r.style.display='none';r.textContent='';}
+  const p=document.getElementById('ll-predict'); if(p) p.value='';
+}
+
+/* ═══════════════════════════════════════════
+   記憶體示意圖
+═══════════════════════════════════════════ */
+function renderMemArr(){const row=document.getElementById('mem-arr');if(!row)return;row.innerHTML='';for(let i=0;i<16;i++){const c=document.createElement('div');c.className='mem-cell';const ai=i-2;if(ai>=0&&ai<arrData.length){c.classList.add('used-arr');c.innerHTML=`${arrData[ai]}<br><span style="font-size:8px">${1000+i}</span>`;}else c.innerHTML=`·<br><span style="font-size:8px">${1000+i}</span>`;row.appendChild(c);}}
+function renderMemLL(){const row=document.getElementById('mem-ll');if(!row)return;row.innerHTML='';const pos=[1,4,8,11,14,3,7,12].slice(0,llData.length);const ptr=new Set(pos.map(p=>p+1));for(let i=0;i<16;i++){const c=document.createElement('div');c.className='mem-cell';const pi=pos.indexOf(i);if(pi!==-1){c.classList.add('used-ll');c.innerHTML=`${llData[pi]}<br><span style="font-size:8px">${1000+i}</span>`;}else if(ptr.has(i)){c.classList.add('used-ll-ptr');c.innerHTML=`ptr<br><span style="font-size:8px">${1000+i}</span>`;}else c.innerHTML=`·<br><span style="font-size:8px">${1000+i}</span>`;row.appendChild(c);}}
+
+/* ═══════════════════════════════════════════
+   效能比較
+═══════════════════════════════════════════ */
+const opData={'access':{arr:5,ll:90,aL:'O(1)',lL:'O(n)',note:'📍 <b>隨機存取</b>：Array 直接計算記憶體位址，一步到位。Linked List 要從 head 走 n 步。'},'front-insert':{arr:90,ll:10,aL:'O(n)',lL:'O(1)',note:'📍 <b>開頭插入</b>：Array 要把全部元素往後移！Linked List 只改 head 指標，瞬間完成。'},'search':{arr:55,ll:55,aL:'O(n)',lL:'O(n)',note:'📍 <b>搜尋</b>：兩者都要從頭掃，一樣慢。（Array 排序後可用 Binary Search！）'},'back-insert':{arr:10,ll:50,aL:'O(1)',lL:'O(n)或O(1)',note:'📍 <b>尾端插入</b>：Array 直接加在後面，O(1)。Linked List 若有 tail pointer 也是 O(1)。'}};
+function setOp(btn,op){document.querySelectorAll('.op-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const d=opData[op];document.getElementById('bar-arr').style.width=d.arr+'%';document.getElementById('bar-arr').textContent=d.aL;document.getElementById('bar-ll').style.width=d.ll+'%';document.getElementById('bar-ll').textContent=d.lL;document.getElementById('compare-note').innerHTML=d.note;}
+
+/* ═══════════════════════════════════════════
+   P2 後設認知 反思問答系統
+   Flavell (1979); Zimmerman (2002)
+═══════════════════════════════════════════ */
+function showReflectAnswer(tab){
+  const ans=document.getElementById(`reflect-answer-${tab}`),rate=document.getElementById(`reflect-rate-${tab}`),input=document.getElementById(`reflect-${tab}`);
+  if(!ans||!rate) return;
+  if(!input?.value.trim()){input.style.borderColor='var(--red)';setTimeout(()=>{if(input)input.style.borderColor=''},1500);return;}
+  ans.style.display='block'; rate.style.display='block';
+}
+function setRate(tab,r){
+  document.querySelectorAll(`#reflect-rate-${tab} .rate-btn`).forEach(b=>b.classList.remove('selected'));
+  document.querySelector(`#reflect-rate-${tab} .rate-btn[data-r="${r}"]`)?.classList.add('selected');
+  const el=document.getElementById(`reflect-done-${tab}`); if(!el) return;
+  el.style.display='block';
+  el.textContent={1:'沒關係！建議回去再操作一次，重點看 Log 欄的說明。',2:'不錯！你已掌握主要概念，多練習幾次就會更清楚。',3:'太棒了！你完全理解了，可以繼續下一個 Tab！'}[r]||'';
+}
+
+/* ═══════════════════════════════════════════
+   連連看遊戲
+═══════════════════════════════════════════ */
+const SCENARIOS=[
+  {id:'s1',emoji:'🎵',title:'音樂播放清單',hint:'常常插入、刪除、調換歌曲順序',answer:'linked',explain:'Linked List 只需改指標，不需搬移資料。'},
+  {id:'s2',emoji:'📊',title:'班級成績排行榜',hint:'需要快速找「第10名是誰」',answer:'array',explain:'需要 O(1) 隨機存取第 i 名，Array 直接計算位址。'},
+  {id:'s3',emoji:'🌐',title:'瀏覽器上一頁/下一頁',hint:'按上一頁就是回前一個節點',answer:'linked',explain:'瀏覽歷史是鏈——每個節點指向前一頁。'},
+  {id:'s4',emoji:'🖼️',title:'圖片像素矩陣',hint:'讀取第(x,y)像素的顏色',answer:'array',explain:'Array 公式計算位址，O(1) 直接讀取。'},
+  {id:'s5',emoji:'🃏',title:'撲克牌手牌',hint:'從中間插牌、出牌非常頻繁',answer:'linked',explain:'Linked List 改指標，不需把後面的牌全部後移。'},
+  {id:'s6',emoji:'📐',title:'固定大小的數學矩陣',hint:'大小不變，要做矩陣乘法',answer:'array',explain:'固定大小、隨機存取，Array 快取命中率最高。'},
+  {id:'s7',emoji:'📝',title:'文字編輯器的文字緩衝',hint:'隨時在游標處插入/刪除字元',answer:'linked',explain:'Linked List 在中間插刪不需搬移後面所有字元。'},
+  {id:'s8',emoji:'🎮',title:'遊戲分數排名（固定100名）',hint:'查詢第幾名、做快速排序',answer:'array',explain:'固定長度、需快速 index 存取，Array 最適合。'},
+];
+const ZONES=[
+  {key:'array',label:'Array',chipClass:'arr-chip',matchedId:'dz-array-matched'},
+  {key:'linked',label:'Linked List',chipClass:'lnk-chip',matchedId:'dz-linked-matched'},
+];
+const game = new MatchGame(SCENARIOS, ZONES, 'scenarios-list');
+
+// 覆寫完成回呼，觸發前後對比回顧
+const _orig = game._submitAnswer.bind(game);
+game._submitAnswer = function(id, zoneKey) {
+  _orig(id, zoneKey);
+  if (this.answered.size === SCENARIOS.length) {
+    setTimeout(() => showPriorReview(this.score, SCENARIOS.length), 900);
+  }
+};
+
+/* ═══════════════════════════════════════════
+   初始化
+═══════════════════════════════════════════ */
+renderOnboard();
+renderMemArr();
+renderMemLL();
+game.init();
+updatePill();
+</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資料結構演算法 — 高中資訊科課程</title>
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  /* index.html 覆寫 nav logo 路徑（nav.js 裡連回 ../index.html 對這頁要改） */
+  .nav-logo { pointer-events: none; }
+
+  .hero { text-align: center; padding: 60px 0 48px; }
+  .hero-badge {
+    display: inline-block; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 3px; color: var(--array-color); border: 1px solid var(--array-color);
+    padding: 4px 14px; border-radius: 20px; margin-bottom: 20px;
+  }
+  .hero h1 { font-size: clamp(28px, 6vw, 52px); font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+  .hero h1 span { color: var(--array-color); }
+  .hero p { color: var(--text-dim); font-size: 15px; max-width: 480px; margin: 0 auto; line-height: 1.8; }
+
+  /* 課程卡片格線 */
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .course-card {
+    background: var(--surface); border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 28px 24px; text-decoration: none; color: inherit;
+    transition: all 0.2s; display: block; position: relative; overflow: hidden;
+  }
+  .course-card:hover { transform: translateY(-3px); border-color: var(--text-dim); }
+  .course-card.available:hover { border-color: var(--array-color); box-shadow: 0 8px 32px rgba(0,229,255,0.1); }
+
+  /* 右上角光暈 */
+  .course-card::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: var(--card-glow, transparent);
+    opacity: 0.15; pointer-events: none;
+  }
+
+  .course-card.available { --card-glow: var(--array-color); }
+  .course-card.coming    { opacity: 0.5; cursor: default; }
+  .course-card.coming:hover { transform: none; }
+
+  .card-unit { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 12px; }
+  .card-icon { font-size: 36px; margin-bottom: 14px; display: block; }
+  .card-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .card-desc { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; }
+
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--font-mono); font-size: 10px; padding: 3px 8px;
+    border-radius: 4px; border: 1px solid var(--border); color: var(--text-dim);
+  }
+  .tag.done { border-color: var(--array-color); color: var(--array-color); background: var(--array-glow); }
+  .tag.soon { border-color: var(--border); }
+
+  .card-arrow {
+    position: absolute; right: 20px; bottom: 24px;
+    font-size: 18px; color: var(--text-dim); transition: all 0.2s;
+  }
+  .course-card.available:hover .card-arrow { color: var(--array-color); transform: translateX(4px); }
+
+  /* 說明列 */
+  .legend {
+    display: flex; gap: 20px; margin-top: 48px; flex-wrap: wrap;
+    justify-content: center; font-size: 12px; color: var(--text-dim);
+    font-family: var(--font-mono);
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend .dot-g { width: 8px; height: 8px; border-radius: 50%; background: var(--array-color); }
+  .legend .dot-d { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="hero">
+    <div class="hero-badge">高中資訊科 · 資料結構演算法</div>
+    <h1>用<span>互動視覺化</span>學<br>資料結構</h1>
+    <p>每個單元都有動畫操作、效能比較與連連看挑戰。<br>學完一個單元，再解鎖下一個！</p>
+  </div>
+
+  <!--
+    ══════════════════════════════════════
+    課程卡片清單
+    【擴充說明】
+    要新增單元時：
+    1. 把 class="coming" 改成 class="available"
+    2. 把 href="#" 改成 href="pages/xxx.html"
+    3. 把 <tag class="soon"> 改成 <tag class="done">
+    ══════════════════════════════════════
+  -->
+  <div class="course-grid">
+
+    <!-- 引導頁：為什麼要學？（最先看） -->
+    <a class="course-card available" href="pages/why-learn.html">
+      <div class="card-unit">序章</div>
+      <span class="card-icon">💡</span>
+      <div class="card-title">為什麼要學資料結構？</div>
+      <div class="card-desc">
+        你每天都在用，只是不知道名字。<br>
+        AI 時代更需要基礎——讓我用 5 分鐘說服你。
+      </div>
+      <div class="card-tags">
+        <span class="tag done">猜一猜遊戲</span>
+        <span class="tag done">速度震撼</span>
+        <span class="tag done">AI 協作說明</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 單元 1：Array & Linked List（已完成） -->
+    <a class="course-card available" href="pages/array-linked.html">
+      <div class="card-unit">UNIT 01</div>
+      <span class="card-icon">📋</span>
+      <div class="card-title">Array & Linked List</div>
+      <div class="card-desc">
+        電影院座位 vs 尋寶遊戲——<br>
+        連續記憶體與鏈結結構的根本差異。
+      </div>
+      <div class="card-tags">
+        <span class="tag done">互動操作</span>
+        <span class="tag done">效能比較</span>
+        <span class="tag done">記憶體示意</span>
+        <span class="tag done">連連看</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 單元 2：Stack & Queue（即將推出） -->
+    <!-- 【擴充】完成後改 coming→available，href 改為 pages/stack-queue.html -->
+    <div class="course-card coming">
+      <div class="card-unit">UNIT 02</div>
+      <span class="card-icon">📦</span>
+      <div class="card-title">Stack & Queue</div>
+      <div class="card-desc">
+        疊盤子 vs 排隊買便當——<br>
+        LIFO 與 FIFO 的設計邏輯與生活應用。
+      </div>
+      <div class="card-tags">
+        <span class="tag soon">即將推出</span>
+      </div>
+    </div>
+
+    <!-- 單元 3：Tree（即將推出） -->
+    <!-- 【擴充】完成後改 coming→available，href 改為 pages/tree.html -->
+    <div class="course-card coming">
+      <div class="card-unit">UNIT 03</div>
+      <span class="card-icon">🌲</span>
+      <div class="card-title">Tree & BST</div>
+      <div class="card-desc">
+        資料夾結構、家譜、決策樹——<br>
+        樹的結構術語、走訪演算法與 BST 搜尋。
+      </div>
+      <div class="card-tags">
+        <span class="tag soon">即將推出</span>
+      </div>
+    </div>
+
+    <!-- 預留單元 4（排序演算法） -->
+    <div class="course-card coming">
+      <div class="card-unit">UNIT 04</div>
+      <span class="card-icon">⚡</span>
+      <div class="card-title">排序演算法</div>
+      <div class="card-desc">
+        Bubble、Selection、Merge Sort——<br>
+        為什麼演算法複雜度決定程式生死。
+      </div>
+      <div class="card-tags">
+        <span class="tag soon">即將推出</span>
+      </div>
+    </div>
+
+  </div><!-- /course-grid -->
+
+  <div class="legend">
+    <span><span class="dot-g"></span> 已開放</span>
+    <span><span class="dot-d"></span> 即將推出</span>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script src="shared/nav.js"></script>
+<script>
+  // index.html 的 nav logo 連回自己，改一下 href
+  document.addEventListener('DOMContentLoaded', () => {
+    const logo = document.querySelector('.nav-logo');
+    if (logo) { logo.href = '#'; logo.style.pointerEvents = 'auto'; }
+  });
+</script>
+</body>
+</html>
