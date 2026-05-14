@@ -999,68 +999,55 @@ const WB_DATA = {
     term:'索引', en:'index',
     color:'var(--array-color)',
     def:'陣列中每個元素的「位置編號」，從 0 開始計數。就像電影院的座位號碼，只要知道 index 就能直接找到那個位置。',
-    ex:'arr[0]=10  arr[1]=25  arr[2]=37
-→ index 2 的元素是 37'
+    ex:'arr[0]=10  arr[1]=25  arr[2]=37\n→ index 2 的元素是 37'
   },
   'element': {
     term:'元素', en:'element',
     color:'var(--array-color)',
     def:'陣列裡存放的每一個「資料值」。一個陣列可以有很多個元素，每個元素佔用一塊連續的記憶體空間。',
-    ex:'int arr[5] = {10, 25, 37, 52, 68};
-→ 這個陣列有 5 個元素'
+    ex:'int arr[5] = {10, 25, 37, 52, 68};\n→ 這個陣列有 5 個元素'
   },
   'random-access': {
     term:'隨機存取', en:'random access',
     color:'var(--array-color)',
     def:'能夠「直接」跳到任意位置取得資料，不需要從頭逐一走訪。Array 靠計算記憶體位址做到 O(1) 隨機存取。「隨機」不是亂數，而是「任意」的意思。',
-    ex:'位址 = 起始位址 + index × 每個元素的大小
-→ 不論 n 多大，永遠只需一個公式計算'
+    ex:'位址 = 起始位址 + index × 每個元素的大小\n→ 不論 n 多大，永遠只需一個公式計算'
   },
   'node': {
     term:'節點', en:'node',
     color:'var(--linked-color)',
     def:'Linked List 的基本單位。每個節點包含兩個部分：① 資料（data）② 指標（pointer）。就像尋寶遊戲的每張紙條，上面寫了資料和「下一張在哪裡」。',
-    ex:'struct Node {
-  int data;    // 資料
-  Node* next;  // 指向下一個節點
-};'
+    ex:'struct Node {\n  int data;    // 資料\n  Node* next;  // 指向下一個節點\n};'
   },
   'pointer': {
     term:'指標', en:'pointer',
     color:'var(--linked-color)',
     def:'儲存另一個節點「記憶體位址」的變數。指標不存資料本身，只記錄「下一個在哪裡」。修改指標就能改變節點之間的連接關係，這也是 Linked List 插入/刪除快的原因。',
-    ex:'node→next = 0x1A2B  // 指向位址 0x1A2B 的節點
-只改兩個指標，就能插入或刪除節點'
+    ex:'node→next = 0x1A2B  // 指向位址 0x1A2B 的節點\n只改兩個指標，就能插入或刪除節點'
   },
   'head': {
     term:'頭節點', en:'head',
     color:'var(--linked-color)',
     def:'Linked List 的「起點」，是第一個節點。走訪整個 Linked List 必須從 head 開始，沿著每個節點的指標一步步往下。head 是進入整個串列的唯一入口。',
-    ex:'head → [10|→] → [25|→] → [37|→] → NULL
-從 head 出發，才能找到所有節點'
+    ex:'head → [10|→] → [25|→] → [37|→] → NULL\n從 head 出發，才能找到所有節點'
   },
   'null': {
     term:'NULL', en:'NULL',
     color:'var(--linked-color)',
     def:'代表「空」或「無」的特殊值。在 Linked List 中，最後一個節點的指標指向 NULL，代表串列到這裡結束了。就像尋寶遊戲最後一張紙條上寫「終點」。',
-    ex:'最後一個節點：next = NULL
-→ 告訴程式「後面沒有了，停止走訪」'
+    ex:'最後一個節點：next = NULL\n→ 告訴程式「後面沒有了，停止走訪」'
   },
   'complexity': {
     term:'時間複雜度', en:'time complexity',
     color:'var(--yellow)',
     def:'描述演算法「速度如何隨資料量增長」的方式。用 O() 表示。O(1) = 不管幾筆都一樣快；O(n) = 資料量翻倍，時間也翻倍；O(n²) = 資料量翻倍，時間變四倍。',
-    ex:'O(1)：Array 隨機存取、Stack Push/Pop
-O(n)：Linked List 搜尋、Array 插入
-O(log n)：Binary Search（效率介於兩者之間）'
+    ex:'O(1)：Array 隨機存取、Stack Push/Pop\nO(n)：Linked List 搜尋、Array 插入\nO(log n)：Binary Search（效率介於兩者之間）'
   },
   'sequential': {
     term:'循序存取', en:'sequential access',
     color:'var(--yellow)',
     def:'必須從頭開始，一個一個依序讀取，沒有辦法直接跳到第 i 個。Linked List 是循序存取，要找第 5 個節點，就得從 head 走 5 步。',
-    ex:'要找 node[3]：
-head → node[0] → node[1] → node[2] → node[3] ✅
-不能跳過任何一個節點'
+    ex:'要找 node[3]：\nhead → node[0] → node[1] → node[2] → node[3] ✅\n不能跳過任何一個節點'
   },
 };
 
