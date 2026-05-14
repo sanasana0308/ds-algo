@@ -16,12 +16,20 @@
   .arr-cell.empty-slot{ border-style:dashed;opacity:0.3;background:transparent; }
   .ll-container{display:flex;align-items:center;flex-wrap:wrap;gap:0;}
   .ll-node{display:flex;align-items:center;gap:0;}
-  .node-box{display:flex;border-radius:6px;border:2px solid var(--linked-color);overflow:hidden;background:rgba(255,107,53,0.07);transition:all 0.3s;}
+  .node-box{display:flex;border-radius:8px;border:2px solid var(--linked-color);background:rgba(255,107,53,0.07);transition:all 0.3s;min-width:52px;}
   .node-data{width:48px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-mono);border-right:1px solid var(--linked-color);}
   .node-data .val{font-size:17px;font-weight:700;color:var(--linked-color);}
-  .node-ptr{width:28px;height:52px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--linked-color);opacity:0.6;}
-  .arrow-connector{width:28px;height:3px;background:var(--linked-color);position:relative;flex-shrink:0;}
-  .arrow-connector::after{content:'';position:absolute;right:-6px;top:-4px;border:5px solid transparent;border-left-color:var(--linked-color);}
+  .node-ptr{display:none;}
+  .arrow-connector{
+    width:36px;height:3px;background:var(--linked-color);
+    position:relative;flex-shrink:0;align-self:center;
+    margin:0 2px;
+  }
+  .arrow-connector::after{
+    content:'';position:absolute;right:-7px;top:-5px;
+    border:6px solid transparent;
+    border-left-color:var(--linked-color);
+  }
   .null-end{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);padding:0 8px;border:1px dashed var(--border);border-radius:4px;height:30px;display:flex;align-items:center;}
   .node-box.highlight{border-color:var(--array-color);box-shadow:0 0 16px var(--array-color);}
   .node-box.inserting{border-color:var(--green);box-shadow:0 0 16px var(--green);}
@@ -273,6 +281,61 @@
   .ll-traverse-note .note-q { color: var(--yellow); font-weight: 700; }
   /* ── 版面：Tab 內容最大寬度 + 左右 padding ── */
   .panel { padding: 0 2px; }
+
+  /* ── LL 插入/刪除進階動畫 ── */
+  @keyframes arrowGrow {
+    from { width: 0; opacity: 0; }
+    to   { width: 36px; opacity: 1; }
+  }
+  @keyframes arrowFade {
+    from { opacity: 1; }
+    to   { opacity: 0; width: 0; }
+  }
+  @keyframes nodeSlideIn {
+    from { opacity: 0; transform: translateY(-28px) scale(0.8); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes nodeFadeUp {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-28px) scale(0.7); }
+  }
+  .arrow-connector.anim-grow {
+    animation: arrowGrow 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  .arrow-connector.anim-fade {
+    animation: arrowFade 0.3s ease forwards;
+  }
+  .node-box.anim-slide-in {
+    animation: nodeSlideIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  .node-box.anim-fade-up {
+    animation: nodeFadeUp 0.4s ease forwards;
+  }
+  /* 插入時新節點的綠色邊框 */
+  .node-box.new-node {
+    border-color: var(--green) !important;
+    box-shadow: 0 0 18px var(--green);
+  }
+  /* 箭頭顏色 override */
+  .arrow-connector.ptr-red {
+    background: var(--red);
+  }
+  .arrow-connector.ptr-red::after {
+    border-left-color: var(--red);
+  }
+  .arrow-connector.ptr-green {
+    background: var(--green);
+  }
+  .arrow-connector.ptr-green::after {
+    border-left-color: var(--green);
+  }
+  /* 走訪動畫 — 節點高亮時箭頭也亮 */
+  .ll-node.traversing .arrow-connector {
+    background: var(--array-color);
+  }
+  .ll-node.traversing .arrow-connector::after {
+    border-left-color: var(--array-color);
+  }
 </style>
 </head>
 <body>
@@ -395,15 +458,15 @@
               <span class="section-badge arr" style="font-size:11px;width:22px;height:22px;" title="功能 C">C</span>
               <span class="predict-label">🔮 預測</span>
               <input class="predict-input" type="number" id="arr-predict" min="0" max="8" placeholder="?">
-              <span class="predict-hint">個元素需要被移動（插入前先猜）</span>
+              <span class="predict-hint" id="arr-predict-hint">插入時需要移動幾個元素？（先猜再按插入）</span>
             </div>
             <div class="predict-result" id="arr-predict-result"></div>
             <div class="controls">
               <span class="pos-label">位置</span><input type="number" id="arr-pos" value="0" min="0" max="7" style="width:55px">
-              <span class="pos-label">值</span><input type="number" id="arr-val" value="5" min="0" max="99" style="width:55px">
-              <button class="btn btn-arr" onclick="arrInsert()">插入</button>
-              <button class="btn btn-del" onclick="arrDelete()">刪除</button>
-              <button class="btn btn-neutral" onclick="arrAccess()">存取</button>
+              <span id="arr-val-wrap"><span class="pos-label">值</span><input type="number" id="arr-val" value="5" min="0" max="99" style="width:55px"></span>
+              <button class="btn btn-arr" onclick="arrInsert()" onmouseenter="setArrMode('insert')" onfocus="setArrMode('insert')">插入</button>
+              <button class="btn btn-del" onclick="arrDelete()" onmouseenter="setArrMode('delete')" onfocus="setArrMode('delete')">刪除</button>
+              <button class="btn btn-neutral" onclick="arrAccess()" onmouseenter="setArrMode('access')" onfocus="setArrMode('access')">存取</button>
               <button class="btn btn-neutral" onclick="resetArr()">重置</button>
             </div>
             <div class="anim-step-label" id="arr-step">等待你的操作...</div>
@@ -428,15 +491,15 @@
               <span class="section-badge lnk" style="font-size:11px;width:22px;height:22px;" title="功能 D">D</span>
               <span class="predict-label">🔮 預測</span>
               <input class="predict-input" type="number" id="ll-predict" min="0" max="8" placeholder="?">
-              <span class="predict-hint">步才能走到指定位置（插入前先猜）</span>
+              <span class="predict-hint" id="ll-predict-hint">插入時需要走幾步找到位置？（先猜再按插入）</span>
             </div>
             <div class="predict-result" id="ll-predict-result"></div>
             <div class="controls">
               <span class="pos-label">位置</span><input type="number" id="ll-pos" value="0" min="0" max="7" style="width:55px">
-              <span class="pos-label">值</span><input type="number" id="ll-val" value="5" min="0" max="99" style="width:55px">
-              <button class="btn btn-lnk" onclick="llInsert()">插入</button>
-              <button class="btn btn-del" onclick="llDelete()">刪除</button>
-              <button class="btn btn-neutral" onclick="llAccess()">存取</button>
+              <span id="ll-val-wrap"><span class="pos-label">值</span><input type="number" id="ll-val" value="5" min="0" max="99" style="width:55px"></span>
+              <button class="btn btn-lnk" onclick="llInsert()" onmouseenter="setLLMode('insert')" onfocus="setLLMode('insert')">插入</button>
+              <button class="btn btn-del" onclick="llDelete()" onmouseenter="setLLMode('delete')" onfocus="setLLMode('delete')">刪除</button>
+              <button class="btn btn-neutral" onclick="llAccess()" onmouseenter="setLLMode('access')" onfocus="setLLMode('access')">存取</button>
               <button class="btn btn-neutral" onclick="resetLL()">重置</button>
             </div>
             <div class="anim-step-label" id="ll-step">等待你的操作...</div>
@@ -878,93 +941,142 @@ function renderLL() {
   cont.appendChild(ne); viz.appendChild(cont); renderMemLL();
 }
 
-/* ── llInsert：三段指標動畫 ──
-   段①：從 head 逐步走訪（高亮每個節點）
-   段②：前一節點指標閃紅（斷開），新節點從上方落入（綠色）
-   段③：指標重接（前節點→新節點→原下一節點）閃綠 */
+/* ── llInsert：完整指標動畫 ──
+   ① 走訪高亮（逐節點）
+   ② 舊箭頭變紅、消失
+   ③ 新節點從上方滑入（綠色）
+   ④ 新箭頭（前→新，新→後）逐一出現（綠色） */
 async function llInsert() {
   const pos=parseInt(document.getElementById('ll-pos').value);
   const val=parseInt(document.getElementById('ll-val').value);
   const log=document.getElementById('ll-log');
-  if(pos<0||pos>llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  if(pos<0||pos>llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效（目前有 ${llData.length} 個節點）</span>`;return;}
   const pv=document.getElementById('ll-predict')?.value;
 
-  // 段①：走訪
+  // ──① 走訪（逐節點高亮 + 箭頭也跟著亮）
   setStep('ll-step', `① 從 head 出發，走 ${pos} 步找到插入位置...`);
-  log.innerHTML=`<span class="step">🗺️ 從 head 出發，走訪 ${pos} 步...</span>`;
+  log.innerHTML=`<span class="step">🗺️ 從 head 出發走訪...</span>`;
   for(let i=0;i<pos;i++){
-    await highlightEl(`ll-node-${i}`,'highlight',380);
+    const nb=document.getElementById(`ll-node-${i}`);
+    if(nb){ nb.classList.add('highlight'); await sleep(360); nb.classList.remove('highlight'); }
   }
 
-  // 段②：斷開指標 + 新節點落入
-  if(pos>0){
-    setStep('ll-step', `② 斷開 node[${pos-1}] 的指標（準備插入）`, 'red');
+  // ──② 舊箭頭（pos-1 → pos 之間）變紅後收縮消失
+  if(pos>0 && pos<=llData.length){
+    setStep('ll-step', `② 斷開 node[${pos-1}] 原本的指標（箭頭變紅）`, 'red');
+    const oldArrow=document.getElementById(`ll-arrow-${pos-1}`);
+    if(oldArrow){
+      oldArrow.classList.add('ptr-red');
+      await sleep(400);
+      oldArrow.classList.add('anim-fade');
+      await sleep(320);
+    }
     const prevBox=document.getElementById(`ll-node-${pos-1}`);
-    if(prevBox){ prevBox.classList.add('ptr-breaking'); await sleep(500); prevBox.classList.remove('ptr-breaking'); }
-  } else {
-    setStep('ll-step', `② 在 head 位置插入新節點`, 'red');
-    await sleep(300);
+    if(prevBox){ prevBox.classList.add('ptr-breaking'); await sleep(300); prevBox.classList.remove('ptr-breaking'); }
   }
 
-  // 插入資料並重新渲染
-  llData.splice(pos,0,val); renderLL();
-
-  // 段③：新節點高亮 + 指標接回
-  setStep('ll-step', `③ 新節點 [${val}] 落入位置 ${pos}，重新連接指標`, 'green');
+  // ──③ 新節點滑入（在 DOM 裡先建立，再動畫）
+  setStep('ll-step', `③ 新節點 ${val} 從上方滑入...`, 'green');
+  llData.splice(pos,0,val);
+  renderLL();
   const nc=document.getElementById(`ll-node-${pos}`);
-  if(nc){ nc.classList.add('node-new','ptr-linking'); await sleep(500); nc.classList.remove('node-new','ptr-linking'); }
-  // 前節點也閃綠表示指標已接好
-  if(pos>0){
-    const prevBox=document.getElementById(`ll-node-${pos-1}`);
-    if(prevBox){ prevBox.classList.add('ptr-linking'); await sleep(350); prevBox.classList.remove('ptr-linking'); }
-  }
+  if(nc){ nc.classList.add('anim-slide-in','new-node'); await sleep(450); }
 
-  setStep('ll-step', `✅ 只修改了 2 個指標！其他 ${llData.length-1} 個節點完全沒動`, 'green');
-  log.innerHTML=`✅ 插入完成！只改了 <b>2 個指標</b>，不需搬移其他節點。<span class="warn">（但走了 ${pos} 步找位置）</span>`;
+  // ──④ 新箭頭依序出現（前→新，新→後）
+  setStep('ll-step', `④ 接上新指標：前一節點 → ${val} → 下一節點`, 'green');
+  // 前→新的箭頭
+  if(pos>0){
+    const prevArrow=document.getElementById(`ll-arrow-${pos-1}`);
+    if(prevArrow){
+      prevArrow.classList.add('ptr-green','anim-grow');
+      await sleep(380);
+    }
+    const prevBox=document.getElementById(`ll-node-${pos-1}`);
+    if(prevBox){ prevBox.classList.add('ptr-linking'); await sleep(300); prevBox.classList.remove('ptr-linking'); }
+  }
+  // 新→後的箭頭
+  if(pos<llData.length-1){
+    const nextArrow=document.getElementById(`ll-arrow-${pos}`);
+    if(nextArrow){
+      nextArrow.classList.add('ptr-green','anim-grow');
+      await sleep(380);
+    }
+  }
+  if(nc){ nc.classList.remove('new-node'); }
+
+  const moved = pos; // 走了幾步
+  setStep('ll-step', `✅ 插入完成！只修改了 2 個指標，其他 ${llData.length-1} 個節點完全沒動`, 'green');
+  log.innerHTML=`✅ 插入 <b>${val}</b>！走了 <b>${moved}</b> 步找位置，只改了 <b>2 個指標</b>，其他節點沒動。`;
 
   const re=document.getElementById('ll-predict-result');
   if(pv!==''&&!isNaN(parseInt(pv))&&re){
     const g=parseInt(pv); re.style.display='block';
-    if(g===pos){re.className='predict-result hit';re.textContent=`🎯 猜對了！從 head 走了 ${pos} 步。`;}
-    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 步，實際走了 ${pos} 步。走的步數 = 插入的位置編號。`;}
+    if(g===pos){re.className='predict-result hit';re.textContent=`🎯 猜對了！走了 ${pos} 步。`;}
+    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 步，實際走了 ${pos} 步（步數 = 插入的位置編號）。`;}
   }
 }
 
-/* ── llDelete：三段動畫 ──
-   段①：走訪找到目標節點（高亮）
-   段②：前一節點的指標改為跳過目標（閃紅→閃綠）
-   段③：目標節點飛出消失 */
+/* ── llDelete：完整指標動畫 ──
+   ① 走訪高亮
+   ② 目標節點邊框閃紅（標記要刪）
+   ③ 前後兩側箭頭：前→目標 變紅消失
+   ④ 新箭頭（前→後，跳過目標）綠色出現
+   ⑤ 目標節點向上飛走消失 */
 async function llDelete() {
   const pos=parseInt(document.getElementById('ll-pos').value);
   const log=document.getElementById('ll-log');
-  if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效（目前 0~${llData.length-1}）</span>`;return;}
   const val=llData[pos];
 
-  // 段①：走訪
-  setStep('ll-step', `① 從 head 出發，走 ${pos+1} 步找到 node[${pos}] = ${val}...`);
-  log.innerHTML=`<span class="step">🗺️ 從 head 走訪找到 node[${pos}]...</span>`;
+  // ──① 走訪
+  setStep('ll-step', `① 從 head 出發，走 ${pos+1} 步找到 node[${pos}] = ${val}`);
+  log.innerHTML=`<span class="step">🗺️ 走訪找到 node[${pos}]...</span>`;
   for(let i=0;i<=pos;i++){
-    await highlightEl(`ll-node-${i}`,'highlight',320);
+    const nb=document.getElementById(`ll-node-${i}`);
+    if(nb){ nb.classList.add('highlight'); await sleep(340); nb.classList.remove('highlight'); }
   }
 
-  // 段②：前節點指標重接（跳過目標）
+  // ──② 標記目標節點（閃紅）
+  setStep('ll-step', `② 找到目標 node[${pos}]=${val}，標記為待刪除`, 'red');
+  const dc=document.getElementById(`ll-node-${pos}`);
+  if(dc){ dc.classList.add('ptr-breaking'); await sleep(450); dc.classList.remove('ptr-breaking'); }
+
+  // ──③ 前→目標 的箭頭變紅消失
   if(pos>0){
-    setStep('ll-step', `② node[${pos-1}] 的指標改為指向 node[${pos+1}]，繞過 ${val}`, 'red');
-    const prevBox=document.getElementById(`ll-node-${pos-1}`);
-    if(prevBox){ prevBox.classList.add('ptr-breaking'); await sleep(400); prevBox.classList.remove('ptr-breaking'); prevBox.classList.add('ptr-linking'); await sleep(350); prevBox.classList.remove('ptr-linking'); }
+    setStep('ll-step', `③ 前一個節點的指標（→${val}）即將斷開…`, 'red');
+    const oldArrow=document.getElementById(`ll-arrow-${pos-1}`);
+    if(oldArrow){
+      oldArrow.classList.add('ptr-red');
+      await sleep(380);
+      oldArrow.classList.add('anim-fade');
+      await sleep(320);
+    }
   } else {
-    setStep('ll-step', `② head 改為指向 node[1]，跳過 ${val}`, 'red');
+    setStep('ll-step', `③ head 即將改為指向下一個節點`, 'red');
     await sleep(400);
   }
 
-  // 段③：目標節點消失
-  setStep('ll-step', `③ node[${pos}] = ${val} 從串列中斷開，釋放記憶體`, 'red');
-  const dc=document.getElementById(`ll-node-${pos}`);
-  if(dc){ dc.classList.add('node-delete'); await sleep(480); }
-  llData.splice(pos,1); renderLL();
+  // ──④ 新箭頭（跳過目標）綠色出現 — 先移除目標的箭頭
+  setStep('ll-step', `④ 重新連接指標，跳過 ${val}，直接指向下一個節點`, 'green');
+  if(dc){ dc.classList.add('ptr-breaking'); }
 
-  setStep('ll-step', `✅ 刪除完成！只改了 1 個指標，其他節點完全沒動`, 'green');
-  log.innerHTML=`✅ 刪除 <b>${val}</b> 完成！只修改指標，其他節點不用動。`;
+  // 先 splice，再 render，再加動畫
+  llData.splice(pos,1);
+  renderLL();
+
+  // 被跳過的位置現在是 pos，前→後 的箭頭 index 是 pos-1
+  if(pos>0 && pos<=llData.length){
+    const newArrow=document.getElementById(`ll-arrow-${pos-1}`);
+    if(newArrow){
+      newArrow.classList.add('ptr-green','anim-grow');
+      await sleep(420);
+    }
+    const prevBox=document.getElementById(`ll-node-${pos-1}`);
+    if(prevBox){ prevBox.classList.add('ptr-linking'); await sleep(300); prevBox.classList.remove('ptr-linking'); }
+  }
+
+  setStep('ll-step', `✅ 刪除完成！只改了 1 個指標，其他 ${llData.length} 個節點完全沒動`, 'green');
+  log.innerHTML=`✅ 刪除 <b>${val}</b>！只改了 <b>1 個指標</b>，其他節點沒有任何移動。`;
 }
 
 async function llAccess() {
@@ -1163,6 +1275,35 @@ function closeWB() {
 
 // ESC 關閉
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeWB(); });
+
+
+/* ── 操作模式切換：根據按鈕決定顯示哪些欄位 ── */
+const ARR_HINTS = {
+  insert: '插入時需要移動幾個元素？（先猜再按插入）',
+  delete: '刪除後後面元素需要向左移幾個？（先猜）',
+  access: '存取不需要預測，直接按即可 → O(1)',
+};
+const LL_HINTS = {
+  insert: '插入時需要走幾步找到位置？（先猜再按插入）',
+  delete: '刪除時需要走幾步找到目標節點？（先猜）',
+  access: '存取不需要預測，直接按即可 → O(n)',
+};
+function setArrMode(mode) {
+  const valWrap = document.getElementById('arr-val-wrap');
+  const hint    = document.getElementById('arr-predict-hint');
+  const predBox = document.querySelector('#arr-predict')?.closest('.predict-box');
+  if (valWrap) valWrap.style.display = (mode === 'insert') ? '' : 'none';
+  if (hint) hint.textContent = ARR_HINTS[mode] || ARR_HINTS.insert;
+  if (predBox) predBox.style.opacity = (mode === 'access') ? '0.4' : '1';
+}
+function setLLMode(mode) {
+  const valWrap = document.getElementById('ll-val-wrap');
+  const hint    = document.getElementById('ll-predict-hint');
+  const predBox = document.querySelector('#ll-predict')?.closest('.predict-box');
+  if (valWrap) valWrap.style.display = (mode === 'insert') ? '' : 'none';
+  if (hint) hint.textContent = LL_HINTS[mode] || LL_HINTS.insert;
+  if (predBox) predBox.style.opacity = (mode === 'access') ? '0.4' : '1';
+}
 
 /* ═══════════════════════════════════════════
    初始化
