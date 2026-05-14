@@ -138,7 +138,9 @@
     background: var(--surface); border-radius: 12px;
     border: 1.5px solid var(--border);
     box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-    padding: 20px 22px; max-width: 340px; width: 90%;
+    padding: 20px 22px; max-width: 360px; width: 92%;
+    max-height: 80vh;          /* 最高 80% 螢幕高度 */
+    overflow-y: auto;          /* 超出時可捲動 */
     animation: slideIn 0.22s ease;
   }
   .wb-popup-term {
@@ -238,6 +240,39 @@
   }
   .anim-step-label.green { color: var(--green); background: rgba(57,255,130,0.08); border-color: rgba(57,255,130,0.25); }
   .anim-step-label.red   { color: var(--red);   background: rgba(255,68,102,0.08); border-color: rgba(255,68,102,0.25); }
+
+  /* ── 功能區塊標號 (A/B/C/D) ── */
+  .section-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    font-size: 13px; font-weight: 800; font-family: var(--font-mono);
+    background: var(--surface2); border: 1.5px solid currentColor;
+    flex-shrink: 0; line-height: 1;
+  }
+  .section-badge.arr  { color: var(--array-color); border-color: var(--array-color); }
+  .section-badge.lnk  { color: var(--linked-color); border-color: var(--linked-color); }
+  .section-badge.gold { color: var(--yellow); border-color: var(--yellow); }
+  .section-badge.gen  { color: var(--text-dim); border-color: var(--border); }
+  .section-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; margin-bottom: 10px;
+    color: var(--text);
+  }
+  /* ── LL 節點序號 ── */
+  .ll-node .node-order {
+    font-size: 9px; color: var(--text-dim); text-align: center;
+    font-family: var(--font-mono); margin-top: 2px; letter-spacing: 0.5px;
+  }
+  /* ── LL 走訪提示 ── */
+  .ll-traverse-note {
+    background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
+    font-size: 12px; color: var(--text-dim); line-height: 1.6;
+  }
+  .ll-traverse-note strong { color: var(--linked-color); }
+  .ll-traverse-note .note-q { color: var(--yellow); font-weight: 700; }
+  /* ── 版面：Tab 內容最大寬度 + 左右 padding ── */
+  .panel { padding: 0 2px; }
 </style>
 </head>
 <body>
@@ -302,14 +337,22 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab(this,'playground')">🧪 互動操作</button>
-    <button class="tab"        onclick="switchTab(this,'compare')">⚡ 效能比較</button>
-    <button class="tab"        onclick="switchTab(this,'memory')">🧠 記憶體示意</button>
-    <button class="tab"        onclick="switchTab(this,'usecase')">🎯 連連看挑戰</button>
+    <button class="tab active" onclick="switchTab(this,'playground')">① 互動操作</button>
+    <button class="tab"        onclick="switchTab(this,'compare')">② 效能比較</button>
+    <button class="tab"        onclick="switchTab(this,'memory')">③ 記憶體示意</button>
+    <button class="tab"        onclick="switchTab(this,'usecase')">④ 連連看挑戰</button>
   </div>
 
   <!-- TAB 1 互動操作 -->
   <div id="tab-playground" class="panel active">
+    <!-- ── 簡短導覽 ── -->
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding:10px 14px;background:var(--surface2);border-radius:10px;font-size:12px;color:var(--text-dim);line-height:1.8;">
+      <span><span class="section-badge arr" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">A</span> Array 操作區</span>
+      <span><span class="section-badge lnk" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">B</span> Linked List 操作區</span>
+      <span><span class="section-badge arr" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">C</span> Array 預測框</span>
+      <span><span class="section-badge lnk" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">D</span> LL 預測框</span>
+      <span style="margin-left:auto;color:var(--text-dim)">頁籤：① 互動  ② 效能  ③ 記憶體  ④ 連連看</span>
+    </div>
 
     <!-- ════════════════════════════
       P4 概念轉變理論 前概念提問
@@ -349,7 +392,8 @@
               效果：預測錯誤產生「驚訝感」，是最強記憶錨點
             ════════════════════════ -->
             <div class="predict-box">
-              <span class="predict-label">🔮 你猜</span>
+              <span class="section-badge arr" style="font-size:11px;width:22px;height:22px;" title="功能 C">C</span>
+              <span class="predict-label">🔮 預測</span>
               <input class="predict-input" type="number" id="arr-predict" min="0" max="8" placeholder="?">
               <span class="predict-hint">個元素需要被移動（插入前先猜）</span>
             </div>
@@ -368,13 +412,21 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><div class="dot lnk-dot"></div><h3 class="lnk">Linked List（鏈結串列）</h3></div>
+          <div class="card-header"><span class="section-badge lnk" title="操作區 B">B</span><h3 class="lnk" style="margin:0">Linked List（鏈結串列）</h3></div>
           <div class="card-body">
             <div class="analogy lnk"><strong>🗺️ 尋寶遊戲比喻</strong>每個節點帶著「下一個在哪」，插入新節點只要改指標，不用搬別人。</div>
+            <div class="ll-traverse-note">
+              <span class="note-q">❓ LL 也有「第幾個」的概念嗎？</span><br>
+              有的，但 LL <strong>沒有捷徑（沒有 index 公式）</strong>。<br>
+              要找第 n 個節點，必須從 head 走 n 步（O(n)）。<br>
+              所以 LL 的「插入/刪除」實際上是：<strong>先走 O(n) 找位置，再花 O(1) 改指標</strong>。<br>
+              LL 的優勢是「改指標那一步不需要搬移其他節點」，Array 則是每個元素都要搬。
+            </div>
             <div class="viz" id="ll-viz"></div>
             <!-- P1 有益困難 — LL 預測步驟數 -->
             <div class="predict-box">
-              <span class="predict-label">🔮 你猜</span>
+              <span class="section-badge lnk" style="font-size:11px;width:22px;height:22px;" title="功能 D">D</span>
+              <span class="predict-label">🔮 預測</span>
               <input class="predict-input" type="number" id="ll-predict" min="0" max="8" placeholder="?">
               <span class="predict-hint">步才能走到指定位置（插入前先猜）</span>
             </div>
@@ -677,12 +729,12 @@ function renderArr() {
   const viz = document.getElementById('arr-viz'); if (!viz) return; viz.innerHTML='';
   arrData.forEach((v,i) => {
     const c=document.createElement('div'); c.className='arr-cell'; c.id=`arr-cell-${i}`;
-    c.innerHTML=`<span class="val">${v}</span><span class="idx">[${i}]</span>`;
+    c.innerHTML=`<span class="val">${v}</span><span class="idx">index</span><span class="idx-num">[${i}]</span>`;
     viz.appendChild(c);
   });
   for (let i=arrData.length;i<MAX_ARR;i++) {
     const c=document.createElement('div'); c.className='arr-cell empty-slot';
-    c.innerHTML=`<span class="val" style="color:var(--border)">—</span><span class="idx">[${i}]</span>`;
+    c.innerHTML=`<span class="val" style="color:var(--border)">—</span><span class="idx">index</span><span class="idx-num" style="color:var(--border)">[${i}]</span>`;
     viz.appendChild(c);
   }
   renderMemArr();
@@ -807,6 +859,12 @@ function renderLL() {
     const headLabel = i===0 ? '<span style="position:absolute;top:-18px;left:0;font-size:9px;color:var(--linked-color);font-family:var(--font-mono);letter-spacing:1px;">head</span>' : '';
     box.style.position='relative';
     box.innerHTML=`${headLabel}<div class="node-data"><span class="val">${v}</span></div><div class="node-ptr" id="ll-ptr-${i}">→</div>`;
+
+    // 節點序號（第幾個）—— 讓學生理解 LL 也有位置概念
+    const orderLabel = document.createElement('div');
+    orderLabel.className = 'node-order';
+    orderLabel.textContent = '第' + i + '個';
+    box.appendChild(orderLabel);
     node.appendChild(box);
     if (i<llData.length-1){
       const a=document.createElement('div'); a.className='arrow-connector'; a.id=`ll-arrow-${i}`;
@@ -1081,13 +1139,18 @@ function showWB(chipEl, key) {
     <div class="wb-popup-ex" style="border-color:${data.color}">${data.ex.replace(/\n/g,'<br>')}</div>
   `;
 
-  // 定位：在 chip 下方
+  // 定位：在 chip 下方，若超出底部則往上
   document.body.appendChild(wbPopup);
   const rect = chipEl.getBoundingClientRect();
-  const popW = 340;
+  const popW = 360;
   let left = rect.left;
   if (left + popW > window.innerWidth - 16) left = window.innerWidth - popW - 16;
-  let top = rect.bottom + 8 + window.scrollY;
+  if (left < 8) left = 8;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const estH = Math.min(wbPopup.scrollHeight || 320, window.innerHeight * 0.78);
+  let top = (spaceBelow < estH + 12 && rect.top > estH + 12)
+    ? rect.top - estH - 8 + window.scrollY
+    : rect.bottom + 8 + window.scrollY;
   wbPopup.style.left = left + 'px';
   wbPopup.style.top  = top  + 'px';
 }
