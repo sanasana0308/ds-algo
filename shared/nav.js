@@ -19,8 +19,7 @@
  *   href  : 連結路徑（相對於 pages/ 資料夾）
  *
  * 範例（未來加 Stack/Queue 時）：
- *   { id: 'stack-queue', label: 'Stack & Queue', icon: '📦', href: 'stack-queue.html' },
- */
+ *  */
 // ── 設定你的 GitHub Pages 根路徑 ──────────────────
 // 【重要】如果換 repo 名稱，只需修改這一行
 const BASE = '/ds-algo';
@@ -30,7 +29,7 @@ const NAV_PAGES = [
   { id: 'why-learn',    label: '為什麼要學？',  icon: '💡', href: BASE + '/pages/why-learn.html' },
   { id: 'array-linked', label: 'Array & Linked', icon: '📋', href: BASE + '/pages/array-linked.html' },
   // ↓ 新增單元時，在這裡加一行，格式一樣
-  // { id: 'stack-queue', label: 'Stack & Queue', icon: '📦', href: BASE + '/pages/stack-queue.html' },
+  { id: 'stack-queue', label: 'Stack & Queue', icon: '📦', href: BASE + '/pages/stack-queue.html' },
   // { id: 'tree',        label: 'Tree',           icon: '🌲', href: BASE + '/pages/tree.html' },
 ];
 

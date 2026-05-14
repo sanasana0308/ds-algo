@@ -107,137 +107,6 @@
   .pill-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.4s;}
   .pill-dot.done{background:var(--green);box-shadow:0 0 6px var(--green);}
   .pill-dot.active{background:var(--yellow);}
-
-  /* ════════════════════════════════════════
-     Word Bank 術語庫
-     ════════════════════════════════════════ */
-  .wordbank-bar {
-    background: var(--surface); border-radius: 12px;
-    border: 1px solid var(--border); padding: 14px 20px;
-    margin-bottom: 28px;
-  }
-  .wordbank-title {
-    font-size: 11px; letter-spacing: 3px; color: var(--text-dim);
-    font-family: var(--font-mono); text-transform: uppercase;
-    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
-  }
-  .wordbank-title::before { content: '📖'; font-size: 14px; }
-  .wordbank-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-  .wb-chip {
-    padding: 5px 14px; border-radius: 20px; cursor: pointer;
-    font-size: 13px; font-weight: 600; font-family: var(--font-ui);
-    border: 1.5px solid; transition: all 0.2s;
-    user-select: none;
-  }
-  .wb-chip.arr-term  { color: var(--array-color);  border-color: var(--array-color);  background: rgba(0,229,255,0.06); }
-  .wb-chip.lnk-term  { color: var(--linked-color); border-color: var(--linked-color); background: rgba(255,107,53,0.06); }
-  .wb-chip.gen-term  { color: var(--yellow);        border-color: var(--yellow);        background: rgba(255,214,0,0.06); }
-  .wb-chip:hover, .wb-chip.open { filter: brightness(1.2); transform: translateY(-1px); }
-  .wb-popup {
-    position: fixed; z-index: 300;
-    background: var(--surface); border-radius: 12px;
-    border: 1.5px solid var(--border);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-    padding: 20px 22px; max-width: 340px; width: 90%;
-    animation: slideIn 0.22s ease;
-  }
-  .wb-popup-term {
-    font-size: 16px; font-weight: 700; margin-bottom: 6px;
-  }
-  .wb-popup-en {
-    font-size: 11px; font-family: var(--font-mono);
-    color: var(--text-dim); letter-spacing: 1px; margin-bottom: 10px;
-  }
-  .wb-popup-def {
-    font-size: 13px; color: var(--text); line-height: 1.75; margin-bottom: 10px;
-  }
-  .wb-popup-ex {
-    font-size: 12px; color: var(--text-dim); font-family: var(--font-mono);
-    background: var(--surface2); border-radius: 6px;
-    padding: 8px 12px; border-left: 3px solid currentColor;
-    line-height: 1.6;
-  }
-  .wb-popup-close {
-    position: absolute; top: 12px; right: 14px;
-    background: none; border: none; cursor: pointer;
-    font-size: 16px; color: var(--text-dim); line-height: 1;
-  }
-  .wb-backdrop {
-    position: fixed; inset: 0; z-index: 299; background: transparent;
-  }
-
-  /* ════════════════════════════════════════
-     Array 動畫強化
-     ════════════════════════════════════════ */
-  .arr-viz-wrap { position: relative; min-height: 90px; }
-  /* 插入時新格子從上方滑入 */
-  @keyframes cellSlideDown {
-    from { opacity: 0; transform: translateY(-24px) scale(0.9); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .arr-cell.new-insert { animation: cellSlideDown 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-  /* 搬移中：橘黃色滑動 */
-  @keyframes shiftRight {
-    0%   { transform: translateX(0); }
-    40%  { transform: translateX(8px); }
-    100% { transform: translateX(0); }
-  }
-  .arr-cell.shifting { animation: shiftRight 0.45s ease; border-color: var(--yellow); background: rgba(255,214,0,0.10); }
-  /* 被刪除：縮小消失 */
-  @keyframes cellDelete {
-    0%   { opacity: 1; transform: scale(1); }
-    40%  { opacity: 1; transform: scale(1.08); }
-    100% { opacity: 0; transform: scale(0.6); }
-  }
-  .arr-cell.deleting { animation: cellDelete 0.4s ease forwards; }
-  /* 搬移左移 */
-  @keyframes shiftLeft {
-    0%   { transform: translateX(0); }
-    40%  { transform: translateX(-8px); }
-    100% { transform: translateX(0); }
-  }
-  .arr-cell.shift-left { animation: shiftLeft 0.4s ease; }
-
-  /* ════════════════════════════════════════
-     Linked List 動畫強化
-     ════════════════════════════════════════ */
-  /* 指標動畫：箭頭閃動 */
-  @keyframes ptrFlash {
-    0%,100% { opacity: 1; }
-    50%     { opacity: 0.2; }
-  }
-  .node-box.ptr-breaking { border-color: var(--red); animation: ptrFlash 0.4s 2; }
-  .node-box.ptr-linking  { border-color: var(--green); box-shadow: 0 0 16px var(--green); }
-  /* 新節點從上方落入 */
-  @keyframes nodeDropIn {
-    from { opacity: 0; transform: translateY(-20px) scale(0.85); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .node-box.node-new { animation: nodeDropIn 0.45s cubic-bezier(0.34,1.56,0.64,1); }
-  /* 刪除節點：變紅後飛走 */
-  @keyframes nodeFlyOut {
-    0%   { opacity: 1; transform: translateY(0); }
-    30%  { opacity: 1; transform: translateY(-10px); }
-    100% { opacity: 0; transform: translateY(-30px) scale(0.7); }
-  }
-  .node-box.node-delete { animation: nodeFlyOut 0.45s ease forwards; }
-  /* 指標重接閃光 */
-  .arrow-connector.ptr-new {
-    background: var(--green);
-    animation: ptrFlash 0.3s 3 ease;
-  }
-
-  /* ── 動畫步驟說明文字 ── */
-  .anim-step-label {
-    font-size: 12px; font-family: var(--font-mono);
-    color: var(--yellow); background: rgba(255,214,0,0.08);
-    border: 1px solid rgba(255,214,0,0.25); border-radius: 6px;
-    padding: 5px 12px; margin-bottom: 10px;
-    min-height: 28px; display: flex; align-items: center; gap: 6px;
-    transition: all 0.3s;
-  }
-  .anim-step-label.green { color: var(--green); background: rgba(57,255,130,0.08); border-color: rgba(57,255,130,0.25); }
-  .anim-step-label.red   { color: var(--red);   background: rgba(255,68,102,0.08); border-color: rgba(255,68,102,0.25); }
 </style>
 </head>
 <body>
@@ -279,27 +148,6 @@
     <h1 class="page-title"><span class="arr">Array</span><span class="vs">VS</span><span class="lnk">Linked List</span></h1>
     <p class="page-tagline">同樣存資料，差在哪裡？— 互動視覺化學習 v2</p>
   </header>
-
-
-  <!-- ════════════════════════════════════════
-       Word Bank 術語庫
-       先備知識激活 Ausubel (1968)：把新術語掛在已知概念上
-       點擊術語卡片即可展開中文解釋 + 例子
-  ════════════════════════════════════════ -->
-  <div class="wordbank-bar" id="wordbank-bar">
-    <div class="wordbank-title">術語庫 — 點擊任一術語查看解釋</div>
-    <div class="wordbank-chips">
-      <span class="wb-chip arr-term" onclick="showWB(this,'index')">索引 index</span>
-      <span class="wb-chip arr-term" onclick="showWB(this,'element')">元素 element</span>
-      <span class="wb-chip arr-term" onclick="showWB(this,'random-access')">隨機存取</span>
-      <span class="wb-chip lnk-term" onclick="showWB(this,'node')">節點 node</span>
-      <span class="wb-chip lnk-term" onclick="showWB(this,'pointer')">指標 pointer</span>
-      <span class="wb-chip lnk-term" onclick="showWB(this,'head')">頭節點 head</span>
-      <span class="wb-chip lnk-term" onclick="showWB(this,'null')">NULL</span>
-      <span class="wb-chip gen-term" onclick="showWB(this,'complexity')">時間複雜度</span>
-      <span class="wb-chip gen-term" onclick="showWB(this,'sequential')">循序存取</span>
-    </div>
-  </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab(this,'playground')">🧪 互動操作</button>
@@ -362,7 +210,6 @@
               <button class="btn btn-neutral" onclick="arrAccess()">存取</button>
               <button class="btn btn-neutral" onclick="resetArr()">重置</button>
             </div>
-            <div class="anim-step-label" id="arr-step">等待你的操作...</div>
             <div class="log" id="arr-log">等待操作...</div>
           </div>
         </div>
@@ -387,7 +234,6 @@
               <button class="btn btn-neutral" onclick="llAccess()">存取</button>
               <button class="btn btn-neutral" onclick="resetLL()">重置</button>
             </div>
-            <div class="anim-step-label" id="ll-step">等待你的操作...</div>
             <div class="log" id="ll-log">等待操作...</div>
           </div>
         </div>
@@ -663,270 +509,115 @@ function showPriorReview(score, total) {
 }
 
 /* ═══════════════════════════════════════════
-   Array 視覺化（含逐步動畫）
+   Array 視覺化
 ═══════════════════════════════════════════ */
 let arrData = [10,25,37,52,68]; const MAX_ARR = 8;
-
-function setStep(id, text, type='') {
-  const el = document.getElementById(id); if(!el) return;
-  el.textContent = text;
-  el.className = 'anim-step-label' + (type?' '+type:'');
-}
-
 function renderArr() {
   const viz = document.getElementById('arr-viz'); if (!viz) return; viz.innerHTML='';
-  arrData.forEach((v,i) => {
-    const c=document.createElement('div'); c.className='arr-cell'; c.id=`arr-cell-${i}`;
-    c.innerHTML=`<span class="val">${v}</span><span class="idx">[${i}]</span>`;
-    viz.appendChild(c);
-  });
-  for (let i=arrData.length;i<MAX_ARR;i++) {
-    const c=document.createElement('div'); c.className='arr-cell empty-slot';
-    c.innerHTML=`<span class="val" style="color:var(--border)">—</span><span class="idx">[${i}]</span>`;
-    viz.appendChild(c);
-  }
+  arrData.forEach((v,i) => { const c=document.createElement('div');c.className='arr-cell';c.id=`arr-cell-${i}`;c.innerHTML=`<span class="val">${v}</span><span class="idx">[${i}]</span>`;viz.appendChild(c); });
+  for (let i=arrData.length;i<MAX_ARR;i++) { const c=document.createElement('div');c.className='arr-cell empty-slot';c.innerHTML=`<span class="val" style="color:var(--border)">—</span><span class="idx">[${i}]</span>`;viz.appendChild(c); }
   renderMemArr();
 }
-
-/* P1 有益困難：arrInsert 逐步動畫
-   步驟：① 標出插入位置 → ② 逐格後移動畫 → ③ 新元素滑入 */
+/* P1 有益困難：加入預測對比邏輯 */
 async function arrInsert() {
-  const pos=parseInt(document.getElementById('arr-pos').value);
-  const val=parseInt(document.getElementById('arr-val').value);
-  const log=document.getElementById('arr-log');
-  if (arrData.length>=MAX_ARR){ log.innerHTML=`<span class="err">陣列已滿！（最多 ${MAX_ARR} 格）</span>`; return; }
-  if (pos<0||pos>arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 無效（目前有 ${arrData.length} 個元素）</span>`; return; }
-
-  const moved = arrData.length - pos;
-  const pv = document.getElementById('arr-predict')?.value;
-
-  // 步驟①：標出插入位置
-  setStep('arr-step', `① 找到位置 [${pos}]，後面有 ${moved} 個元素需要往右移`, 'red');
-  await highlightEl(`arr-cell-${pos}`, 'highlight', 600);
-
-  // 步驟②：逐格右移動畫（從最後一個開始往右搬）
-  if (moved > 0) {
-    setStep('arr-step', `② 把 index [${pos}] ~ [${arrData.length-1}] 共 ${moved} 個元素，逐一往右移一格...`, 'red');
-    for (let i = arrData.length-1; i >= pos; i--) {
-      const cell = document.getElementById(`arr-cell-${i}`);
-      if (cell) { cell.classList.add('shifting'); await sleep(160); }
-    }
-    await sleep(350);
-    document.querySelectorAll('.arr-cell.shifting').forEach(c=>c.classList.remove('shifting'));
-  }
-
-  // 步驟③：插入新元素
-  setStep('arr-step', `③ 在位置 [${pos}] 放入值 ${val}`, 'green');
-  arrData.splice(pos, 0, val);
-  renderArr();
-  const ic = document.getElementById(`arr-cell-${pos}`);
-  if (ic) { ic.classList.add('new-insert'); await sleep(450); ic.classList.remove('new-insert'); }
-
-  setStep('arr-step', `✅ 完成！共移動了 ${moved} 個元素。${moved===0?'（插入尾端最快！）':moved>=3?'（插入越靠前，搬移越多）':''}`, 'green');
-  log.innerHTML=`✅ 插入 <b>${val}</b> 到 [${pos}]，移動了 <b>${moved}</b> 個元素。${moved>0?'<span class="warn"> 元素越多越慢 O(n)</span>':'<span style="color:var(--green)"> 尾端插入 O(1) ⚡</span>'}`;
-
+  const pos=parseInt(document.getElementById('arr-pos').value), val=parseInt(document.getElementById('arr-val').value), log=document.getElementById('arr-log');
+  if (arrData.length>=MAX_ARR){log.innerHTML=`<span class="err">陣列已滿！</span>`;return;}
+  if (pos<0||pos>arrData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  const pv=document.getElementById('arr-predict')?.value, actualMoved=arrData.length-pos;
+  log.innerHTML=`<span class="step">📋 插入 ${val} 到位置 ${pos}，需移動 ${actualMoved} 個元素...</span>`;
+  arrData.splice(pos,0,val); renderArr();
+  for (let i=pos+1;i<arrData.length;i++) document.getElementById(`arr-cell-${i}`)?.classList.add('shifting');
+  await sleep(400);
+  document.querySelectorAll('.arr-cell.shifting').forEach(c=>c.classList.remove('shifting'));
+  const ic=document.getElementById(`arr-cell-${pos}`); ic?.classList.add('inserting','slide-in');
+  await sleep(500); ic?.classList.remove('inserting');
+  const moved=arrData.length-1-pos;
+  log.innerHTML=`✅ 插入完成！移動了 <b>${moved}</b> 個元素。${moved>0?'<span class="warn"> 元素越多越慢！</span>':''}`;
   const re=document.getElementById('arr-predict-result');
   if (pv!==''&&!isNaN(parseInt(pv))&&re) {
     const g=parseInt(pv); re.style.display='block';
-    if (g===moved){ re.className='predict-result hit'; re.textContent=`🎯 猜對了！移動 ${moved} 個，和你預測的一樣！`; }
-    else{ re.className='predict-result miss'; re.textContent=`❌ 你預測 ${g} 個，實際 ${moved} 個。插入 [${pos}] 時，index ${pos}~${arrData.length-2} 共 ${moved} 個要後移。`; }
+    if (g===moved){re.className='predict-result hit';re.textContent=`🎯 猜對了！你預測 ${g} 個，實際移動 ${moved} 個。這個概念你掌握了！`;}
+    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 個，實際移動 ${moved} 個。插入位置 ${pos} 時，後面 ${moved} 個元素都要後移。`;}
   }
 }
-
-/* arrDelete 逐步動畫
-   步驟：① 標出要刪除的元素 → ② 元素消失 → ③ 後面元素逐格左移 */
 async function arrDelete() {
-  const pos=parseInt(document.getElementById('arr-pos').value);
-  const log=document.getElementById('arr-log');
-  if (pos<0||pos>=arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`; return; }
-  const val = arrData[pos];
-  const willMove = arrData.length - pos - 1;
-
-  // 步驟①：標記
-  setStep('arr-step', `① 找到 [${pos}] = ${val}，準備刪除`, 'red');
-  await highlightEl(`arr-cell-${pos}`, 'highlight', 500);
-
-  // 步驟②：刪除動畫
-  setStep('arr-step', `② 刪除 ${val}，位置 [${pos}] 出現空洞`, 'red');
-  const dc=document.getElementById(`arr-cell-${pos}`);
-  if (dc) dc.classList.add('deleting');
-  await sleep(420);
-  arrData.splice(pos, 1);
-  renderArr();
-
-  // 步驟③：左移動畫
-  if (willMove > 0) {
-    setStep('arr-step', `③ index [${pos+1}]~[${pos+willMove}] 共 ${willMove} 個元素向左移補位...`, 'red');
-    for (let i = pos; i < arrData.length; i++) {
-      const cell = document.getElementById(`arr-cell-${i}`);
-      if (cell) { cell.classList.add('shift-left'); await sleep(140); }
-    }
-    await sleep(350);
-    document.querySelectorAll('.arr-cell.shift-left').forEach(c=>c.classList.remove('shift-left'));
-  }
-
-  setStep('arr-step', `✅ 刪除完成！共移動了 ${willMove} 個元素`, 'green');
-  log.innerHTML=`✅ 刪除 <b>${val}</b>，後面 <b>${willMove}</b> 個元素向左補位。`;
+  const pos=parseInt(document.getElementById('arr-pos').value),log=document.getElementById('arr-log');
+  if (pos<0||pos>=arrData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  log.innerHTML=`<span class="step">🗑️ 刪除位置 ${pos}，後面元素向左移...</span>`;
+  document.getElementById(`arr-cell-${pos}`)?.classList.add('deleting'); await sleep(400);
+  arrData.splice(pos,1); renderArr();
+  for (let i=pos;i<arrData.length;i++) document.getElementById(`arr-cell-${i}`)?.classList.add('shifting');
+  await sleep(300); document.querySelectorAll('.arr-cell.shifting').forEach(c=>c.classList.remove('shifting'));
+  log.innerHTML=`✅ 刪除完成！移動了 <b>${arrData.length-pos}</b> 個元素。`;
 }
-
 async function arrAccess() {
-  const pos=parseInt(document.getElementById('arr-pos').value);
-  const log=document.getElementById('arr-log');
-  if (pos<0||pos>=arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 超出範圍（目前 0~${arrData.length-1}）</span>`; return; }
-
-  setStep('arr-step', `① 計算位址 = 起始 + ${pos} × 元素大小 → 一步到位！`);
-  log.innerHTML=`<span class="step">🔍 直接計算記憶體位址，index = ${pos}...</span>`;
-  await highlightEl(`arr-cell-${pos}`, 'highlight', 800);
-
-  setStep('arr-step', `✅ arr[${pos}] = ${arrData[pos]}  ——  O(1) 不管 n 多大都一樣快`, 'green');
-  log.innerHTML=`✅ 一步完成！arr[<b>${pos}</b>] = <b>${arrData[pos]}</b>，O(1) ⚡`;
+  const pos=parseInt(document.getElementById('arr-pos').value),log=document.getElementById('arr-log');
+  if (pos<0||pos>=arrData.length){log.innerHTML=`<span class="err">位置 ${pos} 超出範圍</span>`;return;}
+  log.innerHTML=`<span class="step">🔍 直接計算記憶體位址... index=${pos}</span>`;
+  await highlightEl(`arr-cell-${pos}`,'highlight',700);
+  log.innerHTML=`✅ 一步完成！arr[${pos}] = <b>${arrData[pos]}</b>，時間複雜度 O(1) ⚡`;
 }
-
 function resetArr() {
-  arrData=[10,25,37,52,68]; renderArr();
-  document.getElementById('arr-log').innerHTML='已重置';
-  setStep('arr-step', '等待你的操作...');
+  arrData=[10,25,37,52,68]; renderArr(); document.getElementById('arr-log').innerHTML='已重置';
   const r=document.getElementById('arr-predict-result'); if(r){r.style.display='none';r.textContent='';}
   const p=document.getElementById('arr-predict'); if(p) p.value='';
 }
 
 /* ═══════════════════════════════════════════
-   Linked List 視覺化（含三段指標動畫）
-   插入動畫：走訪 → 斷舊指標 → 新節點落入 → 接新指標
-   刪除動畫：走訪 → 標記目標 → 前節點繞過它 → 目標飛走
+   Linked List 視覺化
 ═══════════════════════════════════════════ */
 let llData=[10,25,37,52,68];
-
 function renderLL() {
   const viz=document.getElementById('ll-viz'); if(!viz) return; viz.innerHTML='';
   const cont=document.createElement('div'); cont.className='ll-container';
   llData.forEach((v,i) => {
-    const node=document.createElement('div'); node.className='ll-node';
-    const box=document.createElement('div'); box.className='node-box'; box.id=`ll-node-${i}`;
-    // head 標籤
-    const headLabel = i===0 ? '<span style="position:absolute;top:-18px;left:0;font-size:9px;color:var(--linked-color);font-family:var(--font-mono);letter-spacing:1px;">head</span>' : '';
-    box.style.position='relative';
-    box.innerHTML=`${headLabel}<div class="node-data"><span class="val">${v}</span></div><div class="node-ptr" id="ll-ptr-${i}">→</div>`;
+    const node=document.createElement('div');node.className='ll-node';
+    const box=document.createElement('div');box.className='node-box';box.id=`ll-node-${i}`;
+    box.innerHTML=`<div class="node-data"><span class="val">${v}</span></div><div class="node-ptr">→</div>`;
     node.appendChild(box);
-    if (i<llData.length-1){
-      const a=document.createElement('div'); a.className='arrow-connector'; a.id=`ll-arrow-${i}`;
-      node.appendChild(a);
-    }
+    if (i<llData.length-1){const a=document.createElement('div');a.className='arrow-connector';node.appendChild(a);}
     cont.appendChild(node);
   });
-  const ne=document.createElement('div'); ne.className='null-end';
-  ne.innerHTML=llData.length>0?'&nbsp;NULL':'NULL';
+  const ne=document.createElement('div');ne.className='null-end';ne.innerHTML=llData.length>0?'&nbsp;NULL':'NULL';
   if(llData.length>0){const a=document.createElement('div');a.className='arrow-connector';cont.appendChild(a);}
   cont.appendChild(ne); viz.appendChild(cont); renderMemLL();
 }
-
-/* ── llInsert：三段指標動畫 ──
-   段①：從 head 逐步走訪（高亮每個節點）
-   段②：前一節點指標閃紅（斷開），新節點從上方落入（綠色）
-   段③：指標重接（前節點→新節點→原下一節點）閃綠 */
+/* P1 有益困難：llInsert 加入預測步驟數對比 */
 async function llInsert() {
-  const pos=parseInt(document.getElementById('ll-pos').value);
-  const val=parseInt(document.getElementById('ll-val').value);
-  const log=document.getElementById('ll-log');
+  const pos=parseInt(document.getElementById('ll-pos').value),val=parseInt(document.getElementById('ll-val').value),log=document.getElementById('ll-log');
   if(pos<0||pos>llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
   const pv=document.getElementById('ll-predict')?.value;
-
-  // 段①：走訪
-  setStep('ll-step', `① 從 head 出發，走 ${pos} 步找到插入位置...`);
-  log.innerHTML=`<span class="step">🗺️ 從 head 出發，走訪 ${pos} 步...</span>`;
-  for(let i=0;i<pos;i++){
-    await highlightEl(`ll-node-${i}`,'highlight',380);
-  }
-
-  // 段②：斷開指標 + 新節點落入
-  if(pos>0){
-    setStep('ll-step', `② 斷開 node[${pos-1}] 的指標（準備插入）`, 'red');
-    const prevBox=document.getElementById(`ll-node-${pos-1}`);
-    if(prevBox){ prevBox.classList.add('ptr-breaking'); await sleep(500); prevBox.classList.remove('ptr-breaking'); }
-  } else {
-    setStep('ll-step', `② 在 head 位置插入新節點`, 'red');
-    await sleep(300);
-  }
-
-  // 插入資料並重新渲染
+  log.innerHTML=`<span class="step">🗺️ 從 head 走 ${pos} 步找到位置...</span>`;
+  for(let i=0;i<pos;i++) await highlightEl(`ll-node-${i}`,'highlight',350);
   llData.splice(pos,0,val); renderLL();
-
-  // 段③：新節點高亮 + 指標接回
-  setStep('ll-step', `③ 新節點 [${val}] 落入位置 ${pos}，重新連接指標`, 'green');
-  const nc=document.getElementById(`ll-node-${pos}`);
-  if(nc){ nc.classList.add('node-new','ptr-linking'); await sleep(500); nc.classList.remove('node-new','ptr-linking'); }
-  // 前節點也閃綠表示指標已接好
-  if(pos>0){
-    const prevBox=document.getElementById(`ll-node-${pos-1}`);
-    if(prevBox){ prevBox.classList.add('ptr-linking'); await sleep(350); prevBox.classList.remove('ptr-linking'); }
-  }
-
-  setStep('ll-step', `✅ 只修改了 2 個指標！其他 ${llData.length-1} 個節點完全沒動`, 'green');
-  log.innerHTML=`✅ 插入完成！只改了 <b>2 個指標</b>，不需搬移其他節點。<span class="warn">（但走了 ${pos} 步找位置）</span>`;
-
+  const nc=document.getElementById(`ll-node-${pos}`); nc?.classList.add('inserting','slide-in');
+  await sleep(500); nc?.classList.remove('inserting');
+  log.innerHTML=`✅ 插入完成！只改了 <b>2 個指標</b>，不需移動其他節點。<span class="warn"> 但走了 ${pos} 步。</span>`;
   const re=document.getElementById('ll-predict-result');
   if(pv!==''&&!isNaN(parseInt(pv))&&re){
     const g=parseInt(pv); re.style.display='block';
-    if(g===pos){re.className='predict-result hit';re.textContent=`🎯 猜對了！從 head 走了 ${pos} 步。`;}
-    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 步，實際走了 ${pos} 步。走的步數 = 插入的位置編號。`;}
+    if(g===pos){re.className='predict-result hit';re.textContent=`🎯 猜對了！你預測 ${g} 步，實際走了 ${pos} 步。`;}
+    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 步，實際需要走 ${pos} 步。走的步數等於插入的位置編號。`;}
   }
 }
-
-/* ── llDelete：三段動畫 ──
-   段①：走訪找到目標節點（高亮）
-   段②：前一節點的指標改為跳過目標（閃紅→閃綠）
-   段③：目標節點飛出消失 */
 async function llDelete() {
-  const pos=parseInt(document.getElementById('ll-pos').value);
-  const log=document.getElementById('ll-log');
+  const pos=parseInt(document.getElementById('ll-pos').value),log=document.getElementById('ll-log');
   if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
-  const val=llData[pos];
-
-  // 段①：走訪
-  setStep('ll-step', `① 從 head 出發，走 ${pos+1} 步找到 node[${pos}] = ${val}...`);
-  log.innerHTML=`<span class="step">🗺️ 從 head 走訪找到 node[${pos}]...</span>`;
-  for(let i=0;i<=pos;i++){
-    await highlightEl(`ll-node-${i}`,'highlight',320);
-  }
-
-  // 段②：前節點指標重接（跳過目標）
-  if(pos>0){
-    setStep('ll-step', `② node[${pos-1}] 的指標改為指向 node[${pos+1}]，繞過 ${val}`, 'red');
-    const prevBox=document.getElementById(`ll-node-${pos-1}`);
-    if(prevBox){ prevBox.classList.add('ptr-breaking'); await sleep(400); prevBox.classList.remove('ptr-breaking'); prevBox.classList.add('ptr-linking'); await sleep(350); prevBox.classList.remove('ptr-linking'); }
-  } else {
-    setStep('ll-step', `② head 改為指向 node[1]，跳過 ${val}`, 'red');
-    await sleep(400);
-  }
-
-  // 段③：目標節點消失
-  setStep('ll-step', `③ node[${pos}] = ${val} 從串列中斷開，釋放記憶體`, 'red');
-  const dc=document.getElementById(`ll-node-${pos}`);
-  if(dc){ dc.classList.add('node-delete'); await sleep(480); }
-  llData.splice(pos,1); renderLL();
-
-  setStep('ll-step', `✅ 刪除完成！只改了 1 個指標，其他節點完全沒動`, 'green');
-  log.innerHTML=`✅ 刪除 <b>${val}</b> 完成！只修改指標，其他節點不用動。`;
+  log.innerHTML=`<span class="step">🗺️ 從 head 走到位置 ${pos}...</span>`;
+  for(let i=0;i<=pos;i++) await highlightEl(`ll-node-${i}`,'highlight',300);
+  document.getElementById(`ll-node-${pos}`)?.classList.add('deleting'); await sleep(400);
+  const val=llData[pos]; llData.splice(pos,1); renderLL();
+  log.innerHTML=`✅ 刪除值 <b>${val}</b> 完成！只改指標，其他節點不用動。`;
 }
-
 async function llAccess() {
-  const pos=parseInt(document.getElementById('ll-pos').value);
-  const log=document.getElementById('ll-log');
+  const pos=parseInt(document.getElementById('ll-pos').value),log=document.getElementById('ll-log');
   if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 超出範圍</span>`;return;}
-  setStep('ll-step', `① 沒有捷徑！只能從 head 一步一步走，共走 ${pos+1} 步...`);
-  log.innerHTML=`<span class="step">🗺️ 從 head 開始逐一走訪...</span>`;
-  for(let i=0;i<=pos;i++){
-    setStep('ll-step', `走到第 ${i+1} 步：node[${i}] = ${llData[i]}${i===pos?' ← 找到了！':'，繼續往下走...'}`, i===pos?'green':'');
-    await highlightEl(`ll-node-${i}`,'highlight',420);
-  }
-  setStep('ll-step', `✅ 走了 ${pos+1} 步才找到！n 越大越慢 O(n) 😅`, '');
-  log.innerHTML=`✅ 找到！走了 <b>${pos+1}</b> 步，值為 <b>${llData[pos]}</b>。時間複雜度 O(n)。`;
+  log.innerHTML=`<span class="step">🗺️ 從 head 開始，一步一步走...</span>`;
+  for(let i=0;i<=pos;i++) await highlightEl(`ll-node-${i}`,'highlight',400);
+  log.innerHTML=`✅ 找到！走了 <b>${pos+1}</b> 步，值為 <b>${llData[pos]}</b>。時間複雜度 O(n) 😅`;
 }
-
 function resetLL() {
-  llData=[10,25,37,52,68]; renderLL();
-  document.getElementById('ll-log').innerHTML='已重置';
-  setStep('ll-step', '等待你的操作...');
+  llData=[10,25,37,52,68]; renderLL(); document.getElementById('ll-log').innerHTML='已重置';
   const r=document.getElementById('ll-predict-result'); if(r){r.style.display='none';r.textContent='';}
   const p=document.getElementById('ll-predict'); if(p) p.value='';
 }
@@ -988,131 +679,6 @@ game._submitAnswer = function(id, zoneKey) {
     setTimeout(() => showPriorReview(this.score, SCENARIOS.length), 900);
   }
 };
-
-
-/* ═══════════════════════════════════════════
-   Word Bank 術語庫
-   先備知識激活 Ausubel (1968)
-═══════════════════════════════════════════ */
-const WB_DATA = {
-  'index': {
-    term:'索引', en:'index',
-    color:'var(--array-color)',
-    def:'陣列中每個元素的「位置編號」，從 0 開始計數。就像電影院的座位號碼，只要知道 index 就能直接找到那個位置。',
-    ex:'arr[0]=10  arr[1]=25  arr[2]=37
-→ index 2 的元素是 37'
-  },
-  'element': {
-    term:'元素', en:'element',
-    color:'var(--array-color)',
-    def:'陣列裡存放的每一個「資料值」。一個陣列可以有很多個元素，每個元素佔用一塊連續的記憶體空間。',
-    ex:'int arr[5] = {10, 25, 37, 52, 68};
-→ 這個陣列有 5 個元素'
-  },
-  'random-access': {
-    term:'隨機存取', en:'random access',
-    color:'var(--array-color)',
-    def:'能夠「直接」跳到任意位置取得資料，不需要從頭逐一走訪。Array 靠計算記憶體位址做到 O(1) 隨機存取。「隨機」不是亂數，而是「任意」的意思。',
-    ex:'位址 = 起始位址 + index × 每個元素的大小
-→ 不論 n 多大，永遠只需一個公式計算'
-  },
-  'node': {
-    term:'節點', en:'node',
-    color:'var(--linked-color)',
-    def:'Linked List 的基本單位。每個節點包含兩個部分：① 資料（data）② 指標（pointer）。就像尋寶遊戲的每張紙條，上面寫了資料和「下一張在哪裡」。',
-    ex:'struct Node {
-  int data;    // 資料
-  Node* next;  // 指向下一個節點
-};'
-  },
-  'pointer': {
-    term:'指標', en:'pointer',
-    color:'var(--linked-color)',
-    def:'儲存另一個節點「記憶體位址」的變數。指標不存資料本身，只記錄「下一個在哪裡」。修改指標就能改變節點之間的連接關係，這也是 Linked List 插入/刪除快的原因。',
-    ex:'node→next = 0x1A2B  // 指向位址 0x1A2B 的節點
-只改兩個指標，就能插入或刪除節點'
-  },
-  'head': {
-    term:'頭節點', en:'head',
-    color:'var(--linked-color)',
-    def:'Linked List 的「起點」，是第一個節點。走訪整個 Linked List 必須從 head 開始，沿著每個節點的指標一步步往下。head 是進入整個串列的唯一入口。',
-    ex:'head → [10|→] → [25|→] → [37|→] → NULL
-從 head 出發，才能找到所有節點'
-  },
-  'null': {
-    term:'NULL', en:'NULL',
-    color:'var(--linked-color)',
-    def:'代表「空」或「無」的特殊值。在 Linked List 中，最後一個節點的指標指向 NULL，代表串列到這裡結束了。就像尋寶遊戲最後一張紙條上寫「終點」。',
-    ex:'最後一個節點：next = NULL
-→ 告訴程式「後面沒有了，停止走訪」'
-  },
-  'complexity': {
-    term:'時間複雜度', en:'time complexity',
-    color:'var(--yellow)',
-    def:'描述演算法「速度如何隨資料量增長」的方式。用 O() 表示。O(1) = 不管幾筆都一樣快；O(n) = 資料量翻倍，時間也翻倍；O(n²) = 資料量翻倍，時間變四倍。',
-    ex:'O(1)：Array 隨機存取、Stack Push/Pop
-O(n)：Linked List 搜尋、Array 插入
-O(log n)：Binary Search（效率介於兩者之間）'
-  },
-  'sequential': {
-    term:'循序存取', en:'sequential access',
-    color:'var(--yellow)',
-    def:'必須從頭開始，一個一個依序讀取，沒有辦法直接跳到第 i 個。Linked List 是循序存取，要找第 5 個節點，就得從 head 走 5 步。',
-    ex:'要找 node[3]：
-head → node[0] → node[1] → node[2] → node[3] ✅
-不能跳過任何一個節點'
-  },
-};
-
-let wbBackdrop = null;
-let wbPopup = null;
-
-function showWB(chipEl, key) {
-  // 移除舊的
-  if (wbPopup) { wbPopup.remove(); wbPopup=null; }
-  if (wbBackdrop) { wbBackdrop.remove(); wbBackdrop=null; }
-  document.querySelectorAll('.wb-chip').forEach(c=>c.classList.remove('open'));
-
-  const data = WB_DATA[key]; if(!data) return;
-  chipEl.classList.add('open');
-
-  // 背景遮罩（透明，點擊關閉）
-  wbBackdrop = document.createElement('div');
-  wbBackdrop.className = 'wb-backdrop';
-  wbBackdrop.onclick = () => closeWB();
-  document.body.appendChild(wbBackdrop);
-
-  // 彈出視窗
-  wbPopup = document.createElement('div');
-  wbPopup.className = 'wb-popup';
-  wbPopup.style.borderColor = data.color;
-  wbPopup.innerHTML = `
-    <button class="wb-popup-close" onclick="closeWB()">✕</button>
-    <div class="wb-popup-term" style="color:${data.color}">${data.term}</div>
-    <div class="wb-popup-en">${data.en}</div>
-    <div class="wb-popup-def">${data.def}</div>
-    <div class="wb-popup-ex" style="border-color:${data.color}">${data.ex.replace(/\n/g,'<br>')}</div>
-  `;
-
-  // 定位：在 chip 下方
-  document.body.appendChild(wbPopup);
-  const rect = chipEl.getBoundingClientRect();
-  const popW = 340;
-  let left = rect.left;
-  if (left + popW > window.innerWidth - 16) left = window.innerWidth - popW - 16;
-  let top = rect.bottom + 8 + window.scrollY;
-  wbPopup.style.left = left + 'px';
-  wbPopup.style.top  = top  + 'px';
-}
-
-function closeWB() {
-  if (wbPopup)    { wbPopup.remove();    wbPopup=null; }
-  if (wbBackdrop) { wbBackdrop.remove(); wbBackdrop=null; }
-  document.querySelectorAll('.wb-chip').forEach(c=>c.classList.remove('open'));
-}
-
-// ESC 關閉
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeWB(); });
 
 /* ═══════════════════════════════════════════
    初始化
