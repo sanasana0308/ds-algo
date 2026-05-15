@@ -28,9 +28,9 @@ const NAV_PAGES = [
   { id: 'home',         label: '課程地圖',      icon: '🗺️', href: BASE + '/index.html' },
   { id: 'why-learn',    label: '為什麼要學？',  icon: '💡', href: BASE + '/pages/why-learn.html' },
   { id: 'array-linked', label: 'Array & Linked', icon: '📋', href: BASE + '/pages/array-linked.html' },
+  { id: 'stack-queue',  label: 'Stack & Queue',  icon: '📦', href: BASE + '/pages/stack-queue.html' },
+  { id: 'tree',         label: 'Tree & BST',     icon: '🌳', href: BASE + '/pages/tree.html' },
   // ↓ 新增單元時，在這裡加一行，格式一樣
-  { id: 'stack-queue', label: 'Stack & Queue', icon: '📦', href: BASE + '/pages/stack-queue.html' },
-  // { id: 'tree',        label: 'Tree',           icon: '🌲', href: BASE + '/pages/tree.html' },
 ];
 
 /**
