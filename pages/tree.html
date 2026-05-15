@@ -3,702 +3,1091 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>樹 Tree — 高中資訊</title>
+<title>Tree & BST — DS課程</title>
+<link rel="stylesheet" href="../shared/style.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
-:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--border:#2e3352;--tree-col:#34d399;--tree-dim:#065f46;--accent:#a78bfa;--yellow:#fbbf24;--red:#f87171;--blue:#60a5fa;--text:#e2e8f0;--text-dim:#64748b;--text-muted:#94a3b8;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(52,211,153,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(52,211,153,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
-.container{max-width:1100px;margin:0 auto;padding:32px 20px 80px;position:relative;z-index:1;}
+/* ══ tree.html 專用色（覆寫 active tab 顏色）══ */
+.tab.active { color: var(--tree-color); border-color: var(--tree-color); }
+.tab.active .tab-num { background: rgba(52,211,153,0.15); border-color: var(--tree-color); color: var(--tree-color); }
+.page-title { color: var(--tree-color); }
 
-/* Header */
-.header{text-align:center;margin-bottom:40px;}
-.tag{display:inline-block;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);color:var(--tree-col);font-size:12px;font-weight:700;letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;}
-.header h1{font-size:clamp(26px,5vw,42px);font-weight:900;letter-spacing:-1px;color:var(--tree-col);}
-.header p{color:var(--text-muted);margin-top:10px;font-size:15px;}
+/* ══ SVG 畫布 ══ */
+.tree-canvas-wrap {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-md); overflow: hidden; margin-bottom: 16px;
+  min-height: 280px; position: relative;
+}
+.tree-canvas-wrap svg { width: 100%; display: block; }
+.empty-msg {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  color: var(--text-dim); font-size: var(--text-sm);
+  text-align: center; pointer-events: none;
+}
 
-/* Tabs */
-.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:36px;flex-wrap:wrap;}
-.tab-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);padding:9px 18px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;font-family:'Noto Sans TC',sans-serif;transition:all .2s;display:flex;align-items:center;gap:8px;}
-.tab-btn:hover{border-color:var(--tree-col);color:var(--text);}
-.tab-btn.active{background:rgba(52,211,153,.12);border-color:var(--tree-col);color:var(--tree-col);}
-.tab-num{width:22px;height:22px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;font-family:'JetBrains Mono',monospace;flex-shrink:0;color:var(--text-dim);}
-.tab-btn.active .tab-num{background:rgba(52,211,153,.2);border-color:var(--tree-col);color:var(--tree-col);}
-.tab-content{display:none;}.tab-content.active{display:block;}
+/* ══ SVG 節點樣式 ══ */
+.node-circle {
+  fill: rgba(52,211,153,0.08); stroke: var(--tree-color);
+  stroke-width: 2; transition: all 0.4s;
+}
+.node-circle.highlight   { fill: rgba(52,211,153,0.3); stroke: #6ee7b7; stroke-width: 3; filter: drop-shadow(0 0 8px rgba(52,211,153,0.5)); }
+.node-circle.found       { fill: rgba(245,196,0,0.25); stroke: var(--yellow); stroke-width: 3; filter: drop-shadow(0 0 10px rgba(245,196,0,0.5)); }
+.node-circle.trav-inorder   { fill: rgba(56,189,248,0.35); stroke: var(--array-color); stroke-width: 3; filter: drop-shadow(0 0 8px rgba(56,189,248,0.4)); }
+.node-circle.trav-preorder  { fill: rgba(167,139,250,0.35); stroke: var(--stack-color); stroke-width: 3; filter: drop-shadow(0 0 8px rgba(167,139,250,0.4)); }
+.node-circle.trav-postorder { fill: rgba(239,68,68,0.35); stroke: var(--red); stroke-width: 3; filter: drop-shadow(0 0 8px rgba(239,68,68,0.4)); }
+.node-circle.term-hl { fill: rgba(245,196,0,0.25); stroke: var(--yellow); stroke-width: 3; filter: drop-shadow(0 0 12px rgba(245,196,0,0.5)); }
+.node-text {
+  fill: var(--tree-color); font-family: var(--font-mono);
+  font-size: 14px; font-weight: 700;
+  text-anchor: middle; dominant-baseline: central; pointer-events: none;
+}
+.edge-line { stroke: rgba(52,211,153,0.25); stroke-width: 2; fill: none; transition: stroke 0.4s; }
 
-/* Step badge */
-.step-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,.15);border:2px solid var(--tree-col);font-size:13px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--tree-col);flex-shrink:0;margin-right:8px;}
-.step-row{display:flex;align-items:center;margin-bottom:14px;}
-.step-row-title{font-size:15px;font-weight:700;color:var(--text);}
+/* ══ Demo sequence chips ══ */
+.demo-seq { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 10px 0; }
+.demo-chip {
+  padding: 5px 13px; border-radius: 8px;
+  font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 700;
+  border: 1px solid var(--border); color: var(--text-dim);
+  background: var(--surface2); transition: all 0.3s;
+}
+.demo-chip.active { background: rgba(52,211,153,0.18); border-color: var(--tree-color); color: var(--tree-color); transform: scale(1.1); }
+.demo-chip.done   { background: var(--tree-dim); border-color: rgba(52,211,153,0.15); color: rgba(52,211,153,0.35); }
 
-/* Card */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
-.card-title{font-size:17px;font-weight:700;color:var(--tree-col);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.card-sub{color:var(--text-muted);font-size:13px;margin-bottom:20px;}
-.section-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;}
+/* ══ Balance compare ══ */
+.balance-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:680px){ .balance-compare { grid-template-columns: 1fr; } }
+.balance-panel { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.balance-header { padding: 13px 17px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.balance-header h3 { font-size: var(--text-sm); font-weight: 700; }
+.balance-body { padding: 16px; }
+.balance-tag { font-size: var(--text-xs); font-weight: 700; padding: 2px 9px; border-radius: 10px; }
+.tag-balanced   { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3); color: var(--tree-color); }
+.tag-unbalanced { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);  color: var(--red); }
 
-/* Controls */
-.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;}
-.input-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-.input-label{padding:0 10px;font-size:12px;color:var(--text-dim);white-space:nowrap;}
-.ctrl-input{background:none;border:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;width:56px;padding:8px 8px 8px 0;outline:none;}
-.btn{padding:8px 16px;border-radius:8px;border:none;font-family:'Noto Sans TC',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
-.btn:hover{transform:translateY(-1px);filter:brightness(1.15);}.btn:active{transform:translateY(0);}
-.btn-green{background:rgba(52,211,153,.15);border:1px solid var(--tree-dim);color:var(--tree-col);}
-.btn-red{background:rgba(248,113,113,.12);border:1px solid #7f3535;color:var(--red);}
-.btn-blue{background:rgba(96,165,250,.12);border:1px solid #1e4a7a;color:var(--blue);}
-.btn-yellow{background:rgba(251,191,36,.12);border:1px solid #7a5c0a;color:var(--yellow);}
-.btn-purple{background:rgba(167,139,250,.12);border:1px solid #5a4d7a;color:var(--accent);}
+/* ══ Traversal sequence tokens ══ */
+.trav-seq { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; min-height: 36px; align-items: center; }
+.trav-token {
+  padding: 4px 13px; border-radius: 20px;
+  font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 700;
+  opacity: 0; transform: scale(0.5);
+  animation: tokenPop 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.trav-inorder-tok   { background: rgba(56,189,248,0.12);  border: 1px solid rgba(56,189,248,0.3);  color: var(--array-color); }
+.trav-preorder-tok  { background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.3); color: var(--stack-color); }
+.trav-postorder-tok { background: rgba(239,68,68,0.12);   border: 1px solid rgba(239,68,68,0.3);   color: var(--red); }
+@keyframes tokenPop { to { opacity: 1; transform: scale(1); } }
 
-/* Log */
-.log-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 15px;font-family:'JetBrains Mono',monospace;font-size:13px;min-height:36px;color:var(--text-muted);margin-top:12px;transition:all .3s;}
-.log-box.success{border-color:var(--tree-col);color:var(--tree-col);background:rgba(52,211,153,.05);}
-.log-box.error{border-color:var(--red);color:var(--red);background:rgba(248,113,113,.05);}
-.log-box.info{border-color:var(--accent);color:var(--accent);background:rgba(167,139,250,.05);}
-.log-box.warn{border-color:var(--yellow);color:var(--yellow);background:rgba(251,191,36,.05);}
+/* ══ 走訪技巧框 ══ */
+.trick-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 22px; margin-bottom: 20px;
+}
+.trick-box-title { font-size: var(--text-base); font-weight: 700; margin-bottom: 16px; color: var(--yellow); display: flex; align-items: center; gap: 8px; }
+.ghost-path-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 15px 18px; margin-bottom: 16px;
+  font-size: var(--text-sm); color: var(--text-mid); line-height: 1.85;
+}
+.ghost-path-box strong { color: var(--text); }
+.trick-row {
+  display: flex; align-items: flex-start; gap: 13px;
+  margin-bottom: 10px; padding: 14px; border-radius: var(--radius-sm);
+}
+.trick-row.inorder   { background: rgba(56,189,248,0.05);  border: 1px solid rgba(56,189,248,0.15); }
+.trick-row.preorder  { background: rgba(167,139,248,0.05); border: 1px solid rgba(167,139,250,0.15); }
+.trick-row.postorder { background: rgba(239,68,68,0.05);   border: 1px solid rgba(239,68,68,0.15); }
+.trick-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+.trick-text h4 { font-size: var(--text-base); font-weight: 700; margin-bottom: 5px; }
+.trick-text p  { font-size: var(--text-sm); color: var(--text-mid); line-height: 1.75; }
 
-/* Step trace */
-.step-trace{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-top:12px;}
-.step-trace h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;}
-.step-item{display:flex;gap:8px;align-items:flex-start;font-size:13px;padding:3px 0;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
-.step-num{width:20px;height:20px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;color:var(--text-dim);}
+/* ══ 術語卡片格線 ══ */
+.term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin-top: 16px; }
+.term-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 15px; cursor: pointer; transition: all 0.2s;
+}
+.term-card:hover { border-color: var(--yellow); transform: translateY(-2px); }
+.term-card.active { border-color: var(--yellow); background: rgba(245,196,0,0.06); box-shadow: 0 4px 16px rgba(245,196,0,0.1); }
+.term-card h4 { font-size: var(--text-sm); font-weight: 700; color: var(--tree-color); margin-bottom: 4px; }
+.term-card .term-keyword { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--yellow); margin-bottom: 6px; display: block; }
+.term-card p  { font-size: var(--text-xs); color: var(--text-dim); line-height: 1.65; }
+.term-card.active h4 { color: var(--yellow); }
+.term-hint { text-align: center; padding: 8px; font-size: var(--text-sm); color: var(--text-dim); min-height: 26px; }
 
-/* Analogy */
-.analogy-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
-.analogy-card h3{font-size:15px;font-weight:700;margin-bottom:8px;}
-.analogy-card p{font-size:14px;color:var(--text-muted);line-height:1.75;}
+/* ══ 生活應用格線 ══ */
+.rw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 12px; }
+.rw-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; text-align: center; }
+.rw-icon { font-size: 30px; margin-bottom: 10px; }
+.rw-card h4 { font-size: var(--text-sm); font-weight: 700; margin-bottom: 5px; }
+.rw-card p  { font-size: var(--text-xs); color: var(--text-dim); line-height: 1.65; }
 
-/* Two col */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:680px){.two-col{grid-template-columns:1fr;}}
+/* ══ Step trace ══ */
+.step-trace { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; margin-top: 12px; }
+.step-trace h4 { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 10px; }
+.step-item { display: flex; gap: 8px; align-items: flex-start; font-size: var(--text-sm); padding: 3px 0; color: var(--text-mid); font-family: var(--font-mono); }
+.step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; color: var(--text-dim); }
 
-/* SVG Canvas */
-.tree-canvas-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;min-height:280px;position:relative;}
-.tree-canvas-wrap svg{width:100%;display:block;}
-.empty-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text-dim);font-size:14px;text-align:center;pointer-events:none;}
+/* ══ 進階按鈕顏色（tree 頁用 tree color）══ */
+.btn-tree { background: var(--tree-glow); color: var(--tree-color); border: 1px solid rgba(52,211,153,0.3); }
+.btn-inorder   { background: rgba(56,189,248,0.1);  color: var(--array-color); border: 1px solid rgba(56,189,248,0.3); }
+.btn-preorder  { background: rgba(167,139,250,0.1); color: var(--stack-color); border: 1px solid rgba(167,139,250,0.3); }
+.btn-postorder { background: rgba(239,68,68,0.1);   color: var(--red);         border: 1px solid rgba(239,68,68,0.3); }
 
-/* SVG node */
-.node-circle{fill:rgba(52,211,153,.1);stroke:#34d399;stroke-width:2;transition:all .4s;}
-.node-circle.highlight{fill:rgba(52,211,153,.35);stroke:#6ee7b7;stroke-width:3;filter:drop-shadow(0 0 8px rgba(52,211,153,.5));}
-.node-circle.found{fill:rgba(251,191,36,.3);stroke:#fbbf24;stroke-width:3;filter:drop-shadow(0 0 10px rgba(251,191,36,.5));}
-.node-circle.trav-inorder{fill:rgba(96,165,250,.4);stroke:#60a5fa;stroke-width:3;filter:drop-shadow(0 0 8px rgba(96,165,250,.5));}
-.node-circle.trav-preorder{fill:rgba(167,139,250,.4);stroke:#a78bfa;stroke-width:3;filter:drop-shadow(0 0 8px rgba(167,139,250,.5));}
-.node-circle.trav-postorder{fill:rgba(248,113,113,.4);stroke:#f87171;stroke-width:3;filter:drop-shadow(0 0 8px rgba(248,113,113,.5));}
-.node-circle.term-hl{fill:rgba(251,191,36,.35);stroke:#fbbf24;stroke-width:3;filter:drop-shadow(0 0 12px rgba(251,191,36,.6));}
-.node-text{fill:#34d399;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;text-anchor:middle;dominant-baseline:central;pointer-events:none;}
-.edge-line{stroke:#065f46;stroke-width:2;fill:none;transition:stroke .4s;}
+/* ══ 進階：程式碼卡片裡的標色 ══ */
+.code-block .c-kw  { color: #c792ea; }
+.code-block .c-fn  { color: #82aaff; }
+.code-block .c-str { color: #c3e88d; }
+.code-block .c-num { color: #f78c6c; }
+.code-block .c-cmt { color: #546e7a; font-style: italic; }
+.code-block .c-tp  { color: var(--adv-color); }
+.code-block .c-op  { color: var(--yellow); }
 
-/* Demo chips */
-.demo-seq{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:10px 0;}
-.demo-chip{padding:5px 13px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;border:1px solid var(--border);color:var(--text-muted);background:var(--surface2);transition:all .3s;}
-.demo-chip.active{background:rgba(52,211,153,.2);border-color:var(--tree-col);color:var(--tree-col);transform:scale(1.1);}
-.demo-chip.done{background:rgba(52,211,153,.05);border-color:var(--tree-dim);color:var(--tree-dim);}
+/* ══ P4 prior btn 顏色（tree 頁）══ */
+.prior-btn.chosen-tree { border-color: var(--tree-color); background: var(--tree-glow); color: var(--tree-color); }
+.prior-btn.chosen-bst  { border-color: var(--yellow); background: rgba(245,196,0,0.07); color: var(--yellow); }
+.prior-btn.chosen-both { border-color: var(--stack-color); background: var(--stack-glow); color: var(--stack-color); }
 
-/* Balance */
-.balance-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:680px){.balance-compare{grid-template-columns:1fr;}}
-.balance-panel{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.balance-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
-.balance-header h3{font-size:14px;font-weight:700;}
-.balance-body{padding:14px;}
-.balance-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
-.tag-balanced{background:rgba(52,211,153,.15);border:1px solid var(--tree-dim);color:var(--tree-col);}
-.tag-unbalanced{background:rgba(248,113,113,.15);border:1px solid #7f3535;color:var(--red);}
-
-/* Traversal sequence */
-.trav-seq{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;min-height:36px;align-items:center;}
-.trav-token{padding:4px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;opacity:0;transform:scale(.5);animation:tokenPop .3s cubic-bezier(.34,1.56,.64,1) forwards;}
-.trav-inorder-tok{background:rgba(96,165,250,.15);border:1px solid #1e4a7a;color:var(--blue);}
-.trav-preorder-tok{background:rgba(167,139,250,.15);border:1px solid #5a4d7a;color:var(--accent);}
-.trav-postorder-tok{background:rgba(248,113,113,.15);border:1px solid #7f3535;color:var(--red);}
-@keyframes tokenPop{to{opacity:1;transform:scale(1);}}
-
-/* Trick box */
-.trick-box{background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;}
-.trick-box-title{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--yellow);display:flex;align-items:center;gap:8px;}
-.ghost-path-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:14px;font-size:13px;color:var(--text-muted);line-height:1.8;}
-.ghost-path-box strong{color:var(--text);}
-.trick-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding:12px;border-radius:10px;}
-.trick-row.inorder{background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);}
-.trick-row.preorder{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15);}
-.trick-row.postorder{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.15);}
-.trick-icon{font-size:26px;flex-shrink:0;margin-top:2px;}
-.trick-text h4{font-size:14px;font-weight:700;margin-bottom:4px;}
-.trick-text p{font-size:13px;color:var(--text-muted);line-height:1.65;}
-
-/* Terms */
-.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:16px;}
-.term-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;}
-.term-card:hover{border-color:var(--yellow);transform:translateY(-2px);}
-.term-card.active{border-color:var(--yellow);background:rgba(251,191,36,.08);box-shadow:0 4px 16px rgba(251,191,36,.12);}
-.term-card h4{font-size:13px;font-weight:700;color:var(--tree-col);margin-bottom:4px;}
-.term-card .term-keyword{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--yellow);margin-bottom:6px;display:block;}
-.term-card p{font-size:12px;color:var(--text-muted);line-height:1.6;}
-.term-card.active h4{color:var(--yellow);}
-.term-hint{text-align:center;padding:8px;font-size:13px;color:var(--text-dim);transition:color .3s;min-height:24px;}
-
-/* Rw */
-.rw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
-.rw-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
-.rw-icon{font-size:28px;margin-bottom:8px;}
-.rw-card h4{font-size:13px;font-weight:700;margin-bottom:4px;}
-.rw-card p{font-size:12px;color:var(--text-muted);line-height:1.5;}
+/* ══ Onboarding border color ══ */
+.onboard-box { border-color: var(--tree-color); box-shadow: 0 0 50px rgba(52,211,153,0.1); }
+.onboard-title { color: var(--tree-color); }
+.onboard-pip.done { background: var(--tree-color); }
 </style>
 <link rel="icon" type="image/png" sizes="32x32" href="/ds-algo/favicon_512.png">
 <link rel="icon" type="image/x-icon" href="/ds-algo/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/ds-algo/favicon_512.png">
-
 </head>
 <body>
-<div class="container">
 
-<div class="header">
-  <div class="tag">資料結構 · 高中資訊</div>
-  <h1>🌳 樹 Tree</h1>
-  <p>跟著老師依 A → B → C → D 的順序學習，每個步驟都有編號對應！</p>
-</div>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('bst',this)"><span class="tab-num">A</span>二元搜尋樹 BST</button>
-  <button class="tab-btn" onclick="switchTab('traversal',this)"><span class="tab-num">B</span>走訪順序</button>
-  <button class="tab-btn" onclick="switchTab('terms',this)"><span class="tab-num">C</span>術語圖解</button>
-  <button class="tab-btn" onclick="switchTab('realworld',this)"><span class="tab-num">D</span>生活應用</button>
-</div>
-
-<!-- ══ TAB A ══ -->
-<div id="tab-bst" class="tab-content active">
-
-  <div class="card">
-    <div class="step-row"><span class="step-badge">A-1</span><span class="step-row-title">自由插入 — 自己建一棵 BST</span></div>
-    <div class="card-sub">規則：左子樹 &lt; 根 &lt; 右子樹。每次插入都自動比大小往左或右走。</div>
-    <div class="tree-canvas-wrap" style="min-height:320px">
-      <svg id="tree-svg" viewBox="0 0 800 360" preserveAspectRatio="xMidYMid meet"></svg>
-      <div class="empty-msg" id="empty-msg">← 輸入數值，按「插入」開始建樹！</div>
+<!-- ══════════════════════════════════
+     P3 鷹架理論 — Onboarding
+     Wood, Bruner & Ross (1976)
+════════════════════════════════════ -->
+<div class="onboard-overlay" id="onboard-overlay">
+  <div class="onboard-box">
+    <div class="onboard-step-indicator" id="onboard-pips"></div>
+    <div class="onboard-icon" id="ob-icon">🌳</div>
+    <div class="onboard-title" id="ob-title">歡迎來到 Tree & BST</div>
+    <div class="onboard-body" id="ob-body">這個單元你將學習「樹」這個最重要的資料結構。先完成 3 個小任務，感受一下！</div>
+    <div class="onboard-task" id="ob-task"></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn btn-tree" id="ob-next-btn" onclick="onboardNext()">我完成了 →</button>
+      <button class="onboard-skip" onclick="onboardSkip()">跳過引導，直接開始</button>
     </div>
-    <div class="controls">
-      <div class="input-wrap"><span class="input-label">值</span><input class="ctrl-input" id="bst-val" type="number" value="50" min="1" max="99"></div>
-      <button class="btn btn-green" onclick="bstInsert()">➕ 插入</button>
-      <div class="input-wrap"><span class="input-label">搜尋</span><input class="ctrl-input" id="bst-search" type="number" value="30" min="1" max="99"></div>
-      <button class="btn btn-blue" onclick="bstSearch()">🔍 搜尋</button>
-      <button class="btn btn-yellow" onclick="bstReset()">🔄 重置</button>
-    </div>
-    <div class="log-box" id="bst-log">← 試試看插入一個數字！</div>
-    <div class="step-trace" id="bst-steps" style="display:none"><h4>⚙️ 決策過程</h4><div id="bst-steps-content"></div></div>
-  </div>
-
-  <div class="card">
-    <div class="step-row"><span class="step-badge">A-2</span><span class="step-row-title">示範建樹 — 平衡 vs 不平衡</span></div>
-    <div class="card-sub">「插入的順序」決定樹長什麼樣！同樣的數字，順序不同 → 樹完全不同。</div>
-
-    <div class="balance-compare">
-      <div class="balance-panel">
-        <div class="balance-header"><span class="balance-tag tag-balanced">✅ 平衡</span><h3>範例 1：從中間開始插</h3></div>
-        <div class="balance-body">
-          <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">插入順序：</div>
-          <div class="demo-seq" id="demo-seq-balanced"></div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.6">左右均勻 → <strong style="color:var(--tree-col)">搜尋快，效率最高</strong></div>
-          <button class="btn btn-green" style="margin-top:10px;width:100%" onclick="runDemo('balanced')">▶ 開始示範</button>
-        </div>
-      </div>
-      <div class="balance-panel">
-        <div class="balance-header"><span class="balance-tag tag-unbalanced">❌ 不平衡</span><h3>範例 2：從小到大依序插</h3></div>
-        <div class="balance-body">
-          <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">插入順序：</div>
-          <div class="demo-seq" id="demo-seq-unbalanced"></div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.6">退化成一條鏈 → <strong style="color:var(--red)">跟陣列一樣慢！</strong></div>
-          <button class="btn btn-red" style="margin-top:10px;width:100%" onclick="runDemo('unbalanced')">▶ 開始示範</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="tree-canvas-wrap" style="min-height:260px;margin-top:16px">
-      <svg id="tree-svg-demo" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet"></svg>
-      <div class="empty-msg" id="demo-empty-msg">← 選左邊或右邊的範例開始</div>
-    </div>
-    <div class="log-box" id="demo-log">選一個範例，觀察插入順序如何影響樹的形狀</div>
-  </div>
-
-  <div class="analogy-card">
-    <h3>📖 生活比喻：猜數字遊戲</h3>
-    <p>BST 每個節點就像一個「守門人」在問你：<strong style="color:var(--yellow)">「你要找的比我大還是比我小？」</strong><br>
-    比你小 → 往左走，比你大 → 往右走，每走一步就砍掉一半可能性！<br>
-    平衡的樹：問 3 次就能找完 7 個節點。不平衡：最壞要問 7 次。</p>
   </div>
 </div>
 
-<!-- ══ TAB B ══ -->
-<div id="tab-traversal" class="tab-content">
+<!-- 進度膠囊 -->
+<div class="progress-pill">
+  <span>進度</span>
+  <div class="pill-dots">
+    <div class="pill-dot active" id="pd-0" title="BST 互動"></div>
+    <div class="pill-dot" id="pd-1" title="走訪順序"></div>
+    <div class="pill-dot" id="pd-2" title="術語圖解"></div>
+    <div class="pill-dot" id="pd-3" title="生活應用"></div>
+  </div>
+</div>
 
-  <div class="card">
-    <div class="step-row"><span class="step-badge">B-1</span><span class="step-row-title">速記法 — 用「走路蓋章」來記走訪順序</span></div>
-    <div class="card-sub">先理解這個概念，再看 B-2 的動畫就一目了然！</div>
+<div class="wrapper">
 
-    <div class="trick-box">
-      <div class="trick-box-title">✏️ 想像你沿著樹的輪廓從左邊走一圈（像繞著樹邊走）</div>
-      <div class="ghost-path-box">
-        每個節點旁邊有 <strong>三個位置</strong>可以「蓋章記錄」：<br>
-        &nbsp;&nbsp;🟣 第一次靠近節點時（<strong style="color:var(--accent)">左側</strong>）蓋章 → <strong style="color:var(--accent)">前序</strong><br>
-        &nbsp;&nbsp;🔵 從左子樹回來、繞過節點下方時（<strong style="color:var(--blue)">下方</strong>）蓋章 → <strong style="color:var(--blue)">中序</strong><br>
-        &nbsp;&nbsp;🔴 從右子樹回來、要離開節點時（<strong style="color:var(--red)">右側</strong>）蓋章 → <strong style="color:var(--red)">後序</strong><br><br>
-        <strong>記住位置，就記住了走訪法！</strong>（用這棵樹練習：50 是根，左有 30→20/40，右有 70→60/80）
-      </div>
+  <!-- ══ 頁面 Header ══ -->
+  <header class="page-header">
+    <div class="page-subtitle">高中資訊科 · 資料結構 · 第三單元</div>
+    <h1 class="page-title">🌳 Tree &amp; BST</h1>
+    <p class="page-tagline">資料夾、族譜、搜尋引擎——你每天都在用的樹狀結構</p>
+  </header>
 
-      <div class="trick-row preorder">
-        <div class="trick-icon">🟣</div>
-        <div class="trick-text">
-          <h4 style="color:var(--accent)">B-1-1 前序（Pre-order）— 靠近節點的瞬間（左側）蓋章</h4>
-          <p>走到節點就立刻記下來，然後才去走左右子樹。<br>
-          順序：<strong style="color:var(--accent)">自己 → 左子樹 → 右子樹</strong><br>
-          結果：50 → 30 → 20 → 40 → 70 → 60 → 80<br>
-          <em style="color:var(--text-dim)">應用：複製整棵樹（要先知道父節點，才能建子節點）</em></p>
+  <!-- ══ P4 概念轉變 — 前概念提問 ══
+       Posner, Strike, Hewson & Gertzog (1982) -->
+  <div class="prior-banner" id="prior-banner">
+    <div class="prior-q">🤔 開始之前，說說你的直覺</div>
+    <div class="prior-sub">
+      如果電腦要在「100萬筆」資料裡找一個數字，你覺得最快的方法是什麼？<br>
+      先說說你的猜測——不必對，等一下我們會用 BST 來驗證！
+    </div>
+    <div class="prior-choices">
+      <button class="prior-btn" onclick="setPrior('tree',this)">🔀 從頭找到尾</button>
+      <button class="prior-btn" onclick="setPrior('bst',this)">🔍 每次砍掉一半</button>
+      <button class="prior-btn" onclick="setPrior('both',this)">🤷 不知道，兩個差不多吧？</button>
+    </div>
+    <div class="prior-review" id="prior-review">
+      <h4>💡 先記住你的直覺，等等 BST 互動會讓你親眼驗證！</h4>
+      <div class="prior-compare">
+        <div class="prior-col">
+          <div class="prior-col-label">從頭找到尾（線性搜尋）</div>
+          <div class="prior-col-val" style="color:var(--red)">最壞要比 1,000,000 次</div>
         </div>
-      </div>
-      <div class="trick-row inorder">
-        <div class="trick-icon">🔵</div>
-        <div class="trick-text">
-          <h4 style="color:var(--blue)">B-1-2 中序（In-order）— 從左子樹繞回、經過下方時蓋章</h4>
-          <p>先把左邊全走完，回來時才記自己，然後再去右邊。<br>
-          順序：<strong style="color:var(--blue)">左子樹 → 自己 → 右子樹</strong><br>
-          結果（BST 中序 = 由小到大）：20 → 30 → 40 → 50 → 60 → 70 → 80 ✨<br>
-          <em style="color:var(--text-dim)">應用：輸出 BST 排序結果</em></p>
-        </div>
-      </div>
-      <div class="trick-row postorder">
-        <div class="trick-icon">🔴</div>
-        <div class="trick-text">
-          <h4 style="color:var(--red)">B-1-3 後序（Post-order）— 要離開節點時（右側）才蓋章</h4>
-          <p>左右子樹都全部走完，要離開這個節點時才記下來。<br>
-          順序：<strong style="color:var(--red)">左子樹 → 右子樹 → 自己</strong><br>
-          結果：20 → 40 → 30 → 60 → 80 → 70 → 50<br>
-          <em style="color:var(--text-dim)">應用：刪除整棵樹（子節點先刪，父節點最後）</em></p>
+        <div class="prior-col">
+          <div class="prior-col-label">BST 每次砍一半</div>
+          <div class="prior-col-val" style="color:var(--tree-color)">最壞只要比 20 次！</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="step-row"><span class="step-badge">B-2</span><span class="step-row-title">動畫 — 看走訪順序一步步亮起來</span></div>
-    <div class="card-sub">選一種走訪法，對照 B-1 的說明，確認自己理解了！</div>
-    <div class="tree-canvas-wrap" style="min-height:260px">
-      <svg id="tree-svg2" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet"></svg>
-    </div>
-    <div class="controls">
-      <button class="btn btn-blue"   onclick="doTraversal('inorder')">🔵 B-2-1 中序</button>
-      <button class="btn btn-purple" onclick="doTraversal('preorder')">🟣 B-2-2 前序</button>
-      <button class="btn btn-red"    onclick="doTraversal('postorder')">🔴 B-2-3 後序</button>
-      <button class="btn btn-green"  onclick="resetTraversal()">🔄 重置</button>
-    </div>
-    <div class="section-title" style="margin-top:16px">走訪結果序列（依序出現）</div>
-    <div class="trav-seq" id="trav-seq-display"></div>
-    <div class="log-box" id="trav-log">← 選一種走訪方式開始動畫！</div>
+  <!-- ══ Tabs ══ -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(this,'bst')">
+      <span class="tab-num">A</span>二元搜尋樹 BST
+    </button>
+    <button class="tab" onclick="switchTab(this,'traversal')">
+      <span class="tab-num">B</span>走訪順序
+    </button>
+    <button class="tab" onclick="switchTab(this,'terms')">
+      <span class="tab-num">C</span>術語圖解
+    </button>
+    <button class="tab" onclick="switchTab(this,'realworld')">
+      <span class="tab-num">D</span>生活應用
+    </button>
   </div>
 
-  <div class="two-col">
-    <div class="analogy-card">
-      <h3 style="color:var(--blue)">🔵 中序的神奇特性</h3>
-      <p>對 BST 做中序走訪，輸出結果<strong style="color:var(--blue)">一定是由小到大排好序的</strong>！<br>這是 BST 最重要的性質，大學資料庫常用。</p>
-    </div>
-    <div class="analogy-card">
-      <h3 style="color:var(--red)">🔴 後序的生活例子</h3>
-      <p>刪除電腦資料夾：<br>要先把<strong style="color:var(--red)">裡面的子資料夾和檔案全刪完</strong>，才能刪資料夾本身。<br>→ 這就是後序！</p>
-    </div>
-  </div>
-</div>
+  <!-- ══════════════════════════
+       TAB A：BST 互動
+  ════════════════════════════ -->
+  <div id="tab-bst" class="panel active">
 
-<!-- ══ TAB C ══ -->
-<div id="tab-terms" class="tab-content">
-  <div class="card">
-    <div class="step-row"><span class="step-badge">C-1</span><span class="step-row-title">點選下方術語卡片，圖中對應位置會亮起！</span></div>
-    <div class="card-sub">👆 點一下術語名稱，圖裡對應的節點就會高亮顯示，同時顯示說明</div>
-
-    <div class="tree-canvas-wrap" style="min-height:240px">
-      <svg id="tree-svg3" viewBox="0 0 800 240" preserveAspectRatio="xMidYMid meet"></svg>
+    <!-- 進階切換 -->
+    <div class="adv-toggle-wrap">
+      <button class="adv-toggle" id="adv-btn" onclick="toggleAdv()">
+        <span class="adv-dot"></span> 進階模式：程式碼
+      </button>
     </div>
 
-    <div class="term-hint" id="term-hint">👆 點選下方任一術語，圖中對應位置亮起</div>
+    <!-- A-1：自由插入 -->
+    <div class="card">
+      <div class="section-label">
+        <span class="section-badge tree">A</span>
+        <span>自由插入 — 自己建一棵 BST</span>
+      </div>
+      <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:20px;line-height:1.8">
+        規則：<strong style="color:var(--tree-color)">左子樹 &lt; 根 &lt; 右子樹</strong>。每次插入都自動比大小往左或右走。
+      </p>
 
-    <div class="term-grid">
-      <div class="term-card" onclick="highlightTerm('root',this)">
-        <span class="term-keyword">Root</span><h4>🌱 根節點</h4>
-        <p>整棵樹最頂端，沒有父節點，是所有節點的起點</p>
+      <!-- P1 有益困難 — 預測框  Bjork (1994) -->
+      <div class="predict-box">
+        <span class="predict-label">🎯 先預測</span>
+        <span class="predict-hint">插入 30 之後，它會在 50 的哪一側？</span>
+        <select class="predict-input" id="predict-side" style="width:80px">
+          <option value="">選...</option>
+          <option value="left">左邊</option>
+          <option value="right">右邊</option>
+        </select>
+        <button class="btn btn-neutral" onclick="checkPrediction()">確認</button>
+        <div class="predict-result" id="predict-result"></div>
       </div>
-      <div class="term-card" onclick="highlightTerm('leaf',this)">
-        <span class="term-keyword">Leaf</span><h4>🍂 葉節點</h4>
-        <p>沒有任何子節點的節點，樹的最末端</p>
+
+      <div class="tree-canvas-wrap" style="min-height:320px">
+        <svg id="tree-svg" viewBox="0 0 800 360" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="empty-msg" id="empty-msg">← 輸入數值，按「插入」開始建樹！</div>
       </div>
-      <div class="term-card" onclick="highlightTerm('parent',this)">
-        <span class="term-keyword">Parent</span><h4>👨‍👧 父節點</h4>
-        <p>直接連結到子節點的節點（50 是 30、70 的父節點）</p>
+      <div class="controls">
+        <div class="input-wrap">
+          <span class="input-label">值</span>
+          <input class="ctrl-input" id="bst-val" type="number" value="50" min="1" max="99">
+        </div>
+        <button class="btn btn-tree" onclick="bstInsert()">➕ 插入</button>
+        <div class="input-wrap">
+          <span class="input-label">搜尋</span>
+          <input class="ctrl-input" id="bst-search" type="number" value="30" min="1" max="99">
+        </div>
+        <button class="btn btn-neutral" onclick="bstSearch()">🔍 搜尋</button>
+        <button class="btn btn-del" onclick="bstReset()">🔄 重置</button>
       </div>
-      <div class="term-card" onclick="highlightTerm('child',this)">
-        <span class="term-keyword">Child</span><h4>👶 子節點</h4>
-        <p>被父節點連結的節點（30 和 70 都是 50 的子節點）</p>
-      </div>
-      <div class="term-card" onclick="highlightTerm('height',this)">
-        <span class="term-keyword">Height</span><h4>📏 高度</h4>
-        <p>根節點到最深葉節點的邊數（這棵樹高度 = 2）</p>
-      </div>
-      <div class="term-card" onclick="highlightTerm('subtree',this)">
-        <span class="term-keyword">Subtree</span><h4>🌿 子樹</h4>
-        <p>某節點和其所有後代組成的更小的樹</p>
-      </div>
-      <div class="term-card" onclick="highlightTerm('level',this)">
-        <span class="term-keyword">Level</span><h4>📐 層</h4>
-        <p>根節點為第 0 層，往下每層 +1</p>
-      </div>
-      <div class="term-card" onclick="highlightTerm('binary',this)">
-        <span class="term-keyword">Binary</span><h4>🔢 二元樹</h4>
-        <p>每個節點最多只有左、右 2 個子節點</p>
+      <div class="log-box" id="bst-log">← 試試先插入 50，再插入 30，看看 30 去哪裡！</div>
+      <div class="step-trace" id="bst-steps" style="display:none">
+        <h4>⚙️ 決策過程</h4>
+        <div id="bst-steps-content"></div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ══ TAB D ══ -->
-<div id="tab-realworld" class="tab-content">
-  <div class="card">
-    <div class="step-row"><span class="step-badge">D-1</span><span class="step-row-title">樹在生活中無所不在</span></div>
-    <div class="card-sub">你每天都在用樹狀結構，只是不知道而已！</div>
-    <div class="rw-grid">
-      <div class="rw-card"><div class="rw-icon">📁</div><h4>電腦資料夾</h4><p>C:\ → 文件 → 作業 → 第一章.docx，就是一棵樹！</p></div>
-      <div class="rw-card"><div class="rw-icon">👨‍👩‍👧‍👦</div><h4>家族族譜</h4><p>曾祖父母 → 祖父母 → 父母 → 你，標準樹狀結構</p></div>
-      <div class="rw-card"><div class="rw-icon">🏢</div><h4>公司組織圖</h4><p>董事長 → 各部門主管 → 員工</p></div>
-      <div class="rw-card"><div class="rw-icon">🔍</div><h4>搜尋引擎</h4><p>Google 用樹狀索引快速搜尋幾百億個網頁</p></div>
-      <div class="rw-card"><div class="rw-icon">🎮</div><h4>遊戲決策</h4><p>RPG 技能樹、對話選項分支，都是樹！</p></div>
-      <div class="rw-card"><div class="rw-icon">🌐</div><h4>網頁 HTML</h4><p>&lt;html&gt;→&lt;body&gt;→&lt;div&gt;→&lt;p&gt; 就是 DOM 樹</p></div>
-      <div class="rw-card"><div class="rw-icon">♟️</div><h4>西洋棋 AI</h4><p>每一步棋展開成樹，AI 計算最有利的路徑</p></div>
-      <div class="rw-card"><div class="rw-icon">📱</div><h4>手機選單</h4><p>設定 → 通知 → App 通知 → LINE，多層選單就是樹</p></div>
+    <!-- A-2：平衡 vs 不平衡 -->
+    <div class="card">
+      <div class="section-label">
+        <span class="section-badge tree">B</span>
+        <span>「插入順序」決定樹的形狀</span>
+      </div>
+      <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:20px;line-height:1.8">
+        同樣的數字，順序不同 → 樹完全不同 → 搜尋速度天差地遠！
+      </p>
+      <div class="balance-compare">
+        <div class="balance-panel">
+          <div class="balance-header">
+            <span class="balance-tag tag-balanced">✅ 平衡</span>
+            <h3>從中間開始插</h3>
+          </div>
+          <div class="balance-body">
+            <div style="font-size:var(--text-xs);color:var(--text-dim);margin-bottom:6px">插入順序：</div>
+            <div class="demo-seq" id="demo-seq-balanced"></div>
+            <div style="font-size:var(--text-sm);color:var(--text-mid);margin-top:8px;line-height:1.7">左右均勻 → <strong style="color:var(--tree-color)">搜尋最快</strong></div>
+            <button class="btn btn-tree" style="margin-top:12px;width:100%" onclick="runDemo('balanced')">▶ 開始示範</button>
+          </div>
+        </div>
+        <div class="balance-panel">
+          <div class="balance-header">
+            <span class="balance-tag tag-unbalanced">❌ 不平衡</span>
+            <h3>從小到大依序插</h3>
+          </div>
+          <div class="balance-body">
+            <div style="font-size:var(--text-xs);color:var(--text-dim);margin-bottom:6px">插入順序：</div>
+            <div class="demo-seq" id="demo-seq-unbalanced"></div>
+            <div style="font-size:var(--text-sm);color:var(--text-mid);margin-top:8px;line-height:1.7">退化成一條鏈 → <strong style="color:var(--red)">跟陣列一樣慢！</strong></div>
+            <button class="btn btn-del" style="margin-top:12px;width:100%" onclick="runDemo('unbalanced')">▶ 開始示範</button>
+          </div>
+        </div>
+      </div>
+      <div class="tree-canvas-wrap" style="min-height:260px;margin-top:16px">
+        <svg id="tree-svg-demo" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="empty-msg" id="demo-empty-msg">← 選一個範例開始示範</div>
+      </div>
+      <div class="log-box" id="demo-log">選一個範例，觀察插入順序如何影響樹的形狀</div>
     </div>
-  </div>
-  <div class="analogy-card">
-    <div class="step-row" style="margin-bottom:8px"><span class="step-badge">D-2</span><span class="step-row-title">為什麼要學樹？</span></div>
-    <p>資料結構的核心是「<strong style="color:var(--tree-col)">如何有效率地找到資料</strong>」。<br>
-    陣列要一個個找（慢），BST 每次找可以砍掉一半的範圍（快）。<br>
-    大學資料庫、作業系統、網路路由，幾乎所有軟體核心都用到樹——<strong style="color:var(--yellow)">學好樹等於打通資訊的任督二脈！</strong></p>
-  </div>
-</div>
 
-</div>
+    <div class="analogy arr">
+      <strong>🎯 生活比喻：猜數字遊戲</strong>
+      BST 每個節點就像一個「守門人」在問你：<strong>「你要找的比我大還是比我小？」</strong><br>
+      比你小 → 往左走，比你大 → 往右走，每走一步就砍掉一半可能性！<br>
+      平衡的樹：問 3 次就能找完 7 個節點；不平衡：最壞要問 7 次。
+    </div>
 
+    <!-- ══ 進階學習者區塊：BST 程式碼實作 ══ -->
+    <div class="adv-section" id="adv-bst">
+      <div class="adv-header">
+        <span class="adv-header-icon">💻</span>
+        <span class="adv-header-title">進階：用 Python 實作 BST</span>
+        <span class="adv-header-badge">ADVANCED</span>
+      </div>
+      <div class="adv-body">
+        <p style="font-size:var(--text-sm);color:var(--text-mid);margin-bottom:16px;line-height:1.8">
+          上面的互動用 JavaScript 做了一棵 BST——你知道用 Python 只要幾行就能實作嗎？<br>
+          點選每一行，右側會顯示對應的視覺說明。
+        </p>
+
+        <!-- 節點定義 -->
+        <div class="section-title" style="margin-top:0">① 定義節點</div>
+        <div class="code-block">
+          <span class="lang-tag">Python</span>
+<span class="c-kw">class</span> <span class="c-tp">Node</span>:
+    <span class="c-kw">def</span> <span class="c-fn">__init__</span>(<span class="c-tp">self</span>, val):
+        <span class="c-tp">self</span>.val   <span class="c-op">=</span> val       <span class="c-cmt"># 儲存數值</span>
+        <span class="c-tp">self</span>.left  <span class="c-op">=</span> <span class="c-kw">None</span>     <span class="c-cmt"># 左子節點（預設空）</span>
+        <span class="c-tp">self</span>.right <span class="c-op">=</span> <span class="c-kw">None</span>     <span class="c-cmt"># 右子節點（預設空）</span>
+        </div>
+
+        <!-- 插入 -->
+        <div class="section-title">② 插入（遞迴版）</div>
+        <div class="code-block">
+<span class="c-kw">def</span> <span class="c-fn">insert</span>(root, val):
+    <span class="c-kw">if</span> root <span class="c-kw">is</span> <span class="c-kw">None</span>:               <span class="c-cmt"># 找到空位，插入！</span>
+        <span class="c-kw">return</span> <span class="c-tp">Node</span>(val)
+    <span class="c-kw">if</span> val <span class="c-op">&lt;</span> root.val:              <span class="c-cmt"># 比根小 → 往左走</span>
+        root.left  <span class="c-op">=</span> <span class="c-fn">insert</span>(root.left,  val)
+    <span class="c-kw">else</span>:                           <span class="c-cmt"># 比根大 → 往右走</span>
+        root.right <span class="c-op">=</span> <span class="c-fn">insert</span>(root.right, val)
+    <span class="c-kw">return</span> root
+        </div>
+
+        <!-- 搜尋 -->
+        <div class="section-title">③ 搜尋</div>
+        <div class="code-block">
+<span class="c-kw">def</span> <span class="c-fn">search</span>(root, val):
+    <span class="c-kw">if</span> root <span class="c-kw">is</span> <span class="c-kw">None</span>: <span class="c-kw">return</span> <span class="c-kw">False</span>  <span class="c-cmt"># 走到底，找不到</span>
+    <span class="c-kw">if</span> val <span class="c-op">==</span> root.val: <span class="c-kw">return</span> <span class="c-kw">True</span>  <span class="c-cmt"># 找到了！</span>
+    <span class="c-kw">if</span> val <span class="c-op">&lt;</span> root.val:               <span class="c-cmt"># 比根小，往左</span>
+        <span class="c-kw">return</span> <span class="c-fn">search</span>(root.left,  val)
+    <span class="c-kw">return</span> <span class="c-fn">search</span>(root.right, val)   <span class="c-cmt"># 比根大，往右</span>
+        </div>
+
+        <!-- 中序走訪 -->
+        <div class="section-title">④ 中序走訪（輸出排序結果）</div>
+        <div class="code-block">
+<span class="c-kw">def</span> <span class="c-fn">inorder</span>(root):
+    <span class="c-kw">if</span> root <span class="c-kw">is</span> <span class="c-kw">None</span>: <span class="c-kw">return</span>
+    <span class="c-fn">inorder</span>(root.left)   <span class="c-cmt"># 先走左子樹</span>
+    <span class="c-fn">print</span>(root.val)       <span class="c-cmt"># 再印自己 → 這時輸出的就是排好序的！</span>
+    <span class="c-fn">inorder</span>(root.right)  <span class="c-cmt"># 最後走右子樹</span>
+        </div>
+
+        <!-- 複雜度 -->
+        <div class="section-title">⑤ 時間複雜度分析</div>
+        <div class="adv-complexity-row">
+          <span class="op-name">搜尋（平衡樹）</span>
+          <span class="big-o Ologn">O(log n)</span>
+          <span class="reason">每次砍一半，n=100萬只需比 20 次</span>
+        </div>
+        <div class="adv-complexity-row">
+          <span class="op-name">搜尋（不平衡）</span>
+          <span class="big-o On">O(n)</span>
+          <span class="reason">退化成鏈，跟線性搜尋一樣慢</span>
+        </div>
+        <div class="adv-complexity-row">
+          <span class="op-name">插入（平衡樹）</span>
+          <span class="big-o Ologn">O(log n)</span>
+          <span class="reason">找到正確位置後插入</span>
+        </div>
+
+        <!-- 進階挑戰 -->
+        <div class="adv-challenge">
+          <div class="adv-challenge-title">🔥 進階挑戰</div>
+          <p>試試看：如何寫一個函式，計算 BST 的「高度」（Height）？<br>
+          提示：height = 1 + max(左子樹高度, 右子樹高度)</p>
+          <span class="adv-challenge-hint" onclick="showHint(this)">👁 查看提示（點一下）</span>
+          <div class="code-block" style="display:none;margin-top:10px">
+<span class="c-kw">def</span> <span class="c-fn">height</span>(root):
+    <span class="c-kw">if</span> root <span class="c-kw">is</span> <span class="c-kw">None</span>: <span class="c-kw">return</span> <span class="c-num">0</span>
+    <span class="c-kw">return</span> <span class="c-num">1</span> <span class="c-op">+</span> <span class="c-fn">max</span>(<span class="c-fn">height</span>(root.left), <span class="c-fn">height</span>(root.right))
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2 後設認知 反思  Flavell (1979) -->
+    <div class="reflect-box">
+      <div class="reflect-header">
+        <span class="reflect-header-icon">🪞</span>
+        <span class="reflect-header-text">學習反思</span>
+        <span class="reflect-header-badge">P2 後設認知</span>
+      </div>
+      <div class="reflect-body">
+        <div class="reflect-q">BST 為什麼「從中間開始插」比「從小到大插」快很多？用你自己的話說說看。</div>
+        <textarea class="reflect-textarea" id="reflect-bst" placeholder="寫下你的理解..."></textarea>
+        <button class="reflect-submit" onclick="submitReflect('reflect-bst','reflect-ans-bst')">送出 →</button>
+        <div class="reflect-answer" id="reflect-ans-bst">
+          <div class="reflect-answer-label">REFERENCE ANSWER</div>
+          <div class="reflect-answer-text">從中間開始插 → 樹左右均衡，每次搜尋可以砍掉一半，高度是 log₂n。從小到大插 → 每個節點都只有右子節點，變成一條直線，高度是 n，搜尋速度退化到 O(n)，跟陣列從頭找一樣慢。</div>
+        </div>
+        <div class="reflect-self-rate" id="rate-bst">
+          <div class="reflect-rate-label">你覺得你理解到什麼程度？</div>
+          <div class="rate-btns">
+            <button class="rate-btn" data-r="1" onclick="selectRate(this,'rate-bst')">😵 還不懂</button>
+            <button class="rate-btn" data-r="2" onclick="selectRate(this,'rate-bst')">🤔 大概懂</button>
+            <button class="rate-btn" data-r="3" onclick="selectRate(this,'rate-bst')">😊 完全懂</button>
+          </div>
+          <div class="reflect-done-msg" id="done-bst">✓ 已記錄，繼續下一個 Tab！</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-bst -->
+
+  <!-- ══════════════════════════
+       TAB B：走訪順序
+  ════════════════════════════ -->
+  <div id="tab-traversal" class="panel">
+
+    <div class="card">
+      <div class="section-label">
+        <span class="section-badge tree">B</span>
+        <span>速記法 — 用「走路蓋章」來記走訪順序</span>
+      </div>
+      <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:20px;line-height:1.8">先理解這個概念，再看下方的動畫就一目了然！</p>
+
+      <!-- P1 有益困難 -->
+      <div class="predict-box">
+        <span class="predict-label">🎯 先預測</span>
+        <span class="predict-hint">對 BST（50為根，左30，右70）做「中序走訪」，第一個輸出的數字是？</span>
+        <input class="predict-input" id="predict-trav" type="number" placeholder="?" style="width:64px">
+        <button class="btn btn-neutral" onclick="checkTravPredict()">確認</button>
+        <div class="predict-result" id="predict-trav-result"></div>
+      </div>
+
+      <div class="trick-box">
+        <div class="trick-box-title">✏️ 想像你沿著樹的輪廓從左邊走一圈（像繞著樹邊走）</div>
+        <div class="ghost-path-box">
+          每個節點旁邊有 <strong>三個位置</strong>可以「蓋章記錄」：<br>
+          &nbsp;&nbsp;🟣 第一次靠近節點時（<strong style="color:var(--stack-color)">左側</strong>）蓋章 → <strong style="color:var(--stack-color)">前序 Pre-order</strong><br>
+          &nbsp;&nbsp;🔵 從左子樹回來、繞過節點下方時（<strong style="color:var(--array-color)">下方</strong>）蓋章 → <strong style="color:var(--array-color)">中序 In-order</strong><br>
+          &nbsp;&nbsp;🔴 從右子樹回來、要離開節點時（<strong style="color:var(--red)">右側</strong>）蓋章 → <strong style="color:var(--red)">後序 Post-order</strong><br><br>
+          <strong>記住位置，就記住了走訪法！</strong>（練習這棵樹：50 是根，左有 30→20/40，右有 70→60/80）
+        </div>
+        <div class="trick-row preorder">
+          <div class="trick-icon">🟣</div>
+          <div class="trick-text">
+            <h4 style="color:var(--stack-color)">前序（Pre-order）— 靠近節點的瞬間蓋章</h4>
+            <p>走到節點就立刻記下來，然後才去走左右子樹。<br>
+            順序：<strong style="color:var(--stack-color)">自己 → 左子樹 → 右子樹</strong><br>
+            結果：50 → 30 → 20 → 40 → 70 → 60 → 80<br>
+            <em style="color:var(--text-dim)">應用：複製整棵樹（要先知道父節點，才能建子節點）</em></p>
+          </div>
+        </div>
+        <div class="trick-row inorder">
+          <div class="trick-icon">🔵</div>
+          <div class="trick-text">
+            <h4 style="color:var(--array-color)">中序（In-order）— 從左子樹繞回、經過下方時蓋章</h4>
+            <p>先把左邊全走完，回來時才記自己，然後再去右邊。<br>
+            順序：<strong style="color:var(--array-color)">左子樹 → 自己 → 右子樹</strong><br>
+            結果（BST 中序 = 由小到大）：20 → 30 → 40 → 50 → 60 → 70 → 80 ✨<br>
+            <em style="color:var(--text-dim)">應用：輸出 BST 排序結果</em></p>
+          </div>
+        </div>
+        <div class="trick-row postorder">
+          <div class="trick-icon">🔴</div>
+          <div class="trick-text">
+            <h4 style="color:var(--red)">後序（Post-order）— 要離開節點時才蓋章</h4>
+            <p>左右子樹都全部走完，要離開這個節點時才記下來。<br>
+            順序：<strong style="color:var(--red)">左子樹 → 右子樹 → 自己</strong><br>
+            結果：20 → 40 → 30 → 60 → 80 → 70 → 50<br>
+            <em style="color:var(--text-dim)">應用：刪除整棵樹（子節點先刪，父節點最後）</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">
+        <span class="section-badge tree">C</span>
+        <span>動畫 — 看走訪順序一步步亮起來</span>
+      </div>
+      <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:20px">選一種走訪法，對照上方說明，確認自己理解了！</p>
+      <div class="tree-canvas-wrap" style="min-height:260px">
+        <svg id="tree-svg2" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="controls">
+        <button class="btn btn-inorder"   onclick="doTraversal('inorder')">🔵 中序</button>
+        <button class="btn btn-preorder"  onclick="doTraversal('preorder')">🟣 前序</button>
+        <button class="btn btn-postorder" onclick="doTraversal('postorder')">🔴 後序</button>
+        <button class="btn btn-neutral"   onclick="resetTraversal()">🔄 重置</button>
+      </div>
+      <div class="section-title" style="margin-top:16px">走訪結果序列（依序出現）</div>
+      <div class="trav-seq" id="trav-seq-display"></div>
+      <div class="log-box" id="trav-log">← 選一種走訪方式開始動畫！</div>
+    </div>
+
+    <div class="two-col">
+      <div class="analogy arr">
+        <strong>🔵 中序的神奇特性</strong>
+        對 BST 做中序走訪，輸出結果<strong>一定是由小到大排好序的</strong>！<br>
+        這是 BST 最重要的性質，大學資料庫常用。
+      </div>
+      <div class="analogy lnk">
+        <strong>🔴 後序的生活例子</strong>
+        刪除電腦資料夾：<br>
+        要先把<strong>裡面的子資料夾和檔案全刪完</strong>，才能刪資料夾本身。<br>
+        → 這就是後序！
+      </div>
+    </div>
+
+    <!-- 進階：走訪程式碼 -->
+    <div class="adv-section" id="adv-trav">
+      <div class="adv-header">
+        <span class="adv-header-icon">💻</span>
+        <span class="adv-header-title">進階：三種走訪的遞迴程式碼</span>
+        <span class="adv-header-badge">ADVANCED</span>
+      </div>
+      <div class="adv-body">
+        <p style="font-size:var(--text-sm);color:var(--text-mid);margin-bottom:16px;line-height:1.8">
+          三種走訪的程式碼幾乎一樣，只差<strong style="color:var(--adv-color)">那一行 print 放在哪裡</strong>！
+        </p>
+        <div class="code-block">
+<span class="c-cmt"># 前序：自己先印</span>
+<span class="c-kw">def</span> <span class="c-fn">preorder</span>(node):
+    <span class="c-kw">if</span> node <span class="c-kw">is</span> <span class="c-kw">None</span>: <span class="c-kw">return</span>
+    <span class="c-fn">print</span>(node.val)        <span class="c-cmt">← 這行在最前面</span>
+    <span class="c-fn">preorder</span>(node.left)
+    <span class="c-fn">preorder</span>(node.right)
+
+<span class="c-cmt"># 中序：左邊回來再印</span>
+<span class="c-kw">def</span> <span class="c-fn">inorder</span>(node):
+    <span class="c-kw">if</span> node <span class="c-kw">is</span> <span class="c-kw">None</span>: <span class="c-kw">return</span>
+    <span class="c-fn">inorder</span>(node.left)
+    <span class="c-fn">print</span>(node.val)        <span class="c-cmt">← 這行在中間</span>
+    <span class="c-fn">inorder</span>(node.right)
+
+<span class="c-cmt"># 後序：左右都走完才印</span>
+<span class="c-kw">def</span> <span class="c-fn">postorder</span>(node):
+    <span class="c-kw">if</span> node <span class="c-kw">is</span> <span class="c-kw">None</span>: <span class="c-kw">return</span>
+    <span class="c-fn">postorder</span>(node.left)
+    <span class="c-fn">postorder</span>(node.right)
+    <span class="c-fn">print</span>(node.val)        <span class="c-cmt">← 這行在最後面</span>
+        </div>
+        <div class="adv-challenge">
+          <div class="adv-challenge-title">🔥 進階挑戰</div>
+          <p>如何用「Stack（堆疊）」改寫中序走訪成「迭代版」（不用遞迴）？<br>
+          這是面試常考題！提示：Stack 幫你記住「還沒訪問完的節點」。</p>
+          <span class="adv-challenge-hint" onclick="showHint(this)">👁 查看提示（點一下）</span>
+          <div class="code-block" style="display:none;margin-top:10px">
+<span class="c-kw">def</span> <span class="c-fn">inorder_iter</span>(root):
+    stack, cur, result <span class="c-op">=</span> [], root, []
+    <span class="c-kw">while</span> cur <span class="c-kw">or</span> stack:
+        <span class="c-kw">while</span> cur:           <span class="c-cmt"># 一路往左走</span>
+            stack.append(cur)
+            cur <span class="c-op">=</span> cur.left
+        cur <span class="c-op">=</span> stack.pop()    <span class="c-cmt"># 彈出，記錄</span>
+        result.append(cur.val)
+        cur <span class="c-op">=</span> cur.right       <span class="c-cmt"># 往右走</span>
+    <span class="c-kw">return</span> result
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2 反思 -->
+    <div class="reflect-box">
+      <div class="reflect-header">
+        <span class="reflect-header-icon">🪞</span>
+        <span class="reflect-header-text">學習反思</span>
+        <span class="reflect-header-badge">P2 後設認知</span>
+      </div>
+      <div class="reflect-body">
+        <div class="reflect-q">為什麼 BST 中序走訪輸出的一定是由小到大的順序？試著用 BST 的定義來解釋。</div>
+        <textarea class="reflect-textarea" id="reflect-trav" placeholder="寫下你的理解..."></textarea>
+        <button class="reflect-submit" onclick="submitReflect('reflect-trav','reflect-ans-trav')">送出 →</button>
+        <div class="reflect-answer" id="reflect-ans-trav">
+          <div class="reflect-answer-label">REFERENCE ANSWER</div>
+          <div class="reflect-answer-text">BST 的定義是左子樹 &lt; 根 &lt; 右子樹。中序走訪先走左子樹（最小值），再記錄自己，再走右子樹（較大值）。這個「先左、再自己、再右」的順序，加上 BST 的大小規則，就保證了輸出一定是遞增排序！</div>
+        </div>
+        <div class="reflect-self-rate" id="rate-trav">
+          <div class="reflect-rate-label">你覺得你理解到什麼程度？</div>
+          <div class="rate-btns">
+            <button class="rate-btn" data-r="1" onclick="selectRate(this,'rate-trav')">😵 還不懂</button>
+            <button class="rate-btn" data-r="2" onclick="selectRate(this,'rate-trav')">🤔 大概懂</button>
+            <button class="rate-btn" data-r="3" onclick="selectRate(this,'rate-trav')">😊 完全懂</button>
+          </div>
+          <div class="reflect-done-msg" id="done-trav">✓ 已記錄，繼續下一個 Tab！</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-traversal -->
+
+  <!-- ══════════════════════════
+       TAB C：術語圖解
+  ════════════════════════════ -->
+  <div id="tab-terms" class="panel">
+    <div class="card">
+      <div class="section-label">
+        <span class="section-badge tree">C</span>
+        <span>點選術語卡片，圖中對應位置會亮起！</span>
+      </div>
+      <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:20px">👆 點一下術語名稱，圖裡對應的節點就會高亮顯示</p>
+
+      <div class="tree-canvas-wrap" style="min-height:240px">
+        <svg id="tree-svg3" viewBox="0 0 800 240" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="term-hint" id="term-hint">👆 點選下方任一術語，圖中對應位置亮起</div>
+
+      <div class="term-grid">
+        <div class="term-card" onclick="highlightTerm('root',this)">
+          <span class="term-keyword">Root</span><h4>🌱 根節點</h4>
+          <p>整棵樹最頂端，沒有父節點，是所有節點的起點</p>
+        </div>
+        <div class="term-card" onclick="highlightTerm('leaf',this)">
+          <span class="term-keyword">Leaf</span><h4>🍂 葉節點</h4>
+          <p>沒有任何子節點的節點，樹的最末端</p>
+        </div>
+        <div class="term-card" onclick="highlightTerm('parent',this)">
+          <span class="term-keyword">Parent</span><h4>👨‍👧 父節點</h4>
+          <p>直接連結到子節點的節點（50 是 30、70 的父節點）</p>
+        </div>
+        <div class="term-card" onclick="highlightTerm('child',this)">
+          <span class="term-keyword">Child</span><h4>👶 子節點</h4>
+          <p>被父節點連結的節點（30 和 70 都是 50 的子節點）</p>
+        </div>
+        <div class="term-card" onclick="highlightTerm('height',this)">
+          <span class="term-keyword">Height</span><h4>📏 高度</h4>
+          <p>根節點到最深葉節點的邊數（這棵樹高度 = 2）</p>
+        </div>
+        <div class="term-card" onclick="highlightTerm('subtree',this)">
+          <span class="term-keyword">Subtree</span><h4>🌿 子樹</h4>
+          <p>某節點和其所有後代組成的更小的樹</p>
+        </div>
+        <div class="term-card" onclick="highlightTerm('level',this)">
+          <span class="term-keyword">Level</span><h4>📐 層</h4>
+          <p>根節點為第 0 層，往下每層 +1</p>
+        </div>
+        <div class="term-card" onclick="highlightTerm('binary',this)">
+          <span class="term-keyword">Binary</span><h4>🔢 二元樹</h4>
+          <p>每個節點最多只有左、右 2 個子節點</p>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tab-terms -->
+
+  <!-- ══════════════════════════
+       TAB D：生活應用
+  ════════════════════════════ -->
+  <div id="tab-realworld" class="panel">
+    <div class="card">
+      <div class="section-label">
+        <span class="section-badge tree">D</span>
+        <span>樹在生活中無所不在</span>
+      </div>
+      <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:20px">你每天都在用樹狀結構，只是不知道而已！</p>
+      <div class="rw-grid">
+        <div class="rw-card"><div class="rw-icon">📁</div><h4>電腦資料夾</h4><p>C:\ → 文件 → 作業 → 第一章.docx，就是一棵樹！</p></div>
+        <div class="rw-card"><div class="rw-icon">👨‍👩‍👧‍👦</div><h4>家族族譜</h4><p>曾祖父母 → 祖父母 → 父母 → 你，標準樹狀結構</p></div>
+        <div class="rw-card"><div class="rw-icon">🏢</div><h4>公司組織圖</h4><p>董事長 → 各部門主管 → 員工</p></div>
+        <div class="rw-card"><div class="rw-icon">🔍</div><h4>搜尋引擎</h4><p>Google 用樹狀索引快速搜尋幾百億個網頁</p></div>
+        <div class="rw-card"><div class="rw-icon">🎮</div><h4>遊戲決策</h4><p>RPG 技能樹、對話選項分支，都是樹！</p></div>
+        <div class="rw-card"><div class="rw-icon">🌐</div><h4>網頁 HTML</h4><p>&lt;html&gt;→&lt;body&gt;→&lt;div&gt;→&lt;p&gt; 就是 DOM 樹</p></div>
+        <div class="rw-card"><div class="rw-icon">♟️</div><h4>西洋棋 AI</h4><p>每一步棋展開成樹，AI 計算最有利的路徑</p></div>
+        <div class="rw-card"><div class="rw-icon">📱</div><h4>手機選單</h4><p>設定 → 通知 → App 通知 → LINE，多層選單就是樹</p></div>
+      </div>
+    </div>
+
+    <div class="analogy tree" style="color:var(--tree-color)">
+      <strong>🌳 為什麼要學樹？</strong>
+      資料結構的核心是「<strong>如何有效率地找到資料</strong>」。<br>
+      陣列要一個個找（慢），BST 每次找可以砍掉一半的範圍（快）。<br>
+      大學資料庫、作業系統、網路路由，幾乎所有軟體核心都用到樹——<strong style="color:var(--yellow)">學好樹等於打通資訊的任督二脈！</strong>
+    </div>
+
+    <!-- P2 反思 -->
+    <div class="reflect-box">
+      <div class="reflect-header">
+        <span class="reflect-header-icon">🪞</span>
+        <span class="reflect-header-text">學習反思</span>
+        <span class="reflect-header-badge">P2 後設認知</span>
+      </div>
+      <div class="reflect-body">
+        <div class="reflect-q">在你的生活或未來想做的事情中，你覺得樹狀結構可能出現在哪裡？</div>
+        <textarea class="reflect-textarea" id="reflect-rw" placeholder="例如：我想開發遊戲，技能樹..."></textarea>
+        <button class="reflect-submit" onclick="submitReflect('reflect-rw','reflect-ans-rw')">送出 →</button>
+        <div class="reflect-answer" id="reflect-ans-rw">
+          <div class="reflect-answer-label">很棒的思考！</div>
+          <div class="reflect-answer-text">不論是遊戲開發的技能樹、資料庫的索引、AI 的決策樹，還是作業系統的檔案系統——樹都是核心結構之一。能把所學連結到自己有興趣的領域，這正是最深刻的學習方式！</div>
+        </div>
+        <div class="reflect-self-rate" id="rate-rw">
+          <div class="reflect-rate-label">你覺得你理解到什麼程度？</div>
+          <div class="rate-btns">
+            <button class="rate-btn" data-r="1" onclick="selectRate(this,'rate-rw')">😵 還不懂</button>
+            <button class="rate-btn" data-r="2" onclick="selectRate(this,'rate-rw')">🤔 大概懂</button>
+            <button class="rate-btn" data-r="3" onclick="selectRate(this,'rate-rw')">😊 完全懂</button>
+          </div>
+          <div class="reflect-done-msg" id="done-rw">✓ 完成！恭喜你學完 Tree & BST 單元 🎉</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-realworld -->
+
+</div><!-- /wrapper -->
+
+<script src="../shared/nav.js"></script>
 <script>
-// ══ BST ══
-class BSTNode{constructor(v){this.val=v;this.left=null;this.right=null;}}
-class BST{
-  constructor(){this.root=null;}
-  insert(val){
-    const steps=[],node=new BSTNode(val);
-    if(!this.root){this.root=node;steps.push(`樹是空的，${val} 成為根節點 Root`);return steps;}
-    let cur=this.root;
-    while(true){
-      if(val===cur.val){steps.push(`${val} 已存在，不重複插入`);return steps;}
-      if(val<cur.val){
+/* ══════════════════════════════════════
+   BST 資料結構
+════════════════════════════════════ */
+class BSTNode { constructor(v) { this.val=v; this.left=null; this.right=null; } }
+class BST {
+  constructor() { this.root = null; }
+  insert(val) {
+    const steps=[], node=new BSTNode(val);
+    if (!this.root) { this.root=node; steps.push(`樹是空的，${val} 成為根節點 Root`); return steps; }
+    let cur = this.root;
+    while (true) {
+      if (val===cur.val) { steps.push(`${val} 已存在，不重複插入`); return steps; }
+      if (val < cur.val) {
         steps.push(`${val} < ${cur.val}，往左走`);
-        if(!cur.left){cur.left=node;steps.push(`左邊是空的，插入 ${val} ✅`);return steps;}
-        cur=cur.left;
-      }else{
+        if (!cur.left) { cur.left=node; steps.push(`左邊是空的，插入 ${val} ✅`); return steps; }
+        cur = cur.left;
+      } else {
         steps.push(`${val} > ${cur.val}，往右走`);
-        if(!cur.right){cur.right=node;steps.push(`右邊是空的，插入 ${val} ✅`);return steps;}
-        cur=cur.right;
+        if (!cur.right) { cur.right=node; steps.push(`右邊是空的，插入 ${val} ✅`); return steps; }
+        cur = cur.right;
       }
     }
   }
-  search(val){
-    const steps=[],path=[];let cur=this.root;
-    while(cur){
+  search(val) {
+    const steps=[], path=[]; let cur=this.root;
+    while (cur) {
       path.push(cur.val);
-      if(val===cur.val){steps.push(`找到了！${val} ✅`);return{found:true,path,steps};}
-      if(val<cur.val){steps.push(`${val} < ${cur.val}，往左找`);cur=cur.left;}
-      else{steps.push(`${val} > ${cur.val}，往右找`);cur=cur.right;}
+      if (val===cur.val)  { steps.push(`找到了！${val} ✅`); return {found:true,path,steps}; }
+      if (val < cur.val)  { steps.push(`${val} < ${cur.val}，往左找`); cur=cur.left; }
+      else                { steps.push(`${val} > ${cur.val}，往右找`); cur=cur.right; }
     }
     steps.push(`走到 NULL，找不到 ${val}`);
-    return{found:false,path,steps};
+    return {found:false, path, steps};
   }
 }
 
-// ══ LAYOUT ══
-function layoutTree(root,W,H){
-  const nodes=[],edges=[],GAP=66;
-  function assign(node,minX,maxX,y){
-    if(!node)return;
-    const x=(minX+maxX)/2;
-    node._x=x;node._y=y;nodes.push(node);
-    if(node.left){edges.push({x1:x,y1:y,x2:(minX+x)/2,y2:y+GAP});assign(node.left,minX,x,y+GAP);}
-    if(node.right){edges.push({x1:x,y1:y,x2:(x+maxX)/2,y2:y+GAP});assign(node.right,x,maxX,y+GAP);}
+/* ══ Layout ══ */
+function layoutTree(root, W, H) {
+  const nodes=[], edges=[], GAP=66;
+  function assign(node, minX, maxX, y) {
+    if (!node) return;
+    const x = (minX+maxX)/2;
+    node._x=x; node._y=y; nodes.push(node);
+    if (node.left)  { edges.push({x1:x,y1:y,x2:(minX+x)/2,y2:y+GAP}); assign(node.left,minX,x,y+GAP); }
+    if (node.right) { edges.push({x1:x,y1:y,x2:(x+maxX)/2,y2:y+GAP}); assign(node.right,x,maxX,y+GAP); }
   }
-  if(root)assign(root,24,W-24,38);
-  return{nodes,edges};
+  if (root) assign(root, 24, W-24, 38);
+  return {nodes, edges};
 }
+function svgEl(tag) { return document.createElementNS('http://www.w3.org/2000/svg', tag); }
 
-function svgEl(tag){return document.createElementNS('http://www.w3.org/2000/svg',tag);}
-
-function drawTree(svgId,root,hlVals=[],hlCls='highlight'){
-  const svg=document.getElementById(svgId);
-  while(svg.firstChild)svg.removeChild(svg.firstChild);
-  if(!root)return;
-  const vb=svg.getAttribute('viewBox').split(' ');
-  const W=+vb[2],H=+vb[3];
-  const{nodes,edges}=layoutTree(root,W,H);
-  const eG=svgEl('g'),nG=svgEl('g');
-  svg.appendChild(eG);svg.appendChild(nG);
-  edges.forEach(e=>{
+function drawTree(svgId, root, hlVals=[], hlCls='highlight') {
+  const svg = document.getElementById(svgId);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  if (!root) return;
+  const vb = svg.getAttribute('viewBox').split(' ');
+  const W=+vb[2], H=+vb[3];
+  const {nodes, edges} = layoutTree(root, W, H);
+  const eG=svgEl('g'), nG=svgEl('g');
+  svg.appendChild(eG); svg.appendChild(nG);
+  edges.forEach(e => {
     const l=svgEl('line');
-    l.setAttribute('x1',e.x1);l.setAttribute('y1',e.y1);
-    l.setAttribute('x2',e.x2);l.setAttribute('y2',e.y2);
-    l.setAttribute('class','edge-line');eG.appendChild(l);
+    l.setAttribute('x1',e.x1); l.setAttribute('y1',e.y1);
+    l.setAttribute('x2',e.x2); l.setAttribute('y2',e.y2);
+    l.setAttribute('class','edge-line'); eG.appendChild(l);
   });
-  nodes.forEach(n=>{
+  nodes.forEach(n => {
     const g=svgEl('g');
     const c=svgEl('circle');
-    c.setAttribute('cx',n._x);c.setAttribute('cy',n._y);c.setAttribute('r',22);
+    c.setAttribute('cx',n._x); c.setAttribute('cy',n._y); c.setAttribute('r',22);
     c.setAttribute('class','node-circle'+(hlVals.includes(n.val)?' '+hlCls:''));
     c.setAttribute('id','nc-'+svgId+'-'+n.val);
     const t=svgEl('text');
-    t.setAttribute('x',n._x);t.setAttribute('y',n._y);
-    t.setAttribute('class','node-text');t.textContent=n.val;
-    g.appendChild(c);g.appendChild(t);nG.appendChild(g);
+    t.setAttribute('x',n._x); t.setAttribute('y',n._y);
+    t.setAttribute('class','node-text'); t.textContent=n.val;
+    g.appendChild(c); g.appendChild(t); nG.appendChild(g);
   });
 }
 
-// ══ A-1 ══
-let bst=new BST();
-function renderBST(hl=[],cls='highlight'){
-  drawTree('tree-svg',bst.root,hl,cls);
-  document.getElementById('empty-msg').style.display=bst.root?'none':'block';
+/* ══ A-1 BST 互動 ══ */
+let bst = new BST();
+function renderBST(hl=[], cls='highlight') {
+  drawTree('tree-svg', bst.root, hl, cls);
+  document.getElementById('empty-msg').style.display = bst.root ? 'none' : 'block';
 }
-function bstLog(m,t=''){const el=document.getElementById('bst-log');el.textContent=m;el.className='log-box '+t;}
-function bstSteps(steps){
+function bstLog(m, t='') { const el=document.getElementById('bst-log'); el.textContent=m; el.className='log-box '+t; }
+function bstStepsShow(steps) {
   document.getElementById('bst-steps').style.display='block';
-  document.getElementById('bst-steps-content').innerHTML=steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><span>${s}</span></div>`).join('');
+  document.getElementById('bst-steps-content').innerHTML =
+    steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><span>${s}</span></div>`).join('');
 }
-function bstInsert(){
-  const val=parseInt(document.getElementById('bst-val').value);
-  if(isNaN(val)||val<1||val>99){bstLog('❌ 請輸入 1–99','error');return;}
-  const steps=bst.insert(val);
-  renderBST([val],'highlight');
-  bstLog(`✅ 插入 ${val} 完成！`,'success');
-  bstSteps(steps);
-  setTimeout(()=>renderBST(),1400);
+function bstInsert() {
+  const val = parseInt(document.getElementById('bst-val').value);
+  if (isNaN(val)||val<1||val>99) { bstLog('❌ 請輸入 1–99','error'); return; }
+  const steps = bst.insert(val);
+  renderBST([val], 'highlight');
+  bstLog(`✅ 插入 ${val} 完成！`, 'success');
+  bstStepsShow(steps);
+  setTimeout(()=>renderBST(), 1400);
 }
-function bstSearch(){
-  const val=parseInt(document.getElementById('bst-search').value);
-  if(!bst.root){bstLog('❌ 樹是空的！','error');return;}
-  const{found,path,steps}=bst.search(val);
-  bstSteps(steps);
-  let i=0;
-  const go=()=>{
-    renderBST(path.slice(0,i+1),'highlight');
-    if(i<path.length-1){i++;setTimeout(go,600);}
-    else{renderBST([val],found?'found':'highlight');bstLog(found?`🎯 找到 ${val}！走了 ${path.length} 步`:`❌ 找不到 ${val}`,'info');}
-  };
-  go();
-}
-function bstReset(){bst=new BST();renderBST();bstLog('🔄 已重置','');document.getElementById('bst-steps').style.display='none';}
-
-// ══ A-2 ══
-const DEMOS={
-  balanced:{vals:[50,30,70,20,40,60,80,15,35]},
-  unbalanced:{vals:[10,20,30,40,50,60,70]}
-};
-(function initChips(){
-  ['balanced','unbalanced'].forEach(k=>{
-    const el=document.getElementById('demo-seq-'+k);
-    el.innerHTML=DEMOS[k].vals.map((v,i)=>`<span class="demo-chip" id="chip-${k}-${i}">${v}</span>`).join('');
-  });
-})();
-
-let demoTimer=null;
-function runDemo(type){
-  if(demoTimer)clearTimeout(demoTimer);
-  ['balanced','unbalanced'].forEach(k=>DEMOS[k].vals.forEach((_,i)=>{
-    const c=document.getElementById(`chip-${k}-${i}`);
-    if(c){c.classList.remove('active','done');}
-  }));
-  document.getElementById('demo-empty-msg').style.display='none';
-  const demoBST=new BST(),vals=DEMOS[type].vals;
-  let i=0;
-  const go=()=>{
-    if(i>0){const p=document.getElementById(`chip-${type}-${i-1}`);if(p){p.classList.remove('active');p.classList.add('done');}}
-    if(i>=vals.length){
-      document.getElementById('demo-log').textContent=type==='balanced'?'✅ 平衡樹：左右均勻，高度小，搜尋效率高！':'⚠️ 不平衡！樹退化成一條鏈，跟陣列一樣慢…';
-      document.getElementById('demo-log').className='log-box '+(type==='balanced'?'success':'warn');
-      return;
+function bstSearch() {
+  const val = parseInt(document.getElementById('bst-search').value);
+  if (!bst.root) { bstLog('❌ 樹是空的！', 'error'); return; }
+  const {found, path, steps} = bst.search(val);
+  bstStepsShow(steps);
+  let i = 0;
+  const go = () => {
+    drawTree('tree-svg', bst.root, path.slice(0,i+1), 'highlight');
+    if (i < path.length-1) { i++; setTimeout(go, 500); }
+    else {
+      setTimeout(()=>{
+        drawTree('tree-svg', bst.root, found?[val]:[], found?'found':'highlight');
+        bstLog(found?`✅ 找到 ${val}！比了 ${path.length} 次`:`❌ 找不到 ${val}，比了 ${path.length} 次`, found?'success':'error');
+      }, 400);
     }
-    const cur=document.getElementById(`chip-${type}-${i}`);if(cur)cur.classList.add('active');
-    demoBST.insert(vals[i]);
-    drawTree('tree-svg-demo',demoBST.root,[vals[i]],'highlight');
-    document.getElementById('demo-log').textContent=`正在插入 ${vals[i]}… (${i+1}/${vals.length})`;
-    document.getElementById('demo-log').className='log-box';
-    i++;demoTimer=setTimeout(go,520);
   };
   go();
 }
-
-// ══ B TRAVERSAL ══
-let travBST=new BST();
-[50,30,70,20,40,60,80].forEach(v=>travBST.insert(v));
-function drawTravTree(hl=[],cls=''){drawTree('tree-svg2',travBST.root,hl,cls);}
-function inorder(n,r=[]){if(n){inorder(n.left,r);r.push(n.val);inorder(n.right,r);}return r;}
-function preorder(n,r=[]){if(n){r.push(n.val);preorder(n.left,r);preorder(n.right,r);}return r;}
-function postorder(n,r=[]){if(n){postorder(n.left,r);postorder(n.right,r);r.push(n.val);}return r;}
-let travTimer=null;
-function doTraversal(type){
-  if(travTimer)clearTimeout(travTimer);
-  drawTravTree();
-  document.getElementById('trav-seq-display').innerHTML='';
-  const seqEl=document.getElementById('trav-seq-display');
-  const logEl=document.getElementById('trav-log');
-  let seq,cls,tok,label;
-  if(type==='inorder')  {seq=inorder(travBST.root);  cls='trav-inorder';   tok='trav-inorder-tok';   label='中序（左→根→右）';}
-  if(type==='preorder') {seq=preorder(travBST.root); cls='trav-preorder';  tok='trav-preorder-tok';  label='前序（根→左→右）';}
-  if(type==='postorder'){seq=postorder(travBST.root);cls='trav-postorder'; tok='trav-postorder-tok'; label='後序（左→右→根）';}
-  logEl.textContent=label+' 走訪中…';logEl.className='log-box info';
-  let i=0;
-  const step=()=>{
-    if(i>=seq.length){logEl.textContent='✅ '+label+' 完成！結果：'+seq.join(' → ');logEl.className='log-box success';return;}
-    drawTravTree(seq.slice(0,i+1),cls);
-    const t=document.createElement('span');t.className='trav-token '+tok;t.textContent=seq[i];seqEl.appendChild(t);
-    i++;travTimer=setTimeout(step,550);
-  };
-  step();
+function bstReset() {
+  bst = new BST(); renderBST();
+  document.getElementById('bst-steps').style.display='none';
+  bstLog('← 重置完成，重新開始！');
 }
-function resetTraversal(){
-  if(travTimer)clearTimeout(travTimer);
-  drawTravTree();
+
+/* ══ P1 預測框 ══ */
+function checkPrediction() {
+  if (!bst.root) {
+    bst.insert(50);
+    renderBST();
+  }
+  const side = document.getElementById('predict-side').value;
+  const result = document.getElementById('predict-result');
+  result.style.display = 'block';
+  if (side==='left') { result.className='predict-result hit'; result.textContent='✅ 正確！30 < 50，所以在左側。'; }
+  else if (side==='right') { result.className='predict-result miss'; result.textContent='❌ 30 < 50，所以在左側，不是右側。'; }
+  else { result.className='predict-result miss'; result.textContent='請選一個答案！'; }
+}
+function checkTravPredict() {
+  const val = parseInt(document.getElementById('predict-trav').value);
+  const result = document.getElementById('predict-trav-result');
+  result.style.display = 'block';
+  if (val===20) { result.className='predict-result hit'; result.textContent='✅ 正確！中序走訪先走到最左邊（最小值）20。'; }
+  else { result.className='predict-result miss'; result.textContent=`❌ 不對，中序先走最左邊，第一個是 20（最小值）。你答了 ${val}。`; }
+}
+
+/* ══ A-2 示範 ══ */
+const BALANCED   = [50,30,70,20,40,60,80];
+const UNBALANCED = [10,20,30,40,50,60,70];
+function initDemoChips() {
+  ['balanced','unbalanced'].forEach(t => {
+    const arr = t==='balanced'?BALANCED:UNBALANCED;
+    const c = document.getElementById('demo-seq-'+t);
+    c.innerHTML = arr.map(v=>`<span class="demo-chip" id="dc-${t}-${v}">${v}</span>`).join('');
+  });
+}
+function runDemo(type) {
+  const arr = type==='balanced'?BALANCED:UNBALANCED;
+  const demoTree = new BST();
+  let i = 0;
+  document.getElementById('demo-empty-msg').style.display='none';
+  arr.forEach(v=>{ const el=document.getElementById(`dc-${type}-${v}`); if(el) el.className='demo-chip'; });
+  const go = () => {
+    if (i>=arr.length) { document.getElementById('demo-log').textContent=type==='balanced'?'✅ 平衡樹建完！左右均勻，高度低':'❌ 退化！變成一條鏈，跟陣列一樣慢'; return; }
+    const v = arr[i];
+    const el = document.getElementById(`dc-${type}-${v}`);
+    if (el) el.className='demo-chip active';
+    demoTree.insert(v);
+    drawTree('tree-svg-demo', demoTree.root);
+    document.getElementById('demo-log').textContent=`插入 ${v}...`;
+    setTimeout(()=>{ if(el) el.className='demo-chip done'; i++; go(); }, 700);
+  };
+  go();
+}
+initDemoChips();
+
+/* ══ Tab B 走訪 SVG ══ */
+const TRAV_TREE = new BST();
+[50,30,70,20,40,60,80].forEach(v=>TRAV_TREE.insert(v));
+function initTravSvg() { drawTree('tree-svg2', TRAV_TREE.root); }
+function inorder(node, res=[])   { if(!node) return; inorder(node.left,res); res.push(node.val); inorder(node.right,res); return res; }
+function preorder(node, res=[])  { if(!node) return; res.push(node.val); preorder(node.left,res); preorder(node.right,res); return res; }
+function postorder(node, res=[]) { if(!node) return; postorder(node.left,res); postorder(node.right,res); res.push(node.val); return res; }
+function doTraversal(type) {
+  const fns = {inorder, preorder, postorder};
+  const cls = {inorder:'trav-inorder', preorder:'trav-preorder', postorder:'trav-postorder'};
+  const tok = {inorder:'trav-inorder-tok', preorder:'trav-preorder-tok', postorder:'trav-postorder-tok'};
+  const seq = fns[type](TRAV_TREE.root, []);
+  const seqEl = document.getElementById('trav-seq-display');
+  seqEl.innerHTML = '';
+  let i = 0;
+  const log = document.getElementById('trav-log');
+  log.textContent = `正在執行 ${type === 'inorder'?'中序':type==='preorder'?'前序':'後序'} 走訪...`;
+  drawTree('tree-svg2', TRAV_TREE.root);
+  const go = () => {
+    if (i>=seq.length) { log.textContent=`完成！序列：${seq.join(' → ')}`; log.className='log-box success'; return; }
+    const v = seq[i];
+    drawTree('tree-svg2', TRAV_TREE.root, seq.slice(0,i+1), cls[type]);
+    const span = document.createElement('span');
+    span.className = `trav-token ${tok[type]}`;
+    span.style.animationDelay = `0ms`;
+    span.textContent = v;
+    seqEl.appendChild(span);
+    i++; setTimeout(go, 500);
+  };
+  go();
+  markTabDone(1);
+}
+function resetTraversal() {
+  drawTree('tree-svg2', TRAV_TREE.root);
   document.getElementById('trav-seq-display').innerHTML='';
   document.getElementById('trav-log').textContent='← 選一種走訪方式開始動畫！';
   document.getElementById('trav-log').className='log-box';
 }
+initTravSvg();
 
-// ══ C TERMS ══
-let termsBST=new BST();
-[50,30,70,20,40].forEach(v=>termsBST.insert(v));
-
-const TERM_MAP={
-  root:    {nodes:[50],  hint:'🌱 根節點 Root = 50（最頂端，整棵樹的起點，沒有父節點）'},
-  leaf:    {nodes:[20,40,70], hint:'🍂 葉節點 Leaf = 20、40、70（沒有任何子節點，在樹的末端）'},
-  parent:  {nodes:[50,30], hint:'👨‍👧 父節點 Parent：50 是 30、70 的父 ／ 30 是 20、40 的父'},
-  child:   {nodes:[30,70], hint:'👶 子節點 Child：30 和 70 都是 50 的子節點'},
-  height:  {nodes:[50,30,20], hint:'📏 高度 Height = 2（根 50 → 30 → 20，共走 2 條邊）'},
-  subtree: {nodes:[30,20,40], hint:'🌿 子樹 Subtree：節點 30 加上它的後代 20、40，組成一棵子樹'},
-  level:   {nodes:[50], hint:'📐 Level 0 = 根節點 50 ／ Level 1 = 30,70 ／ Level 2 = 20,40'},
-  binary:  {nodes:[50,30,70,20,40], hint:'🔢 Binary Tree：每個節點最多只有「左」和「右」2 個子節點'},
+/* ══ Tab C 術語圖解 ══ */
+const TERM_TREE = new BST();
+[50,30,70,20,40,60,80].forEach(v=>TERM_TREE.insert(v));
+function initTermSvg() { drawTree('tree-svg3', TERM_TREE.root); }
+const TERM_MAP = {
+  root:    { vals:[50], msg:'根節點（Root）：50 是整棵樹的起點，沒有父節點' },
+  leaf:    { vals:[20,40,60,80], msg:'葉節點（Leaf）：20、40、60、80 沒有任何子節點' },
+  parent:  { vals:[50,30,70], msg:'父節點（Parent）：50 是 30、70 的父節點；30 是 20、40 的父節點' },
+  child:   { vals:[30,70], msg:'子節點（Child）：30 和 70 都是 50 的子節點' },
+  height:  { vals:[50,30,20], msg:'高度（Height）：從根 50 到最深葉節點，高度 = 2（邊數）' },
+  subtree: { vals:[30,20,40], msg:'子樹（Subtree）：30 和它的子節點 20、40 組成一棵子樹' },
+  level:   { vals:[50,30,70,20,40,60,80], msg:'層（Level）：50 在第 0 層，30/70 在第 1 層，20/40/60/80 在第 2 層' },
+  binary:  { vals:[50,30,70,20,40,60,80], msg:'二元樹（Binary Tree）：每個節點最多 2 個子節點——就是這棵樹！' },
 };
-
-function initTermsDiagram(){
-  const svg=document.getElementById('tree-svg3');
-  while(svg.firstChild)svg.removeChild(svg.firstChild);
-  const{nodes,edges}=layoutTree(termsBST.root,800,240);
-  const eG=svgEl('g'),nG=svgEl('g');
-  svg.appendChild(eG);svg.appendChild(nG);
-  edges.forEach(e=>{
-    const l=svgEl('line');
-    l.setAttribute('x1',e.x1);l.setAttribute('y1',e.y1);
-    l.setAttribute('x2',e.x2);l.setAttribute('y2',e.y2);
-    l.setAttribute('class','edge-line');eG.appendChild(l);
-  });
-  nodes.forEach(n=>{
-    const g=svgEl('g');
-    const c=svgEl('circle');
-    c.setAttribute('cx',n._x);c.setAttribute('cy',n._y);c.setAttribute('r',22);
-    c.setAttribute('class','node-circle');
-    const t=svgEl('text');t.setAttribute('x',n._x);t.setAttribute('y',n._y);t.setAttribute('class','node-text');t.textContent=n.val;
-    g.appendChild(c);g.appendChild(t);nG.appendChild(g);
-  });
-}
-
-function highlightTerm(key,cardEl){
+function highlightTerm(key, el) {
   document.querySelectorAll('.term-card').forEach(c=>c.classList.remove('active'));
-  cardEl.classList.add('active');
-  const cfg=TERM_MAP[key];
-  // redraw with highlights
-  const svg=document.getElementById('tree-svg3');
-  while(svg.firstChild)svg.removeChild(svg.firstChild);
-  const{nodes,edges}=layoutTree(termsBST.root,800,240);
-  const eG=svgEl('g'),nG=svgEl('g'),annotG=svgEl('g');
-  svg.appendChild(eG);svg.appendChild(nG);svg.appendChild(annotG);
-  edges.forEach(e=>{
-    const l=svgEl('line');
-    l.setAttribute('x1',e.x1);l.setAttribute('y1',e.y1);
-    l.setAttribute('x2',e.x2);l.setAttribute('y2',e.y2);
-    l.setAttribute('class','edge-line');eG.appendChild(l);
-  });
-  nodes.forEach(n=>{
-    const isHL=cfg.nodes.includes(n.val);
-    const g=svgEl('g');
-    const c=svgEl('circle');
-    c.setAttribute('cx',n._x);c.setAttribute('cy',n._y);c.setAttribute('r',22);
-    c.setAttribute('class','node-circle'+(isHL?' term-hl':''));
-    const t=svgEl('text');
-    t.setAttribute('x',n._x);t.setAttribute('y',n._y);
-    t.setAttribute('class','node-text');
-    if(isHL)t.style.fill='#fbbf24';
-    t.textContent=n.val;
-    g.appendChild(c);g.appendChild(t);nG.appendChild(g);
-  });
-  // height annotation
-  if(key==='height'){
-    const n50=nodes.find(n=>n.val===50),n20=nodes.find(n=>n.val===20);
-    if(n50&&n20){
-      const dl=svgEl('line');
-      dl.setAttribute('x1',n50._x+34);dl.setAttribute('y1',n50._y);
-      dl.setAttribute('x2',n20._x+34);dl.setAttribute('y2',n20._y);
-      dl.setAttribute('stroke','#fbbf24');dl.setAttribute('stroke-width','1.5');
-      dl.setAttribute('stroke-dasharray','5,3');annotG.appendChild(dl);
-      const ht=svgEl('text');
-      ht.setAttribute('x',n20._x+40);ht.setAttribute('y',(n50._y+n20._y)/2);
-      ht.setAttribute('fill','#fbbf24');ht.setAttribute('font-size','12');
-      ht.setAttribute('font-family','Noto Sans TC,sans-serif');
-      ht.textContent='高度=2';annotG.appendChild(ht);
-    }
-  }
-  // level annotation
-  if(key==='level'){
-    const levels=[{y:38,text:'Level 0'},{y:104,text:'Level 1'},{y:170,text:'Level 2'}];
-    levels.forEach(({y,text})=>{
-      const lt=svgEl('text');
-      lt.setAttribute('x',6);lt.setAttribute('y',y);
-      lt.setAttribute('fill','#fbbf24');lt.setAttribute('font-size','11');
-      lt.setAttribute('font-family','Noto Sans TC,sans-serif');
-      lt.textContent=text;annotG.appendChild(lt);
-    });
-  }
-  // subtree box
-  if(key==='subtree'){
-    const n30=nodes.find(n=>n.val===30);
-    if(n30){
-      const rect=svgEl('rect');
-      rect.setAttribute('x',n30._x-80);rect.setAttribute('y',n30._y-30);
-      rect.setAttribute('width',160);rect.setAttribute('height',130);
-      rect.setAttribute('rx',12);rect.setAttribute('fill','none');
-      rect.setAttribute('stroke','#fbbf24');rect.setAttribute('stroke-width','1.5');
-      rect.setAttribute('stroke-dasharray','6,3');
-      annotG.insertBefore(rect,annotG.firstChild);
-      const lt=svgEl('text');
-      lt.setAttribute('x',n30._x);lt.setAttribute('y',n30._y+118);
-      lt.setAttribute('fill','#fbbf24');lt.setAttribute('font-size','11');
-      lt.setAttribute('text-anchor','middle');lt.setAttribute('font-family','Noto Sans TC,sans-serif');
-      lt.textContent='子樹 Subtree';annotG.appendChild(lt);
-    }
-  }
-  // hint
-  const hint=document.getElementById('term-hint');
-  hint.style.color='#fbbf24';hint.textContent='💡 '+cfg.hint;
+  el.classList.add('active');
+  const {vals, msg} = TERM_MAP[key];
+  drawTree('tree-svg3', TERM_TREE.root, vals, 'term-hl');
+  document.getElementById('term-hint').textContent = msg;
+  markTabDone(2);
+}
+initTermSvg();
+
+/* ══ P4 前概念 ══ */
+function setPrior(key, btn) {
+  document.querySelectorAll('.prior-btn').forEach(b=>b.className='prior-btn');
+  btn.classList.add('chosen-'+key);
+  document.getElementById('prior-review').style.display='block';
 }
 
-// ══ TABS ══
-function switchTab(name,btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
+/* ══ P3 Onboarding ══ */
+const OB_STEPS = [
+  { icon:'🌳', title:'歡迎來到 Tree & BST！', body:'這個單元你將學習最重要的資料結構之一。先完成 3 個小任務，感受它的威力！', task:'任務 1：先回答上方的「直覺問題」，再按「我完成了」' },
+  { icon:'🔢', title:'任務 2：插入第一個節點', body:'進入 BST 互動區，插入數字 50（先按重置確保清空），這是「根節點」！', task:'任務 2：在 BST 互動區插入數字 50，然後再插入 30，看看 30 去哪裡' },
+  { icon:'🔍', title:'任務 3：體驗搜尋威力', body:'現在搜尋一個你沒有插入的數字，看看 BST 如何「智慧地」少走很多路！', task:'任務 3：在搜尋框輸入任意數字，按搜尋，看看決策過程' },
+];
+let obStep = 0;
+function renderOB() {
+  const s = OB_STEPS[obStep];
+  document.getElementById('ob-icon').textContent = s.icon;
+  document.getElementById('ob-title').textContent = s.title;
+  document.getElementById('ob-body').textContent  = s.body;
+  document.getElementById('ob-task').textContent  = s.task;
+  const pips = document.getElementById('onboard-pips');
+  pips.innerHTML = OB_STEPS.map((_,i)=>`<div class="onboard-pip ${i<obStep?'done':i===obStep?'active':''}"></div>`).join('');
+  document.getElementById('ob-next-btn').textContent = obStep < OB_STEPS.length-1 ? '我完成了 →' : '開始正式學習 →';
+}
+function onboardNext() {
+  obStep++;
+  if (obStep >= OB_STEPS.length) { onboardSkip(); return; }
+  renderOB();
+}
+function onboardSkip() { document.getElementById('onboard-overlay').style.display='none'; }
+renderOB();
+
+/* ══ Tab 切換 ══ */
+function switchTab(btn, id) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  if(name==='traversal')drawTravTree();
-  if(name==='terms')initTermsDiagram();
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabIdx = {bst:0, traversal:1, terms:2, realworld:3};
+  const idx = tabIdx[id];
+  document.querySelectorAll('.pill-dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===idx);
+  });
 }
 
-// ══ INIT ══
-renderBST();
-drawTravTree();
+/* ══ 進度膠囊 ══ */
+function markTabDone(idx) {
+  const dot = document.getElementById('pd-'+idx);
+  if (dot && !dot.classList.contains('done')) {
+    dot.classList.remove('active');
+    dot.classList.add('done');
+  }
+}
+
+/* ══ P2 反思 ══ */
+function submitReflect(textareaId, answerId) {
+  const ta = document.getElementById(textareaId);
+  if (!ta.value.trim()) { ta.style.borderColor='var(--red)'; setTimeout(()=>ta.style.borderColor='',1000); return; }
+  document.getElementById(answerId).style.display='block';
+  const rateId = answerId.replace('reflect-ans-','rate-');
+  const rateEl = document.getElementById(rateId);
+  if (rateEl) rateEl.style.display='block';
+}
+function selectRate(btn, groupId) {
+  document.querySelectorAll('#'+groupId+' .rate-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const doneId = 'done-' + groupId.replace('rate-','');
+  const done = document.getElementById(doneId);
+  if (done) { done.style.display='block'; }
+  markTabDone(0);
+}
+
+/* ══ 進階模式 ══ */
+let advOn = false;
+function toggleAdv() {
+  advOn = !advOn;
+  document.querySelectorAll('.adv-section').forEach(s => s.classList.toggle('visible', advOn));
+  const btn = document.getElementById('adv-btn');
+  btn.classList.toggle('active', advOn);
+  btn.innerHTML = `<span class="adv-dot"></span> 進階模式：${advOn?'已開啟 ✓':'程式碼'}`;
+}
+function showHint(el) {
+  const code = el.nextElementSibling;
+  if (code) { code.style.display = code.style.display==='none'?'block':'none'; }
+}
 </script>
 </body>
 </html>
