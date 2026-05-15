@@ -16,14 +16,14 @@
 .tree-canvas-wrap svg{width:100%;display:block;}
 .empty-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text-dim);font-size:var(--text-sm);text-align:center;pointer-events:none;width:85%;line-height:1.7;}
 
-/* 節點樣式 */
-.node-circle{fill:rgba(52,211,153,0.08);stroke:var(--tree-color);stroke-width:2;transition:all 0.4s;}
-.node-circle.highlight{fill:rgba(52,211,153,0.3);stroke:#6ee7b7;stroke-width:3;filter:drop-shadow(0 0 8px rgba(52,211,153,0.5));}
-.node-circle.found{fill:rgba(245,196,0,0.25);stroke:var(--yellow);stroke-width:3;filter:drop-shadow(0 0 10px rgba(245,196,0,0.5));}
-.node-circle.trav-inorder{fill:rgba(56,189,248,0.35);stroke:var(--array-color);stroke-width:3;filter:drop-shadow(0 0 8px rgba(56,189,248,0.4));}
-.node-circle.trav-preorder{fill:rgba(167,139,250,0.35);stroke:var(--stack-color);stroke-width:3;filter:drop-shadow(0 0 8px rgba(167,139,250,0.4));}
-.node-circle.trav-postorder{fill:rgba(239,68,68,0.35);stroke:var(--red);stroke-width:3;filter:drop-shadow(0 0 8px rgba(239,68,68,0.4));}
-.node-circle.term-hl{fill:rgba(245,196,0,0.25);stroke:var(--yellow);stroke-width:3;filter:drop-shadow(0 0 12px rgba(245,196,0,0.5));}
+/* 節點樣式 — 圓角方形，不再用圓形 */
+.node-rect{fill:rgba(52,211,153,0.08);stroke:var(--tree-color);stroke-width:2;rx:8;transition:all 0.4s;}
+.node-rect.highlight{fill:rgba(52,211,153,0.3);stroke:#6ee7b7;stroke-width:3;filter:drop-shadow(0 0 8px rgba(52,211,153,0.5));}
+.node-rect.found{fill:rgba(245,196,0,0.25);stroke:var(--yellow);stroke-width:3;filter:drop-shadow(0 0 10px rgba(245,196,0,0.5));}
+.node-rect.trav-inorder{fill:rgba(56,189,248,0.35);stroke:var(--array-color);stroke-width:3;filter:drop-shadow(0 0 8px rgba(56,189,248,0.4));}
+.node-rect.trav-preorder{fill:rgba(167,139,250,0.35);stroke:var(--stack-color);stroke-width:3;filter:drop-shadow(0 0 8px rgba(167,139,250,0.4));}
+.node-rect.trav-postorder{fill:rgba(239,68,68,0.35);stroke:var(--red);stroke-width:3;filter:drop-shadow(0 0 8px rgba(239,68,68,0.4));}
+.node-rect.term-hl{fill:rgba(245,196,0,0.25);stroke:var(--yellow);stroke-width:3;filter:drop-shadow(0 0 12px rgba(245,196,0,0.5));}
 .node-text{fill:var(--tree-color);font-family:var(--font-mono);font-size:14px;font-weight:700;text-anchor:middle;dominant-baseline:central;pointer-events:none;}
 .edge-line{stroke:rgba(52,211,153,0.25);stroke-width:2;fill:none;}
 .stamp-label{font-family:var(--font-mono);font-size:11px;font-weight:900;transition:opacity 0.3s;}
@@ -622,7 +622,7 @@ function drawTree(svgId,root,hlVals=[],hlCls='highlight',showLevels=false){
     });
   }
   edges.forEach(e=>{const l=svgEl('line');l.setAttribute('x1',e.x1);l.setAttribute('y1',e.y1);l.setAttribute('x2',e.x2);l.setAttribute('y2',e.y2);l.setAttribute('class','edge-line');eG.appendChild(l);});
-  nodes.forEach(n=>{const g=svgEl('g');const c=svgEl('circle');c.setAttribute('cx',n._x);c.setAttribute('cy',n._y);c.setAttribute('r',22);c.setAttribute('class','node-circle'+(hlVals.includes(n.val)?' '+hlCls:''));const t=svgEl('text');t.setAttribute('x',n._x);t.setAttribute('y',n._y);t.setAttribute('class','node-text');t.textContent=n.val;g.appendChild(c);g.appendChild(t);nG.appendChild(g);});
+  const NW=44,NH=32,NR=8;nodes.forEach(n=>{const g=svgEl('g');const c=svgEl('rect');c.setAttribute('x',n._x-NW/2);c.setAttribute('y',n._y-NH/2);c.setAttribute('width',NW);c.setAttribute('height',NH);c.setAttribute('rx',NR);c.setAttribute('ry',NR);c.setAttribute('class','node-rect'+(hlVals.includes(n.val)?' '+hlCls:''));const t=svgEl('text');t.setAttribute('x',n._x);t.setAttribute('y',n._y);t.setAttribute('class','node-text');t.textContent=n.val;g.appendChild(c);g.appendChild(t);nG.appendChild(g);});
 }
 
 /* ══ 動態調整 SVG 高度 ══ */
