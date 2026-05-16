@@ -40,6 +40,7 @@
   .page-title .arr{color:var(--array-color);}
   .page-title .lnk{color:var(--linked-color);}
 
+  /* ── P3 鷹架理論 Onboarding ── Wood, Bruner & Ross (1976) */
   .onboard-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;padding:20px;animation:slideIn 0.4s ease;}
   .onboard-box{background:var(--surface);border-radius:16px;border:1px solid var(--array-color);box-shadow:0 0 40px rgba(0,229,255,0.15);max-width:540px;width:100%;padding:36px 32px;}
   .onboard-step-indicator{display:flex;gap:6px;margin-bottom:24px;}
@@ -53,6 +54,7 @@
   .onboard-task strong{display:block;font-size:11px;letter-spacing:1px;opacity:0.7;margin-bottom:4px;}
   .onboard-skip{font-size:12px;color:var(--text-dim);background:none;border:none;cursor:pointer;text-decoration:underline;}
 
+  /* ── P1 有益困難 預測框 ── Bjork (1994) */
   .predict-box{background:var(--surface2);border-radius:8px;border:1px solid var(--yellow);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .predict-label{font-size:12px;color:var(--yellow);font-weight:700;flex-shrink:0;}
   .predict-input{width:60px;padding:6px 10px;border-radius:6px;border:1px solid var(--yellow);background:var(--bg);color:var(--yellow);font-family:var(--font-mono);font-size:14px;font-weight:700;text-align:center;}
@@ -62,6 +64,7 @@
   .predict-result.hit{background:rgba(57,255,130,0.1);color:var(--green);border:1px solid var(--green);}
   .predict-result.miss{background:rgba(255,68,102,0.1);color:#ff8099;border:1px solid var(--red);}
 
+  /* ── P4 概念轉變理論 前概念提問 ── Posner et al. (1982) */
   .prior-banner{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:24px 28px;margin-bottom:28px;animation:slideIn 0.4s ease;}
   .prior-banner.hidden{display:none;}
   .prior-q{font-size:15px;font-weight:700;color:var(--yellow);margin-bottom:6px;}
@@ -80,6 +83,7 @@
   .prior-col-label{font-size:10px;letter-spacing:2px;color:var(--text-dim);font-family:var(--font-mono);margin-bottom:6px;}
   .prior-col-val{font-size:13px;font-weight:600;}
 
+  /* ── P2 後設認知 反思問答框 ── Flavell (1979); Zimmerman (2002) */
   .reflect-box{margin-top:28px;background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden;}
   .reflect-header{padding:14px 18px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
   .reflect-header-icon{font-size:16px;}
@@ -105,237 +109,304 @@
   .rate-btn[data-r="3"].selected{border-color:var(--green);background:rgba(57,255,130,0.1);color:var(--green);}
   .reflect-done-msg{margin-top:10px;font-size:12px;color:var(--green);display:none;font-family:var(--font-mono);}
 
+  /* ── 進度追蹤膠囊 ── Deci & Ryan (2000) 能力感 */
   .progress-pill{position:fixed;top:64px;right:16px;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-dim);font-family:var(--font-mono);box-shadow:0 2px 12px rgba(0,0,0,0.3);}
   .pill-dots{display:flex;gap:4px;}
   .pill-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.4s;}
   .pill-dot.done{background:var(--green);box-shadow:0 0 6px var(--green);}
   .pill-dot.active{background:var(--yellow);}
 
-  .wordbank-bar{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:14px 20px;margin-bottom:28px;}
-  .wordbank-title{font-size:11px;letter-spacing:3px;color:var(--text-dim);font-family:var(--font-mono);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-  .wordbank-title::before{content:'📖';font-size:14px;}
-  .wordbank-chips{display:flex;gap:8px;flex-wrap:wrap;}
-  .wb-chip{padding:5px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--font-ui);border:1.5px solid;transition:all 0.2s;user-select:none;}
-  .wb-chip.arr-term{color:var(--array-color);border-color:var(--array-color);background:rgba(0,229,255,0.06);}
-  .wb-chip.lnk-term{color:var(--linked-color);border-color:var(--linked-color);background:rgba(255,107,53,0.06);}
-  .wb-chip.gen-term{color:var(--yellow);border-color:var(--yellow);background:rgba(255,214,0,0.06);}
-  .wb-chip:hover,.wb-chip.open{filter:brightness(1.2);transform:translateY(-1px);}
-  .wb-popup{position:fixed;z-index:300;background:var(--surface);border-radius:12px;border:1.5px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,0.5);padding:20px 22px;max-width:360px;width:92%;max-height:80vh;overflow-y:auto;animation:slideIn 0.22s ease;}
-  .wb-popup-term{font-size:16px;font-weight:700;margin-bottom:6px;}
-  .wb-popup-en{font-size:11px;font-family:var(--font-mono);color:var(--text-dim);letter-spacing:1px;margin-bottom:10px;}
-  .wb-popup-def{font-size:13px;color:var(--text);line-height:1.75;margin-bottom:10px;}
-  .wb-popup-ex{font-size:12px;color:var(--text-dim);font-family:var(--font-mono);background:var(--surface2);border-radius:6px;padding:8px 12px;border-left:3px solid currentColor;line-height:1.6;}
-  .wb-popup-close{position:absolute;top:12px;right:14px;background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-dim);line-height:1;}
-  .wb-backdrop{position:fixed;inset:0;z-index:299;background:transparent;}
+  /* ════════════════════════════════════════
+     Word Bank 術語庫
+     ════════════════════════════════════════ */
+  .wordbank-bar {
+    background: var(--surface); border-radius: 12px;
+    border: 1px solid var(--border); padding: 14px 20px;
+    margin-bottom: 28px;
+  }
+  .wordbank-title {
+    font-size: 11px; letter-spacing: 3px; color: var(--text-dim);
+    font-family: var(--font-mono); text-transform: uppercase;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .wordbank-title::before { content: '📖'; font-size: 14px; }
+  .wordbank-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .wb-chip {
+    padding: 5px 14px; border-radius: 20px; cursor: pointer;
+    font-size: 13px; font-weight: 600; font-family: var(--font-ui);
+    border: 1.5px solid; transition: all 0.2s;
+    user-select: none;
+  }
+  .wb-chip.arr-term  { color: var(--array-color);  border-color: var(--array-color);  background: rgba(0,229,255,0.06); }
+  .wb-chip.lnk-term  { color: var(--linked-color); border-color: var(--linked-color); background: rgba(255,107,53,0.06); }
+  .wb-chip.gen-term  { color: var(--yellow);        border-color: var(--yellow);        background: rgba(255,214,0,0.06); }
+  .wb-chip:hover, .wb-chip.open { filter: brightness(1.2); transform: translateY(-1px); }
+  .wb-popup {
+    position: fixed; z-index: 300;
+    background: var(--surface); border-radius: 12px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    padding: 20px 22px; max-width: 360px; width: 92%;
+    max-height: 80vh;          /* 最高 80% 螢幕高度 */
+    overflow-y: auto;          /* 超出時可捲動 */
+    animation: slideIn 0.22s ease;
+  }
+  .wb-popup-term {
+    font-size: 16px; font-weight: 700; margin-bottom: 6px;
+  }
+  .wb-popup-en {
+    font-size: 11px; font-family: var(--font-mono);
+    color: var(--text-dim); letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .wb-popup-def {
+    font-size: 13px; color: var(--text); line-height: 1.75; margin-bottom: 10px;
+  }
+  .wb-popup-ex {
+    font-size: 12px; color: var(--text-dim); font-family: var(--font-mono);
+    background: var(--surface2); border-radius: 6px;
+    padding: 8px 12px; border-left: 3px solid currentColor;
+    line-height: 1.6;
+  }
+  .wb-popup-close {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none; cursor: pointer;
+    font-size: 16px; color: var(--text-dim); line-height: 1;
+  }
+  .wb-backdrop {
+    position: fixed; inset: 0; z-index: 299; background: transparent;
+  }
 
-  .arr-viz-wrap{position:relative;min-height:90px;}
-  @keyframes cellSlideDown{from{opacity:0;transform:translateY(-24px) scale(0.9);}to{opacity:1;transform:translateY(0) scale(1);}}
-  .arr-cell.new-insert{animation:cellSlideDown 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
-  @keyframes shiftRight{0%{transform:translateX(0);}40%{transform:translateX(8px);}100%{transform:translateX(0);}}
-  .arr-cell.shifting{animation:shiftRight 0.45s ease;border-color:var(--yellow);background:rgba(255,214,0,0.10);}
-  @keyframes cellDelete{0%{opacity:1;transform:scale(1);}40%{opacity:1;transform:scale(1.08);}100%{opacity:0;transform:scale(0.6);}}
-  .arr-cell.deleting{animation:cellDelete 0.4s ease forwards;}
-  @keyframes shiftLeft{0%{transform:translateX(0);}40%{transform:translateX(-8px);}100%{transform:translateX(0);}}
-  .arr-cell.shift-left{animation:shiftLeft 0.4s ease;}
+  /* ════════════════════════════════════════
+     Array 動畫強化
+     ════════════════════════════════════════ */
+  .arr-viz-wrap { position: relative; min-height: 90px; }
+  /* 插入時新格子從上方滑入 */
+  @keyframes cellSlideDown {
+    from { opacity: 0; transform: translateY(-24px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .arr-cell.new-insert { animation: cellSlideDown 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  /* 搬移中：橘黃色滑動 */
+  @keyframes shiftRight {
+    0%   { transform: translateX(0); }
+    40%  { transform: translateX(8px); }
+    100% { transform: translateX(0); }
+  }
+  .arr-cell.shifting { animation: shiftRight 0.45s ease; border-color: var(--yellow); background: rgba(255,214,0,0.10); }
+  /* 被刪除：縮小消失 */
+  @keyframes cellDelete {
+    0%   { opacity: 1; transform: scale(1); }
+    40%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 0; transform: scale(0.6); }
+  }
+  .arr-cell.deleting { animation: cellDelete 0.4s ease forwards; }
+  /* 搬移左移 */
+  @keyframes shiftLeft {
+    0%   { transform: translateX(0); }
+    40%  { transform: translateX(-8px); }
+    100% { transform: translateX(0); }
+  }
+  .arr-cell.shift-left { animation: shiftLeft 0.4s ease; }
 
-  @keyframes ptrFlash{0%,100%{opacity:1;}50%{opacity:0.2;}}
-  .node-box.ptr-breaking{border-color:var(--red);animation:ptrFlash 0.4s 2;}
-  .node-box.ptr-linking{border-color:var(--green);box-shadow:0 0 16px var(--green);}
-  @keyframes nodeDropIn{from{opacity:0;transform:translateY(-20px) scale(0.85);}to{opacity:1;transform:translateY(0) scale(1);}}
-  .node-box.node-new{animation:nodeDropIn 0.45s cubic-bezier(0.34,1.56,0.64,1);}
-  @keyframes nodeFlyOut{0%{opacity:1;transform:translateY(0);}30%{opacity:1;transform:translateY(-10px);}100%{opacity:0;transform:translateY(-30px) scale(0.7);}}
-  .node-box.node-delete{animation:nodeFlyOut 0.45s ease forwards;}
-  .arrow-connector.ptr-new{background:var(--green);animation:ptrFlash 0.3s 3 ease;}
+  /* ════════════════════════════════════════
+     Linked List 動畫強化
+     ════════════════════════════════════════ */
+  /* 指標動畫：箭頭閃動 */
+  @keyframes ptrFlash {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.2; }
+  }
+  .node-box.ptr-breaking { border-color: var(--red); animation: ptrFlash 0.4s 2; }
+  .node-box.ptr-linking  { border-color: var(--green); box-shadow: 0 0 16px var(--green); }
+  /* 新節點從上方落入 */
+  @keyframes nodeDropIn {
+    from { opacity: 0; transform: translateY(-20px) scale(0.85); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .node-box.node-new { animation: nodeDropIn 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+  /* 刪除節點：變紅後飛走 */
+  @keyframes nodeFlyOut {
+    0%   { opacity: 1; transform: translateY(0); }
+    30%  { opacity: 1; transform: translateY(-10px); }
+    100% { opacity: 0; transform: translateY(-30px) scale(0.7); }
+  }
+  .node-box.node-delete { animation: nodeFlyOut 0.45s ease forwards; }
+  /* 指標重接閃光 */
+  .arrow-connector.ptr-new {
+    background: var(--green);
+    animation: ptrFlash 0.3s 3 ease;
+  }
 
-  @keyframes arrowGrow{from{width:0;opacity:0;}to{width:36px;opacity:1;}}
-  @keyframes arrowFade{from{opacity:1;}to{opacity:0;width:0;}}
-  @keyframes nodeSlideIn{from{opacity:0;transform:translateY(-28px) scale(0.8);}to{opacity:1;transform:translateY(0) scale(1);}}
-  @keyframes nodeFadeUp{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-28px) scale(0.7);}}
-  .arrow-connector.anim-grow{animation:arrowGrow 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
-  .arrow-connector.anim-fade{animation:arrowFade 0.3s ease forwards;}
-  .node-box.anim-slide-in{animation:nodeSlideIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;}
-  .node-box.anim-fade-up{animation:nodeFadeUp 0.4s ease forwards;}
-  .node-box.new-node{border-color:var(--green) !important;box-shadow:0 0 18px var(--green);}
-  .arrow-connector.ptr-red{background:var(--red);}
-  .arrow-connector.ptr-red::after{border-left-color:var(--red);}
-  .arrow-connector.ptr-green{background:var(--green);}
-  .arrow-connector.ptr-green::after{border-left-color:var(--green);}
-  .ll-node.traversing .arrow-connector{background:var(--array-color);}
-  .ll-node.traversing .arrow-connector::after{border-left-color:var(--array-color);}
-
-  .section-badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:13px;font-weight:800;font-family:var(--font-mono);background:var(--surface2);border:1.5px solid currentColor;flex-shrink:0;line-height:1;}
-  .section-badge.arr{color:var(--array-color);border-color:var(--array-color);}
-  .section-badge.lnk{color:var(--linked-color);border-color:var(--linked-color);}
-  .section-badge.gold{color:var(--yellow);border-color:var(--yellow);}
-  .section-badge.gen{color:var(--text-dim);border-color:var(--border);}
-  .section-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text);}
-  .ll-node .node-order{font-size:9px;color:var(--text-dim);text-align:center;font-family:var(--font-mono);margin-top:2px;letter-spacing:0.5px;}
-  .ll-traverse-note{background:rgba(255,107,53,0.07);border:1px solid rgba(255,107,53,0.25);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--text-dim);line-height:1.6;}
-  .ll-traverse-note strong{color:var(--linked-color);}
-  .ll-traverse-note .note-q{color:var(--yellow);font-weight:700;}
-  .panel{padding:0 2px;}
-
-  /* ═══════════════════════════════════════
-     視覺精簡覆寫
-     目標：降低 AI感，讓功能訊息更自然
-  ═══════════════════════════════════════ */
-
-  /* 1. anim-step-label：去掉彩色背景邊框，改為左邊一條細線 + 小字 */
+  /* ── 動畫步驟說明文字 ── */
   .anim-step-label {
-    font-size: 12px;
-    font-family: var(--font-mono);
-    color: var(--text-dim);
-    background: none;
-    border: none;
-    border-left: 2px solid var(--border);
-    border-radius: 0;
-    padding: 4px 0 4px 10px;
-    margin-bottom: 8px;
-    min-height: 20px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.25s, border-color 0.25s;
+    font-size: 12px; font-family: var(--font-mono);
+    color: var(--yellow); background: rgba(255,214,0,0.08);
+    border: 1px solid rgba(255,214,0,0.25); border-radius: 6px;
+    padding: 5px 12px; margin-bottom: 10px;
+    min-height: 28px; display: flex; align-items: center; gap: 6px;
+    transition: all 0.3s;
   }
-  .anim-step-label.green {
-    color: var(--green);
-    border-left-color: var(--green);
-    background: none;
-  }
-  .anim-step-label.red {
-    color: rgba(255,100,100,0.8);
-    border-left-color: rgba(255,100,100,0.4);
-    background: none;
-  }
+  .anim-step-label.green { color: var(--green); background: rgba(57,255,130,0.08); border-color: rgba(57,255,130,0.25); }
+  .anim-step-label.red   { color: var(--red);   background: rgba(255,68,102,0.08); border-color: rgba(255,68,102,0.25); }
 
-  /* 2. .log：去掉大框，改成細線下方小字 */
-  .log {
-    font-size: 12px !important;
-    color: var(--text-dim) !important;
-    background: none !important;
-    border: none !important;
-    border-top: 1px solid var(--border) !important;
-    border-radius: 0 !important;
-    padding: 8px 2px 2px !important;
-    margin-top: 6px !important;
-    font-family: var(--font-mono) !important;
-    line-height: 1.6 !important;
+  /* ── 功能區塊標號 (A/B/C/D) ── */
+  .section-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    font-size: 13px; font-weight: 800; font-family: var(--font-mono);
+    background: var(--surface2); border: 1.5px solid currentColor;
+    flex-shrink: 0; line-height: 1;
   }
-  .log .err { color: rgba(255,100,100,0.8); }
-  .log .warn { color: var(--yellow); }
-  .log .step { color: var(--text-dim); }
-
-  /* 3. predict-box：邊框從黃色改為淡灰，hover 才亮 */
-  .predict-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 10px;
-    transition: border-color 0.2s;
-  }
-  .predict-box:focus-within {
-    border-color: rgba(255,214,0,0.4);
-  }
-  .predict-label {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-  .predict-input {
-    border-color: var(--border);
+  .section-badge.arr  { color: var(--array-color); border-color: var(--array-color); }
+  .section-badge.lnk  { color: var(--linked-color); border-color: var(--linked-color); }
+  .section-badge.gold { color: var(--yellow); border-color: var(--yellow); }
+  .section-badge.gen  { color: var(--text-dim); border-color: var(--border); }
+  .section-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; margin-bottom: 10px;
     color: var(--text);
   }
-  .predict-input:focus {
-    border-color: rgba(255,214,0,0.5);
-    box-shadow: none;
+  /* ── LL 節點序號 ── */
+  .ll-node .node-order {
+    font-size: 9px; color: var(--text-dim); text-align: center;
+    font-family: var(--font-mono); margin-top: 2px; letter-spacing: 0.5px;
   }
+  /* ── LL 走訪提示 ── */
+  .ll-traverse-note {
+    background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
+    font-size: 12px; color: var(--text-dim); line-height: 1.6;
+  }
+  .ll-traverse-note strong { color: var(--linked-color); }
+  .ll-traverse-note .note-q { color: var(--yellow); font-weight: 700; }
+  /* ── 版面：Tab 內容最大寬度 + 左右 padding ── */
+  .panel { padding: 0 2px; }
 
-  /* 4. section-badge：縮小、不那麼搶眼 */
-  .section-badge {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-    font-weight: 700;
-    opacity: 0.7;
+  /* ── LL 插入/刪除進階動畫 ── */
+  @keyframes arrowGrow {
+    from { width: 0; opacity: 0; }
+    to   { width: 36px; opacity: 1; }
   }
-  /* 滑過卡片時才完全顯現 */
-  .card:hover .section-badge { opacity: 1; }
-
-  /* 5. 導覽列 step 提示：縮小字體、降低對比 */
-  div[style*="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px"] {
-    font-size: 11px !important;
-    opacity: 0.65;
-    padding: 8px 12px !important;
+  @keyframes arrowFade {
+    from { opacity: 1; }
+    to   { opacity: 0; width: 0; }
   }
-
-  /* 6. card-header 與 card-body 間距：加一點呼吸 */
-  .card-body {
-    padding-top: 4px;
+  @keyframes nodeSlideIn {
+    from { opacity: 0; transform: translateY(-28px) scale(0.8); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
   }
-  .card + .card {
-    margin-top: 20px;
+  @keyframes nodeFadeUp {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-28px) scale(0.7); }
   }
-
-  /* 7. 按鈕：降低飽和度，讓按鈕更像工具而非主角 */
-  .btn-arr {
-    background: rgba(0,229,255,0.08) !important;
-    border-color: rgba(0,229,255,0.25) !important;
-    color: var(--array-color) !important;
-    font-weight: 500 !important;
+  .arrow-connector.anim-grow {
+    animation: arrowGrow 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
   }
-  .btn-lnk {
-    background: rgba(255,107,53,0.08) !important;
-    border-color: rgba(255,107,53,0.25) !important;
-    color: var(--linked-color) !important;
-    font-weight: 500 !important;
+  .arrow-connector.anim-fade {
+    animation: arrowFade 0.3s ease forwards;
   }
-  .btn-del {
-    background: rgba(255,68,102,0.06) !important;
-    border-color: rgba(255,68,102,0.2) !important;
-    color: rgba(255,100,120,0.85) !important;
-    font-weight: 500 !important;
+  .node-box.anim-slide-in {
+    animation: nodeSlideIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
   }
-  .btn-neutral {
-    font-weight: 500 !important;
-    opacity: 0.8;
+  .node-box.anim-fade-up {
+    animation: nodeFadeUp 0.4s ease forwards;
   }
-  .btn-neutral:hover { opacity: 1; }
-
-  /* 8. 分頁 tab 按鈕前的數字序號：淡化 */
-  .tabs .tab::before {
-    opacity: 0.5;
-    font-size: 10px;
+  /* 插入時新節點的綠色邊框 */
+  .node-box.new-node {
+    border-color: var(--green) !important;
+    box-shadow: 0 0 18px var(--green);
   }
-
-  /* 9. story-box：去掉過於顯眼的樣式（由 shared/style.css 控制，這裡補一層淡化） */
-  .story-box {
-    opacity: 0.85;
+  /* 箭頭顏色 override */
+  .arrow-connector.ptr-red {
+    background: var(--red);
   }
-
-  /* 10. 整體卡片 padding 稍微增大，製造更多呼吸空間 */
-  .card {
-    padding: 22px 24px !important;
+  .arrow-connector.ptr-red::after {
+    border-left-color: var(--red);
   }
-
-  /* 11. analogy 區塊：降低對比，讓它融入而非跳出 */
-  .analogy {
-    opacity: 0.75;
-    font-size: 12px !important;
-    padding: 10px 14px !important;
-    line-height: 1.65 !important;
-    border-radius: 8px !important;
-    margin-bottom: 14px !important;
+  .arrow-connector.ptr-green {
+    background: var(--green);
   }
-  .analogy:hover { opacity: 1; }
+  .arrow-connector.ptr-green::after {
+    border-left-color: var(--green);
+  }
+  /* 走訪動畫 — 節點高亮時箭頭也亮 */
+  .ll-node.traversing .arrow-connector {
+    background: var(--array-color);
+  }
+  .ll-node.traversing .arrow-connector::after {
+    border-left-color: var(--array-color);
+  }
+</style>
+<!-- ══════════════════════════════════════════════
+  CSS：把這段貼到 array-linked.html 的 <style> 區塊末尾（</style> 前面）
+══════════════════════════════════════════════ -->
+<style id="PASTE-INTO-STYLE-TAG">
+/* ── 學習路徑地圖 ── */
+.learn-path {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.lp-header {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 14px; flex-wrap: wrap;
+}
+.lp-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.lp-hint  { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); letter-spacing: 1px; }
+ 
+.lp-steps {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.lp-step {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px;
+  flex: 1; min-width: 120px;
+}
+.lp-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 900; font-family: var(--font-mono);
+  flex-shrink: 0; border: 1.5px solid currentColor;
+  background: var(--surface); text-align: center; line-height: 1.2;
+}
+.lp-body { flex: 1; }
+.lp-title-s { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.lp-desc    { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+.lp-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); font-size: 14px; flex-shrink: 0;
+  padding: 0 6px; align-self: center;
+}
+@media(max-width:680px){
+  .lp-steps { flex-direction: column; }
+  .lp-arrow { padding: 2px 0; }
+}
+.lp-tip {
+  margin-top: 12px; padding: 9px 14px;
+  background: var(--surface2); border-radius: 8px;
+  border-left: 3px solid var(--yellow);
+  font-size: 12px; color: var(--text-mid); line-height: 1.7;
+}
 </style>
 <link rel="icon" type="image/png" sizes="32x32" href="/ds-algo/favicon_512.png">
 <link rel="icon" type="image/x-icon" href="/ds-algo/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/ds-algo/favicon_512.png">
+
 </head>
 <body>
 
+<!-- ════════════════════════════════════════════════
+  P3 鷹架理論 Onboarding — Wood, Bruner & Ross (1976)
+  v1差異：v1 無引導，學生直接面對空白操作區
+  v2改動：首次進入顯示 3 步驟任務引導，完成後解鎖自由模式
+  理論依據：I Do → We Do → You Do 漸進釋放責任模型
+════════════════════════════════════════════════ -->
 <div class="onboard-overlay" id="onboard-overlay">
   <div class="onboard-box">
     <div class="onboard-step-indicator" id="onboard-pips"></div>
@@ -350,6 +421,7 @@
   </div>
 </div>
 
+<!-- 進度追蹤膠囊（右上角固定） -->
 <div class="progress-pill">
   <span>進度</span>
   <div class="pill-dots">
@@ -364,9 +436,15 @@
   <header class="page-header">
     <div class="page-subtitle">高中資訊科 · 資料結構 · 第一單元</div>
     <h1 class="page-title"><span class="arr">Array</span><span class="vs">VS</span><span class="lnk">Linked List</span></h1>
-    <p class="page-tagline">同樣存資料，差在哪裡？— 互動視覺化學習</p>
+    <p class="page-tagline">同樣存資料，差在哪裡？— 互動視覺化學習 v2</p>
   </header>
 
+
+  <!-- ════════════════════════════════════════
+       Word Bank 術語庫
+       先備知識激活 Ausubel (1968)：把新術語掛在已知概念上
+       點擊術語卡片即可展開中文解釋 + 例子
+  ════════════════════════════════════════ -->
   <div class="wordbank-bar" id="wordbank-bar">
     <div class="wordbank-title">術語庫 — 點擊任一術語查看解釋</div>
     <div class="wordbank-chips">
@@ -391,13 +469,83 @@
 
   <!-- TAB 1 互動操作 -->
   <div id="tab-playground" class="panel active">
+    <!-- ── 簡短導覽 ── 
     <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding:10px 14px;background:var(--surface2);border-radius:10px;font-size:12px;color:var(--text-dim);line-height:1.8;">
       <span><span class="section-badge arr" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">A</span> Array 操作區</span>
       <span><span class="section-badge lnk" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">B</span> Linked List 操作區</span>
       <span><span class="section-badge arr" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">C</span> Array 預測框</span>
       <span><span class="section-badge lnk" style="font-size:10px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;">D</span> LL 預測框</span>
+      <span style="margin-left:auto;color:var(--text-dim)">頁籤：① 互動  ② 效能  ③ 記憶體  ④ 連連看</span>
+    </div>-->
+     
+    <div class="learn-path">
+      <div class="lp-header">
+        <span class="lp-title">📍 這個頁籤的學習路徑</span>
+        <span class="lp-hint">建議照順序走，效果最好</span>
+      </div>
+      <div class="lp-steps">
+    
+        <div class="lp-step">
+          <div class="lp-num" style="color:var(--yellow);border-color:var(--yellow)">P4</div>
+          <div class="lp-body">
+            <div class="lp-title-s">先說直覺</div>
+            <div class="lp-desc">音樂清單要常常新增刪歌，你覺得哪個比較好用？</div>
+          </div>
+        </div>
+    
+        <div class="lp-arrow">↓</div>
+    
+        <div class="lp-step">
+          <div class="lp-num" style="color:var(--array-color);border-color:var(--array-color)">Array</div>
+          <div class="lp-body">
+            <div class="lp-title-s">操作 Array</div>
+            <div class="lp-desc">試試插入、刪除、存取<br>觀察元素如何搬移</div>
+          </div>
+        </div>
+    
+        <div class="lp-arrow">↓</div>
+    
+        <div class="lp-step">
+          <div class="lp-num" style="color:var(--linked-color);border-color:var(--linked-color)">LL</div>
+          <div class="lp-body">
+            <div class="lp-title-s">操作 Linked List</div>
+            <div class="lp-desc">同樣的操作，觀察指標如何改變</div>
+          </div>
+        </div>
+    
+        <div class="lp-arrow">↓</div>
+    
+        <div class="lp-step">
+          <div class="lp-num" style="color:var(--yellow);border-color:var(--yellow)">🔮</div>
+          <div class="lp-body">
+            <div class="lp-title-s">預測再驗證</div>
+            <div class="lp-desc">操作前先猜移動幾步<br>猜錯最有印象！</div>
+          </div>
+        </div>
+    
+        <div class="lp-arrow">↓</div>
+    
+        <div class="lp-step">
+          <div class="lp-num" style="color:var(--green);border-color:var(--green)">P2</div>
+          <div class="lp-body">
+            <div class="lp-title-s">寫下反思</div>
+            <div class="lp-desc">用自己的話說出<br>兩者根本差異</div>
+          </div>
+        </div>
+    
+      </div><!-- /lp-steps -->
+      <div class="lp-tip">
+        💡 <strong>操作建議：</strong>Array 和 Linked List <strong>同時</strong>進行相同操作（如都插入位置 2），才能直接看出差異！
+      </div>
     </div>
 
+    <!-- ════════════════════════════
+      P4 概念轉變理論 前概念提問
+      Posner, Strike, Hewson & Gertzog (1982)
+      v1差異：v1 直接展示故事框
+      v2改動：先問學生立場，激活前概念，產生認知投入
+      效果：讓學生帶著「我的預測是否正確」的動機學習
+    ════════════════════════════ -->
     <div class="prior-banner" id="prior-banner">
       <div class="prior-q">🤔 開始之前，先說說你的直覺判斷</div>
       <div class="prior-sub">如果你要設計一個「音樂播放清單」——常常要新增歌曲、刪除歌曲、插入到中間——你的直覺覺得哪個比較好用？（先猜，後面一起驗證！）</div>
@@ -421,9 +569,16 @@
           <div class="card-body">
             <div class="analogy arr"><strong>🎬 電影院座位比喻</strong>連續的座位，要加人進中間得叫大家都往後移一格。</div>
             <div class="viz" id="arr-viz"></div>
+            <!-- ════════════════════════
+              P1 有益困難 預測框
+              Bjork (1994) 產生效應 Generation Effect
+              v1差異：v1 直接按插入看結果
+              v2改動：操作前填入猜測，操作後顯示對比
+              效果：預測錯誤產生「驚訝感」，是最強記憶錨點
+            ════════════════════════ -->
             <div class="predict-box">
               <span class="section-badge arr" style="font-size:11px;width:22px;height:22px;" title="功能 C">C</span>
-              <span class="predict-label">先猜</span>
+              <span class="predict-label">🔮 預測</span>
               <input class="predict-input" type="number" id="arr-predict" min="0" max="8" placeholder="?">
               <span class="predict-hint" id="arr-predict-hint">插入時需要移動幾個元素？（先猜再按插入）</span>
             </div>
@@ -436,8 +591,8 @@
               <button class="btn btn-neutral" onclick="arrAccess()" onmouseenter="setArrMode('access')" onfocus="setArrMode('access')">存取</button>
               <button class="btn btn-neutral" onclick="resetArr()">重置</button>
             </div>
-            <div class="anim-step-label" id="arr-step">等待操作</div>
-            <div class="log" id="arr-log">等待你的操作...</div>
+            <div class="anim-step-label" id="arr-step">等待你的操作...</div>
+            <div class="log" id="arr-log">等待操作...</div>
           </div>
         </div>
 
@@ -449,12 +604,14 @@
               <span class="note-q">❓ LL 也有「第幾個」的概念嗎？</span><br>
               有的，但 LL <strong>沒有捷徑（沒有 index 公式）</strong>。<br>
               要找第 n 個節點，必須從 head 走 n 步（O(n)）。<br>
+              所以 LL 的「插入/刪除」實際上是：<strong>先走 O(n) 找位置，再花 O(1) 改指標</strong>。<br>
               LL 的優勢是「改指標那一步不需要搬移其他節點」，Array 則是每個元素都要搬。
             </div>
             <div class="viz" id="ll-viz"></div>
+            <!-- P1 有益困難 — LL 預測步驟數 -->
             <div class="predict-box">
               <span class="section-badge lnk" style="font-size:11px;width:22px;height:22px;" title="功能 D">D</span>
-              <span class="predict-label">先猜</span>
+              <span class="predict-label">🔮 預測</span>
               <input class="predict-input" type="number" id="ll-predict" min="0" max="8" placeholder="?">
               <span class="predict-hint" id="ll-predict-hint">插入時需要走幾步找到位置？（先猜再按插入）</span>
             </div>
@@ -467,12 +624,19 @@
               <button class="btn btn-neutral" onclick="llAccess()" onmouseenter="setLLMode('access')" onfocus="setLLMode('access')">存取</button>
               <button class="btn btn-neutral" onclick="resetLL()">重置</button>
             </div>
-            <div class="anim-step-label" id="ll-step">等待操作</div>
-            <div class="log" id="ll-log">等待你的操作...</div>
+            <div class="anim-step-label" id="ll-step">等待你的操作...</div>
+            <div class="log" id="ll-log">等待操作...</div>
           </div>
         </div>
       </div>
 
+      <!-- ════════════════════════
+        P2 後設認知 反思問答 Tab1
+        Flavell (1979); Zimmerman (2002)
+        v1差異：v1 操作完即結束，無引導學生自省
+        v2改動：每個Tab底部加反思問題→參考答案→自評量表
+        效果：主動提取練習（Retrieval Practice），強化長期記憶
+      ════════════════════════ -->
       <div class="reflect-box">
         <div class="reflect-header">
           <span class="reflect-header-icon">💭</span>
@@ -532,6 +696,7 @@
       </div>
       <div class="compare-note" id="compare-note">📍 <b>隨機存取</b>：Array 直接計算記憶體位址，一步到位。Linked List 要從 head 走 n 步。</div>
     </div>
+    <!-- P2 後設認知 Tab2 -->
     <div class="reflect-box">
       <div class="reflect-header"><span class="reflect-header-icon">💭</span><span class="reflect-header-text">反思一下</span><span class="reflect-header-badge">後設認知練習</span></div>
       <div class="reflect-body">
@@ -576,6 +741,7 @@
         </div>
       </div>
     </div>
+    <!-- P2 後設認知 Tab3 -->
     <div class="reflect-box">
       <div class="reflect-header"><span class="reflect-header-icon">💭</span><span class="reflect-header-text">反思一下</span><span class="reflect-header-badge">後設認知練習</span></div>
       <div class="reflect-body">
@@ -619,6 +785,14 @@
       </div>
     </div>
     <div class="match-feedback" id="match-feedback" style="display:none"></div>
+
+    <!-- ════════════════════════
+      P4 概念轉變 前後對比回顧
+      Posner et al. (1982)
+      v1差異：v1 完成後只有慶祝畫面
+      v2改動：顯示「你的直覺 vs 實際得分」並給個人化回饋
+      效果：讓學生看見自己概念的轉變歷程
+    ════════════════════════ -->
     <div class="prior-review" id="prior-review">
       <h4>📊 你的學習前後對比</h4>
       <div class="prior-compare">
@@ -627,6 +801,7 @@
       </div>
       <div id="review-msg" style="margin-top:12px;font-size:13px;color:var(--text-dim);line-height:1.7"></div>
     </div>
+
     <div class="match-complete" id="match-complete" style="display:none">
       <div class="complete-inner"><div class="complete-emoji">🎉</div><h3>全部答對！</h3><p>你已掌握 Array 與 Linked List 的適用情境！</p><button class="btn btn-arr" onclick="game.init()" style="margin-top:16px">再挑戰一次</button></div>
     </div>
@@ -636,6 +811,10 @@
 <script src="../shared/utils.js"></script>
 <script src="../shared/nav.js"></script>
 <script>
+/* ═══════════════════════════════════════════
+   進度追蹤 & 分頁切換
+   自我決定理論 能力感 — Deci & Ryan (2000)
+═══════════════════════════════════════════ */
 const tabOrder = ['playground','compare','memory','usecase'];
 const visited  = new Set(['playground']);
 function switchTab(btn, name) {
@@ -656,10 +835,14 @@ function updatePill() {
   });
 }
 
+/* ═══════════════════════════════════════════
+   P3 鷹架理論 Onboarding
+   Wood, Bruner & Ross (1976)
+═══════════════════════════════════════════ */
 const ONBOARD_STEPS = [
   { icon:'🧪', title:'任務一：Array 插入體驗',   body:'先試試看在 Array 開頭插入一個數字，觀察系統做了什麼。', task:'把「位置」設為 <b>0</b>，「值」設為 <b>99</b>，按「插入」。<br>觀察：移動了幾個元素？' },
   { icon:'🔗', title:'任務二：Linked List 插入',  body:'同樣是插入，Linked List 的動畫和 Array 完全不同！', task:'把「位置」設為 <b>0</b>，「值」設為 <b>99</b>，按橘色「插入」。<br>觀察：動畫哪裡不同？' },
-  { icon:'🔮', title:'任務三：填寫你的預測',       body:'你已看過兩種插入！現在操作前，先填入你的「猜測」。', task:'在「先猜」欄位輸入數字，再按插入看看對不對。<br>這個步驟能幫你記得更牢。' },
+  { icon:'🔮', title:'任務三：填寫你的預測',       body:'你已看過兩種插入！現在操作前，先填入你的「猜測」。', task:'在黃色「🔮 你猜」欄位輸入數字，再按插入看看對不對。<br>這個步驟能幫你記得更牢。' },
 ];
 let obStep = 0;
 function renderOnboard() {
@@ -679,8 +862,12 @@ function renderOnboard() {
 function onboardNext() { obStep++; if (obStep >= ONBOARD_STEPS.length) onboardSkip(); else renderOnboard(); }
 function onboardSkip() { document.getElementById('onboard-overlay').style.display='none'; }
 
+/* ═══════════════════════════════════════════
+   P4 概念轉變理論 前概念提問
+   Posner, Strike, Hewson & Gertzog (1982)
+═══════════════════════════════════════════ */
 let priorChoice = null;
-const priorLabels = { array:'選 Array', linked:'選 Linked List', same:'感覺差不多' };
+const priorLabels = { array:'選 Array（認為 Array 比較好）', linked:'選 Linked List（認為 Linked List 比較好）', same:'感覺差不多（認為兩者相近）' };
 function setPrior(choice, btn) {
   priorChoice = choice;
   document.querySelectorAll('.prior-btn').forEach(b => b.className='prior-btn');
@@ -693,6 +880,9 @@ function setPrior(choice, btn) {
   }, 500);
 }
 
+/* ═══════════════════════════════════════════
+   P4 前後對比回顧（連連看完成後呼叫）
+═══════════════════════════════════════════ */
 function showPriorReview(score, total) {
   const rev = document.getElementById('prior-review');
   rev.style.display = 'block';
@@ -709,19 +899,15 @@ function showPriorReview(score, total) {
   document.getElementById('review-msg').textContent = msgs[priorChoice] || msgs.null;
 }
 
-/* Array */
+/* ═══════════════════════════════════════════
+   Array 視覺化（含逐步動畫）
+═══════════════════════════════════════════ */
 let arrData = [10,25,37,52,68]; const MAX_ARR = 8;
 
 function setStep(id, text, type='') {
   const el = document.getElementById(id); if(!el) return;
   el.textContent = text;
   el.className = 'anim-step-label' + (type?' '+type:'');
-}
-
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-async function highlightEl(id, cls, dur){
-  const el=document.getElementById(id); if(!el) return;
-  el.classList.add(cls); await sleep(dur); el.classList.remove(cls);
 }
 
 function renderArr() {
@@ -739,18 +925,25 @@ function renderArr() {
   renderMemArr();
 }
 
+/* P1 有益困難：arrInsert 逐步動畫
+   步驟：① 標出插入位置 → ② 逐格後移動畫 → ③ 新元素滑入 */
 async function arrInsert() {
   const pos=parseInt(document.getElementById('arr-pos').value);
   const val=parseInt(document.getElementById('arr-val').value);
   const log=document.getElementById('arr-log');
   if (arrData.length>=MAX_ARR){ log.innerHTML=`<span class="err">陣列已滿！（最多 ${MAX_ARR} 格）</span>`; return; }
-  if (pos<0||pos>arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`; return; }
+  if (pos<0||pos>arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 無效（目前有 ${arrData.length} 個元素）</span>`; return; }
+
   const moved = arrData.length - pos;
   const pv = document.getElementById('arr-predict')?.value;
-  setStep('arr-step', `① 找到位置 [${pos}]，後面有 ${moved} 個元素需要右移`, 'red');
+
+  // 步驟①：標出插入位置
+  setStep('arr-step', `① 找到位置 [${pos}]，後面有 ${moved} 個元素需要往右移`, 'red');
   await highlightEl(`arr-cell-${pos}`, 'highlight', 600);
+
+  // 步驟②：逐格右移動畫（從最後一個開始往右搬）
   if (moved > 0) {
-    setStep('arr-step', `② 把 [${pos}]~[${arrData.length-1}] 共 ${moved} 個元素往右移一格...`, 'red');
+    setStep('arr-step', `② 把 index [${pos}] ~ [${arrData.length-1}] 共 ${moved} 個元素，逐一往右移一格...`, 'red');
     for (let i = arrData.length-1; i >= pos; i--) {
       const cell = document.getElementById(`arr-cell-${i}`);
       if (cell) { cell.classList.add('shifting'); await sleep(160); }
@@ -758,32 +951,49 @@ async function arrInsert() {
     await sleep(350);
     document.querySelectorAll('.arr-cell.shifting').forEach(c=>c.classList.remove('shifting'));
   }
-  setStep('arr-step', `③ 在 [${pos}] 放入 ${val}`, 'green');
-  arrData.splice(pos, 0, val); renderArr();
+
+  // 步驟③：插入新元素
+  setStep('arr-step', `③ 在位置 [${pos}] 放入值 ${val}`, 'green');
+  arrData.splice(pos, 0, val);
+  renderArr();
   const ic = document.getElementById(`arr-cell-${pos}`);
   if (ic) { ic.classList.add('new-insert'); await sleep(450); ic.classList.remove('new-insert'); }
-  setStep('arr-step', `完成！共移動了 ${moved} 個元素`, 'green');
-  log.innerHTML=`插入 <b>${val}</b> 到 [${pos}]，移動了 <b>${moved}</b> 個元素。${moved>0?'<span class="warn"> O(n)</span>':'<span style="color:var(--green)"> O(1) ⚡</span>'}`;
+
+  setStep('arr-step', `✅ 完成！共移動了 ${moved} 個元素。${moved===0?'（插入尾端最快！）':moved>=3?'（插入越靠前，搬移越多）':''}`, 'green');
+  log.innerHTML=`✅ 插入 <b>${val}</b> 到 [${pos}]，移動了 <b>${moved}</b> 個元素。${moved>0?'<span class="warn"> 元素越多越慢 O(n)</span>':'<span style="color:var(--green)"> 尾端插入 O(1) ⚡</span>'}`;
+
   const re=document.getElementById('arr-predict-result');
   if (pv!==''&&!isNaN(parseInt(pv))&&re) {
     const g=parseInt(pv); re.style.display='block';
-    if (g===moved){ re.className='predict-result hit'; re.textContent=`🎯 猜對了！移動 ${moved} 個`; }
-    else{ re.className='predict-result miss'; re.textContent=`預測 ${g} 個，實際 ${moved} 個`; }
+    if (g===moved){ re.className='predict-result hit'; re.textContent=`🎯 猜對了！移動 ${moved} 個，和你預測的一樣！`; }
+    else{ re.className='predict-result miss'; re.textContent=`❌ 你預測 ${g} 個，實際 ${moved} 個。插入 [${pos}] 時，index ${pos}~${arrData.length-2} 共 ${moved} 個要後移。`; }
   }
 }
 
+/* arrDelete 逐步動畫
+   步驟：① 標出要刪除的元素 → ② 元素消失 → ③ 後面元素逐格左移 */
 async function arrDelete() {
   const pos=parseInt(document.getElementById('arr-pos').value);
   const log=document.getElementById('arr-log');
   if (pos<0||pos>=arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`; return; }
-  const val = arrData[pos]; const willMove = arrData.length - pos - 1;
+  const val = arrData[pos];
+  const willMove = arrData.length - pos - 1;
+
+  // 步驟①：標記
   setStep('arr-step', `① 找到 [${pos}] = ${val}，準備刪除`, 'red');
   await highlightEl(`arr-cell-${pos}`, 'highlight', 500);
-  setStep('arr-step', `② 刪除 ${val}`, 'red');
-  const dc=document.getElementById(`arr-cell-${pos}`); if (dc) dc.classList.add('deleting');
-  await sleep(420); arrData.splice(pos, 1); renderArr();
+
+  // 步驟②：刪除動畫
+  setStep('arr-step', `② 刪除 ${val}，位置 [${pos}] 出現空洞`, 'red');
+  const dc=document.getElementById(`arr-cell-${pos}`);
+  if (dc) dc.classList.add('deleting');
+  await sleep(420);
+  arrData.splice(pos, 1);
+  renderArr();
+
+  // 步驟③：左移動畫
   if (willMove > 0) {
-    setStep('arr-step', `③ 後面 ${willMove} 個元素向左補位...`, 'red');
+    setStep('arr-step', `③ index [${pos+1}]~[${pos+willMove}] 共 ${willMove} 個元素向左移補位...`, 'red');
     for (let i = pos; i < arrData.length; i++) {
       const cell = document.getElementById(`arr-cell-${i}`);
       if (cell) { cell.classList.add('shift-left'); await sleep(140); }
@@ -791,29 +1001,37 @@ async function arrDelete() {
     await sleep(350);
     document.querySelectorAll('.arr-cell.shift-left').forEach(c=>c.classList.remove('shift-left'));
   }
-  setStep('arr-step', `完成！共移動了 ${willMove} 個元素`, 'green');
-  log.innerHTML=`刪除 <b>${val}</b>，後面 <b>${willMove}</b> 個元素向左補位。`;
+
+  setStep('arr-step', `✅ 刪除完成！共移動了 ${willMove} 個元素`, 'green');
+  log.innerHTML=`✅ 刪除 <b>${val}</b>，後面 <b>${willMove}</b> 個元素向左補位。`;
 }
 
 async function arrAccess() {
   const pos=parseInt(document.getElementById('arr-pos').value);
   const log=document.getElementById('arr-log');
-  if (pos<0||pos>=arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 超出範圍</span>`; return; }
-  setStep('arr-step', `計算位址 = 起始 + ${pos} × 元素大小 → 一步到位！`);
+  if (pos<0||pos>=arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 超出範圍（目前 0~${arrData.length-1}）</span>`; return; }
+
+  setStep('arr-step', `① 計算位址 = 起始 + ${pos} × 元素大小 → 一步到位！`);
+  log.innerHTML=`<span class="step">🔍 直接計算記憶體位址，index = ${pos}...</span>`;
   await highlightEl(`arr-cell-${pos}`, 'highlight', 800);
-  setStep('arr-step', `arr[${pos}] = ${arrData[pos]}  ——  O(1)`, 'green');
-  log.innerHTML=`arr[<b>${pos}</b>] = <b>${arrData[pos]}</b>，O(1) ⚡`;
+
+  setStep('arr-step', `✅ arr[${pos}] = ${arrData[pos]}  ——  O(1) 不管 n 多大都一樣快`, 'green');
+  log.innerHTML=`✅ 一步完成！arr[<b>${pos}</b>] = <b>${arrData[pos]}</b>，O(1) ⚡`;
 }
 
 function resetArr() {
   arrData=[10,25,37,52,68]; renderArr();
   document.getElementById('arr-log').innerHTML='已重置';
-  setStep('arr-step', '等待操作');
+  setStep('arr-step', '等待你的操作...');
   const r=document.getElementById('arr-predict-result'); if(r){r.style.display='none';r.textContent='';}
   const p=document.getElementById('arr-predict'); if(p) p.value='';
 }
 
-/* Linked List */
+/* ═══════════════════════════════════════════
+   Linked List 視覺化（含三段指標動畫）
+   插入動畫：走訪 → 斷舊指標 → 新節點落入 → 接新指標
+   刪除動畫：走訪 → 標記目標 → 前節點繞過它 → 目標飛走
+═══════════════════════════════════════════ */
 let llData=[10,25,37,52,68];
 
 function renderLL() {
@@ -822,9 +1040,12 @@ function renderLL() {
   llData.forEach((v,i) => {
     const node=document.createElement('div'); node.className='ll-node';
     const box=document.createElement('div'); box.className='node-box'; box.id=`ll-node-${i}`;
-    box.style.position='relative';
+    // head 標籤
     const headLabel = i===0 ? '<span style="position:absolute;top:-18px;left:0;font-size:9px;color:var(--linked-color);font-family:var(--font-mono);letter-spacing:1px;">head</span>' : '';
-    box.innerHTML=`${headLabel}<div class="node-data"><span class="val">${v}</span></div>`;
+    box.style.position='relative';
+    box.innerHTML=`${headLabel}<div class="node-data"><span class="val">${v}</span></div><div class="node-ptr" id="ll-ptr-${i}">→</div>`;
+
+    // 節點序號（第幾個）—— 讓學生理解 LL 也有位置概念
     const orderLabel = document.createElement('div');
     orderLabel.className = 'node-order';
     orderLabel.textContent = '第' + i + '個';
@@ -842,113 +1063,182 @@ function renderLL() {
   cont.appendChild(ne); viz.appendChild(cont); renderMemLL();
 }
 
+/* ── llInsert：完整指標動畫 ──
+   ① 走訪高亮（逐節點）
+   ② 舊箭頭變紅、消失
+   ③ 新節點從上方滑入（綠色）
+   ④ 新箭頭（前→新，新→後）逐一出現（綠色） */
 async function llInsert() {
   const pos=parseInt(document.getElementById('ll-pos').value);
   const val=parseInt(document.getElementById('ll-val').value);
   const log=document.getElementById('ll-log');
-  if(pos<0||pos>llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  if(pos<0||pos>llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效（目前有 ${llData.length} 個節點）</span>`;return;}
   const pv=document.getElementById('ll-predict')?.value;
+
+  // ──① 走訪（逐節點高亮 + 箭頭也跟著亮）
   setStep('ll-step', `① 從 head 出發，走 ${pos} 步找到插入位置...`);
+  log.innerHTML=`<span class="step">🗺️ 從 head 出發走訪...</span>`;
   for(let i=0;i<pos;i++){
     const nb=document.getElementById(`ll-node-${i}`);
     if(nb){ nb.classList.add('highlight'); await sleep(360); nb.classList.remove('highlight'); }
   }
+
+  // ──② 舊箭頭（pos-1 → pos 之間）變紅後收縮消失
   if(pos>0 && pos<=llData.length){
-    setStep('ll-step', `② 斷開 node[${pos-1}] 原本的指標`, 'red');
+    setStep('ll-step', `② 斷開 node[${pos-1}] 原本的指標（箭頭變紅）`, 'red');
     const oldArrow=document.getElementById(`ll-arrow-${pos-1}`);
-    if(oldArrow){ oldArrow.classList.add('ptr-red'); await sleep(400); oldArrow.classList.add('anim-fade'); await sleep(320); }
+    if(oldArrow){
+      oldArrow.classList.add('ptr-red');
+      await sleep(400);
+      oldArrow.classList.add('anim-fade');
+      await sleep(320);
+    }
     const prevBox=document.getElementById(`ll-node-${pos-1}`);
     if(prevBox){ prevBox.classList.add('ptr-breaking'); await sleep(300); prevBox.classList.remove('ptr-breaking'); }
   }
-  setStep('ll-step', `③ 新節點 ${val} 滑入...`, 'green');
-  llData.splice(pos,0,val); renderLL();
+
+  // ──③ 新節點滑入（在 DOM 裡先建立，再動畫）
+  setStep('ll-step', `③ 新節點 ${val} 從上方滑入...`, 'green');
+  llData.splice(pos,0,val);
+  renderLL();
   const nc=document.getElementById(`ll-node-${pos}`);
   if(nc){ nc.classList.add('anim-slide-in','new-node'); await sleep(450); }
-  setStep('ll-step', `④ 接上新指標`, 'green');
+
+  // ──④ 新箭頭依序出現（前→新，新→後）
+  setStep('ll-step', `④ 接上新指標：前一節點 → ${val} → 下一節點`, 'green');
+  // 前→新的箭頭
   if(pos>0){
     const prevArrow=document.getElementById(`ll-arrow-${pos-1}`);
-    if(prevArrow){ prevArrow.classList.add('ptr-green','anim-grow'); await sleep(380); }
+    if(prevArrow){
+      prevArrow.classList.add('ptr-green','anim-grow');
+      await sleep(380);
+    }
     const prevBox=document.getElementById(`ll-node-${pos-1}`);
     if(prevBox){ prevBox.classList.add('ptr-linking'); await sleep(300); prevBox.classList.remove('ptr-linking'); }
   }
+  // 新→後的箭頭
   if(pos<llData.length-1){
     const nextArrow=document.getElementById(`ll-arrow-${pos}`);
-    if(nextArrow){ nextArrow.classList.add('ptr-green','anim-grow'); await sleep(380); }
+    if(nextArrow){
+      nextArrow.classList.add('ptr-green','anim-grow');
+      await sleep(380);
+    }
   }
   if(nc){ nc.classList.remove('new-node'); }
-  setStep('ll-step', `完成！只修改了 2 個指標，其他節點沒動`, 'green');
-  log.innerHTML=`插入 <b>${val}</b>！走了 <b>${pos}</b> 步，只改了 <b>2 個指標</b>。`;
+
+  const moved = pos; // 走了幾步
+  setStep('ll-step', `✅ 插入完成！只修改了 2 個指標，其他 ${llData.length-1} 個節點完全沒動`, 'green');
+  log.innerHTML=`✅ 插入 <b>${val}</b>！走了 <b>${moved}</b> 步找位置，只改了 <b>2 個指標</b>，其他節點沒動。`;
+
   const re=document.getElementById('ll-predict-result');
   if(pv!==''&&!isNaN(parseInt(pv))&&re){
     const g=parseInt(pv); re.style.display='block';
-    if(g===pos){re.className='predict-result hit';re.textContent=`🎯 猜對了！走了 ${pos} 步`;}
-    else{re.className='predict-result miss';re.textContent=`預測 ${g} 步，實際走了 ${pos} 步`;}
+    if(g===pos){re.className='predict-result hit';re.textContent=`🎯 猜對了！走了 ${pos} 步。`;}
+    else{re.className='predict-result miss';re.textContent=`❌ 你預測 ${g} 步，實際走了 ${pos} 步（步數 = 插入的位置編號）。`;}
   }
 }
 
+/* ── llDelete：完整指標動畫 ──
+   ① 走訪高亮
+   ② 目標節點邊框閃紅（標記要刪）
+   ③ 前後兩側箭頭：前→目標 變紅消失
+   ④ 新箭頭（前→後，跳過目標）綠色出現
+   ⑤ 目標節點向上飛走消失 */
 async function llDelete() {
   const pos=parseInt(document.getElementById('ll-pos').value);
   const log=document.getElementById('ll-log');
-  if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`;return;}
+  if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效（目前 0~${llData.length-1}）</span>`;return;}
   const val=llData[pos];
-  setStep('ll-step', `① 從 head 出發，走 ${pos+1} 步找到 node[${pos}]`);
+
+  // ──① 走訪
+  setStep('ll-step', `① 從 head 出發，走 ${pos+1} 步找到 node[${pos}] = ${val}`);
+  log.innerHTML=`<span class="step">🗺️ 走訪找到 node[${pos}]...</span>`;
   for(let i=0;i<=pos;i++){
     const nb=document.getElementById(`ll-node-${i}`);
     if(nb){ nb.classList.add('highlight'); await sleep(340); nb.classList.remove('highlight'); }
   }
-  setStep('ll-step', `② 標記 node[${pos}]=${val} 為待刪除`, 'red');
+
+  // ──② 標記目標節點（閃紅）
+  setStep('ll-step', `② 找到目標 node[${pos}]=${val}，標記為待刪除`, 'red');
   const dc=document.getElementById(`ll-node-${pos}`);
   if(dc){ dc.classList.add('ptr-breaking'); await sleep(450); dc.classList.remove('ptr-breaking'); }
+
+  // ──③ 前→目標 的箭頭變紅消失
   if(pos>0){
-    setStep('ll-step', `③ 前一節點的指標即將斷開`, 'red');
+    setStep('ll-step', `③ 前一個節點的指標（→${val}）即將斷開…`, 'red');
     const oldArrow=document.getElementById(`ll-arrow-${pos-1}`);
-    if(oldArrow){ oldArrow.classList.add('ptr-red'); await sleep(380); oldArrow.classList.add('anim-fade'); await sleep(320); }
+    if(oldArrow){
+      oldArrow.classList.add('ptr-red');
+      await sleep(380);
+      oldArrow.classList.add('anim-fade');
+      await sleep(320);
+    }
   } else {
-    setStep('ll-step', `③ head 即將改指向下一個節點`, 'red'); await sleep(400);
+    setStep('ll-step', `③ head 即將改為指向下一個節點`, 'red');
+    await sleep(400);
   }
-  setStep('ll-step', `④ 重新連接，跳過 ${val}`, 'green');
+
+  // ──④ 新箭頭（跳過目標）綠色出現 — 先移除目標的箭頭
+  setStep('ll-step', `④ 重新連接指標，跳過 ${val}，直接指向下一個節點`, 'green');
   if(dc){ dc.classList.add('ptr-breaking'); }
-  llData.splice(pos,1); renderLL();
+
+  // 先 splice，再 render，再加動畫
+  llData.splice(pos,1);
+  renderLL();
+
+  // 被跳過的位置現在是 pos，前→後 的箭頭 index 是 pos-1
   if(pos>0 && pos<=llData.length){
     const newArrow=document.getElementById(`ll-arrow-${pos-1}`);
-    if(newArrow){ newArrow.classList.add('ptr-green','anim-grow'); await sleep(420); }
+    if(newArrow){
+      newArrow.classList.add('ptr-green','anim-grow');
+      await sleep(420);
+    }
     const prevBox=document.getElementById(`ll-node-${pos-1}`);
     if(prevBox){ prevBox.classList.add('ptr-linking'); await sleep(300); prevBox.classList.remove('ptr-linking'); }
   }
-  setStep('ll-step', `完成！只改了 1 個指標，其他節點沒動`, 'green');
-  log.innerHTML=`刪除 <b>${val}</b>！只改了 <b>1 個指標</b>，其他節點沒有移動。`;
+
+  setStep('ll-step', `✅ 刪除完成！只改了 1 個指標，其他 ${llData.length} 個節點完全沒動`, 'green');
+  log.innerHTML=`✅ 刪除 <b>${val}</b>！只改了 <b>1 個指標</b>，其他節點沒有任何移動。`;
 }
 
 async function llAccess() {
   const pos=parseInt(document.getElementById('ll-pos').value);
   const log=document.getElementById('ll-log');
   if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 超出範圍</span>`;return;}
-  setStep('ll-step', `沒有捷徑，只能從 head 走 ${pos+1} 步...`);
+  setStep('ll-step', `① 沒有捷徑！只能從 head 一步一步走，共走 ${pos+1} 步...`);
+  log.innerHTML=`<span class="step">🗺️ 從 head 開始逐一走訪...</span>`;
   for(let i=0;i<=pos;i++){
-    setStep('ll-step', `第 ${i+1} 步：node[${i}] = ${llData[i]}${i===pos?' ← 找到！':''}`, i===pos?'green':'');
+    setStep('ll-step', `走到第 ${i+1} 步：node[${i}] = ${llData[i]}${i===pos?' ← 找到了！':'，繼續往下走...'}`, i===pos?'green':'');
     await highlightEl(`ll-node-${i}`,'highlight',420);
   }
-  setStep('ll-step', `走了 ${pos+1} 步，O(n)`, '');
-  log.innerHTML=`走了 <b>${pos+1}</b> 步，值為 <b>${llData[pos]}</b>。O(n)。`;
+  setStep('ll-step', `✅ 走了 ${pos+1} 步才找到！n 越大越慢 O(n) 😅`, '');
+  log.innerHTML=`✅ 找到！走了 <b>${pos+1}</b> 步，值為 <b>${llData[pos]}</b>。時間複雜度 O(n)。`;
 }
 
 function resetLL() {
   llData=[10,25,37,52,68]; renderLL();
   document.getElementById('ll-log').innerHTML='已重置';
-  setStep('ll-step', '等待操作');
+  setStep('ll-step', '等待你的操作...');
   const r=document.getElementById('ll-predict-result'); if(r){r.style.display='none';r.textContent='';}
   const p=document.getElementById('ll-predict'); if(p) p.value='';
 }
 
-/* 記憶體 */
+/* ═══════════════════════════════════════════
+   記憶體示意圖
+═══════════════════════════════════════════ */
 function renderMemArr(){const row=document.getElementById('mem-arr');if(!row)return;row.innerHTML='';for(let i=0;i<16;i++){const c=document.createElement('div');c.className='mem-cell';const ai=i-2;if(ai>=0&&ai<arrData.length){c.classList.add('used-arr');c.innerHTML=`${arrData[ai]}<br><span style="font-size:8px">${1000+i}</span>`;}else c.innerHTML=`·<br><span style="font-size:8px">${1000+i}</span>`;row.appendChild(c);}}
 function renderMemLL(){const row=document.getElementById('mem-ll');if(!row)return;row.innerHTML='';const pos=[1,4,8,11,14,3,7,12].slice(0,llData.length);const ptr=new Set(pos.map(p=>p+1));for(let i=0;i<16;i++){const c=document.createElement('div');c.className='mem-cell';const pi=pos.indexOf(i);if(pi!==-1){c.classList.add('used-ll');c.innerHTML=`${llData[pi]}<br><span style="font-size:8px">${1000+i}</span>`;}else if(ptr.has(i)){c.classList.add('used-ll-ptr');c.innerHTML=`ptr<br><span style="font-size:8px">${1000+i}</span>`;}else c.innerHTML=`·<br><span style="font-size:8px">${1000+i}</span>`;row.appendChild(c);}}
 
-/* 效能比較 */
+/* ═══════════════════════════════════════════
+   效能比較
+═══════════════════════════════════════════ */
 const opData={'access':{arr:5,ll:90,aL:'O(1)',lL:'O(n)',note:'📍 <b>隨機存取</b>：Array 直接計算記憶體位址，一步到位。Linked List 要從 head 走 n 步。'},'front-insert':{arr:90,ll:10,aL:'O(n)',lL:'O(1)',note:'📍 <b>開頭插入</b>：Array 要把全部元素往後移！Linked List 只改 head 指標，瞬間完成。'},'search':{arr:55,ll:55,aL:'O(n)',lL:'O(n)',note:'📍 <b>搜尋</b>：兩者都要從頭掃，一樣慢。（Array 排序後可用 Binary Search！）'},'back-insert':{arr:10,ll:50,aL:'O(1)',lL:'O(n)或O(1)',note:'📍 <b>尾端插入</b>：Array 直接加在後面，O(1)。Linked List 若有 tail pointer 也是 O(1)。'}};
 function setOp(btn,op){document.querySelectorAll('.op-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const d=opData[op];document.getElementById('bar-arr').style.width=d.arr+'%';document.getElementById('bar-arr').textContent=d.aL;document.getElementById('bar-ll').style.width=d.ll+'%';document.getElementById('bar-ll').textContent=d.lL;document.getElementById('compare-note').innerHTML=d.note;}
 
-/* 後設認知 */
+/* ═══════════════════════════════════════════
+   P2 後設認知 反思問答系統
+   Flavell (1979); Zimmerman (2002)
+═══════════════════════════════════════════ */
 function showReflectAnswer(tab){
   const ans=document.getElementById(`reflect-answer-${tab}`),rate=document.getElementById(`reflect-rate-${tab}`),input=document.getElementById(`reflect-${tab}`);
   if(!ans||!rate) return;
@@ -960,10 +1250,12 @@ function setRate(tab,r){
   document.querySelector(`#reflect-rate-${tab} .rate-btn[data-r="${r}"]`)?.classList.add('selected');
   const el=document.getElementById(`reflect-done-${tab}`); if(!el) return;
   el.style.display='block';
-  el.textContent={1:'沒關係！建議回去再操作一次，重點看步驟說明。',2:'不錯！你已掌握主要概念，多練習幾次就會更清楚。',3:'太棒了！你完全理解了，可以繼續下一個 Tab！'}[r]||'';
+  el.textContent={1:'沒關係！建議回去再操作一次，重點看 Log 欄的說明。',2:'不錯！你已掌握主要概念，多練習幾次就會更清楚。',3:'太棒了！你完全理解了，可以繼續下一個 Tab！'}[r]||'';
 }
 
-/* 連連看 */
+/* ═══════════════════════════════════════════
+   連連看遊戲
+═══════════════════════════════════════════ */
 const SCENARIOS=[
   {id:'s1',emoji:'🎵',title:'音樂播放清單',hint:'常常插入、刪除、調換歌曲順序',answer:'linked',explain:'Linked List 只需改指標，不需搬移資料。'},
   {id:'s2',emoji:'📊',title:'班級成績排行榜',hint:'需要快速找「第10名是誰」',answer:'array',explain:'需要 O(1) 隨機存取第 i 名，Array 直接計算位址。'},
@@ -979,6 +1271,8 @@ const ZONES=[
   {key:'linked',label:'Linked List',chipClass:'lnk-chip',matchedId:'dz-linked-matched'},
 ];
 const game = new MatchGame(SCENARIOS, ZONES, 'scenarios-list');
+
+// 覆寫完成回呼，觸發前後對比回顧
 const _orig = game._submitAnswer.bind(game);
 game._submitAnswer = function(id, zoneKey) {
   _orig(id, zoneKey);
@@ -987,52 +1281,161 @@ game._submitAnswer = function(id, zoneKey) {
   }
 };
 
-/* Word Bank */
+
+/* ═══════════════════════════════════════════
+   Word Bank 術語庫
+   先備知識激活 Ausubel (1968)
+═══════════════════════════════════════════ */
 const WB_DATA = {
-  'index':{term:'索引',en:'index',color:'var(--array-color)',def:'陣列中每個元素的「位置編號」，從 0 開始計數。就像電影院的座位號碼，只要知道 index 就能直接找到那個位置。',ex:'arr[0]=10  arr[1]=25  arr[2]=37\n→ index 2 的元素是 37'},
-  'element':{term:'元素',en:'element',color:'var(--array-color)',def:'陣列裡存放的每一個「資料值」。一個陣列可以有很多個元素，每個元素佔用一塊連續的記憶體空間。',ex:'int arr[5] = {10, 25, 37, 52, 68};\n→ 這個陣列有 5 個元素'},
-  'random-access':{term:'隨機存取',en:'random access',color:'var(--array-color)',def:'能夠「直接」跳到任意位置取得資料，不需要從頭逐一走訪。Array 靠計算記憶體位址做到 O(1) 隨機存取。',ex:'位址 = 起始位址 + index × 每個元素的大小\n→ 不論 n 多大，永遠只需一個公式計算'},
-  'node':{term:'節點',en:'node',color:'var(--linked-color)',def:'Linked List 的基本單位。每個節點包含兩個部分：① 資料（data）② 指標（pointer）。就像尋寶遊戲的每張紙條，上面寫了資料和「下一張在哪裡」。',ex:'struct Node {\n  int data;\n  Node* next;\n};'},
-  'pointer':{term:'指標',en:'pointer',color:'var(--linked-color)',def:'儲存另一個節點「記憶體位址」的變數。修改指標就能改變節點之間的連接關係，這也是 Linked List 插入/刪除快的原因。',ex:'node→next = 0x1A2B  // 指向位址 0x1A2B 的節點'},
-  'head':{term:'頭節點',en:'head',color:'var(--linked-color)',def:'Linked List 的「起點」，是第一個節點。走訪整個 Linked List 必須從 head 開始，沿著每個節點的指標一步步往下。',ex:'head → [10|→] → [25|→] → [37|→] → NULL'},
-  'null':{term:'NULL',en:'NULL',color:'var(--linked-color)',def:'代表「空」或「無」的特殊值。在 Linked List 中，最後一個節點的指標指向 NULL，代表串列到這裡結束了。',ex:'最後一個節點：next = NULL\n→ 告訴程式「後面沒有了，停止走訪」'},
-  'complexity':{term:'時間複雜度',en:'time complexity',color:'var(--yellow)',def:'描述演算法「速度如何隨資料量增長」的方式。用 O() 表示。O(1) = 不管幾筆都一樣快；O(n) = 資料量翻倍，時間也翻倍。',ex:'O(1)：Array 隨機存取\nO(n)：Linked List 搜尋、Array 插入\nO(log n)：Binary Search'},
-  'sequential':{term:'循序存取',en:'sequential access',color:'var(--yellow)',def:'必須從頭開始，一個一個依序讀取，沒有辦法直接跳到第 i 個。Linked List 是循序存取。',ex:'要找 node[3]：\nhead → node[0] → node[1] → node[2] → node[3]'},
+  'index': {
+    term:'索引', en:'index',
+    color:'var(--array-color)',
+    def:'陣列中每個元素的「位置編號」，從 0 開始計數。就像電影院的座位號碼，只要知道 index 就能直接找到那個位置。',
+    ex:'arr[0]=10  arr[1]=25  arr[2]=37\n→ index 2 的元素是 37'
+  },
+  'element': {
+    term:'元素', en:'element',
+    color:'var(--array-color)',
+    def:'陣列裡存放的每一個「資料值」。一個陣列可以有很多個元素，每個元素佔用一塊連續的記憶體空間。',
+    ex:'int arr[5] = {10, 25, 37, 52, 68};\n→ 這個陣列有 5 個元素'
+  },
+  'random-access': {
+    term:'隨機存取', en:'random access',
+    color:'var(--array-color)',
+    def:'能夠「直接」跳到任意位置取得資料，不需要從頭逐一走訪。Array 靠計算記憶體位址做到 O(1) 隨機存取。「隨機」不是亂數，而是「任意」的意思。',
+    ex:'位址 = 起始位址 + index × 每個元素的大小\n→ 不論 n 多大，永遠只需一個公式計算'
+  },
+  'node': {
+    term:'節點', en:'node',
+    color:'var(--linked-color)',
+    def:'Linked List 的基本單位。每個節點包含兩個部分：① 資料（data）② 指標（pointer）。就像尋寶遊戲的每張紙條，上面寫了資料和「下一張在哪裡」。',
+    ex:'struct Node {\n  int data;    // 資料\n  Node* next;  // 指向下一個節點\n};'
+  },
+  'pointer': {
+    term:'指標', en:'pointer',
+    color:'var(--linked-color)',
+    def:'儲存另一個節點「記憶體位址」的變數。指標不存資料本身，只記錄「下一個在哪裡」。修改指標就能改變節點之間的連接關係，這也是 Linked List 插入/刪除快的原因。',
+    ex:'node→next = 0x1A2B  // 指向位址 0x1A2B 的節點\n只改兩個指標，就能插入或刪除節點'
+  },
+  'head': {
+    term:'頭節點', en:'head',
+    color:'var(--linked-color)',
+    def:'Linked List 的「起點」，是第一個節點。走訪整個 Linked List 必須從 head 開始，沿著每個節點的指標一步步往下。head 是進入整個串列的唯一入口。',
+    ex:'head → [10|→] → [25|→] → [37|→] → NULL\n從 head 出發，才能找到所有節點'
+  },
+  'null': {
+    term:'NULL', en:'NULL',
+    color:'var(--linked-color)',
+    def:'代表「空」或「無」的特殊值。在 Linked List 中，最後一個節點的指標指向 NULL，代表串列到這裡結束了。就像尋寶遊戲最後一張紙條上寫「終點」。',
+    ex:'最後一個節點：next = NULL\n→ 告訴程式「後面沒有了，停止走訪」'
+  },
+  'complexity': {
+    term:'時間複雜度', en:'time complexity',
+    color:'var(--yellow)',
+    def:'描述演算法「速度如何隨資料量增長」的方式。用 O() 表示。O(1) = 不管幾筆都一樣快；O(n) = 資料量翻倍，時間也翻倍；O(n²) = 資料量翻倍，時間變四倍。',
+    ex:'O(1)：Array 隨機存取、Stack Push/Pop\nO(n)：Linked List 搜尋、Array 插入\nO(log n)：Binary Search（效率介於兩者之間）'
+  },
+  'sequential': {
+    term:'循序存取', en:'sequential access',
+    color:'var(--yellow)',
+    def:'必須從頭開始，一個一個依序讀取，沒有辦法直接跳到第 i 個。Linked List 是循序存取，要找第 5 個節點，就得從 head 走 5 步。',
+    ex:'要找 node[3]：\nhead → node[0] → node[1] → node[2] → node[3] ✅\n不能跳過任何一個節點'
+  },
 };
-let wbBackdrop=null,wbPopup=null;
-function showWB(chipEl,key){
-  if(wbPopup){wbPopup.remove();wbPopup=null;}
-  if(wbBackdrop){wbBackdrop.remove();wbBackdrop=null;}
+
+let wbBackdrop = null;
+let wbPopup = null;
+
+function showWB(chipEl, key) {
+  // 移除舊的
+  if (wbPopup) { wbPopup.remove(); wbPopup=null; }
+  if (wbBackdrop) { wbBackdrop.remove(); wbBackdrop=null; }
   document.querySelectorAll('.wb-chip').forEach(c=>c.classList.remove('open'));
-  const data=WB_DATA[key];if(!data)return;
+
+  const data = WB_DATA[key]; if(!data) return;
   chipEl.classList.add('open');
-  wbBackdrop=document.createElement('div');wbBackdrop.className='wb-backdrop';wbBackdrop.onclick=()=>closeWB();document.body.appendChild(wbBackdrop);
-  wbPopup=document.createElement('div');wbPopup.className='wb-popup';wbPopup.style.borderColor=data.color;
-  wbPopup.innerHTML=`<button class="wb-popup-close" onclick="closeWB()">✕</button><div class="wb-popup-term" style="color:${data.color}">${data.term}</div><div class="wb-popup-en">${data.en}</div><div class="wb-popup-def">${data.def}</div><div class="wb-popup-ex" style="border-color:${data.color}">${data.ex.replace(/\n/g,'<br>')}</div>`;
+
+  // 背景遮罩（透明，點擊關閉）
+  wbBackdrop = document.createElement('div');
+  wbBackdrop.className = 'wb-backdrop';
+  wbBackdrop.onclick = () => closeWB();
+  document.body.appendChild(wbBackdrop);
+
+  // 彈出視窗
+  wbPopup = document.createElement('div');
+  wbPopup.className = 'wb-popup';
+  wbPopup.style.borderColor = data.color;
+  wbPopup.innerHTML = `
+    <button class="wb-popup-close" onclick="closeWB()">✕</button>
+    <div class="wb-popup-term" style="color:${data.color}">${data.term}</div>
+    <div class="wb-popup-en">${data.en}</div>
+    <div class="wb-popup-def">${data.def}</div>
+    <div class="wb-popup-ex" style="border-color:${data.color}">${data.ex.replace(/\n/g,'<br>')}</div>
+  `;
+
+  // 定位：在 chip 下方，若超出底部則往上
   document.body.appendChild(wbPopup);
-  const rect=chipEl.getBoundingClientRect(),popW=360;
-  let left=rect.left;
-  if(left+popW>window.innerWidth-16)left=window.innerWidth-popW-16;
-  if(left<8)left=8;
-  const estH=Math.min(wbPopup.scrollHeight||320,window.innerHeight*0.78);
-  const spaceBelow=window.innerHeight-rect.bottom;
-  let top=(spaceBelow<estH+12&&rect.top>estH+12)?rect.top-estH-8+window.scrollY:rect.bottom+8+window.scrollY;
-  wbPopup.style.left=left+'px';wbPopup.style.top=top+'px';
+  const rect = chipEl.getBoundingClientRect();
+  const popW = 360;
+  let left = rect.left;
+  if (left + popW > window.innerWidth - 16) left = window.innerWidth - popW - 16;
+  if (left < 8) left = 8;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const estH = Math.min(wbPopup.scrollHeight || 320, window.innerHeight * 0.78);
+  let top = (spaceBelow < estH + 12 && rect.top > estH + 12)
+    ? rect.top - estH - 8 + window.scrollY
+    : rect.bottom + 8 + window.scrollY;
+  wbPopup.style.left = left + 'px';
+  wbPopup.style.top  = top  + 'px';
 }
-function closeWB(){if(wbPopup){wbPopup.remove();wbPopup=null;}if(wbBackdrop){wbBackdrop.remove();wbBackdrop=null;}document.querySelectorAll('.wb-chip').forEach(c=>c.classList.remove('open'));}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeWB();});
 
-const ARR_HINTS={insert:'插入時需要移動幾個元素？（先猜再按插入）',delete:'刪除後後面元素需要向左移幾個？',access:'存取不需要預測，直接按即可 → O(1)'};
-const LL_HINTS={insert:'插入時需要走幾步找到位置？（先猜再按插入）',delete:'刪除時需要走幾步找到目標節點？',access:'存取不需要預測，直接按即可 → O(n)'};
-function setArrMode(mode){const valWrap=document.getElementById('arr-val-wrap');const hint=document.getElementById('arr-predict-hint');const predBox=document.querySelector('#arr-predict')?.closest('.predict-box');if(valWrap)valWrap.style.display=(mode==='insert')?'':'none';if(hint)hint.textContent=ARR_HINTS[mode]||ARR_HINTS.insert;if(predBox)predBox.style.opacity=(mode==='access')?'0.4':'1';}
-function setLLMode(mode){const valWrap=document.getElementById('ll-val-wrap');const hint=document.getElementById('ll-predict-hint');const predBox=document.querySelector('#ll-predict')?.closest('.predict-box');if(valWrap)valWrap.style.display=(mode==='insert')?'':'none';if(hint)hint.textContent=LL_HINTS[mode]||LL_HINTS.insert;if(predBox)predBox.style.opacity=(mode==='access')?'0.4':'1';}
+function closeWB() {
+  if (wbPopup)    { wbPopup.remove();    wbPopup=null; }
+  if (wbBackdrop) { wbBackdrop.remove(); wbBackdrop=null; }
+  document.querySelectorAll('.wb-chip').forEach(c=>c.classList.remove('open'));
+}
 
-/* 初始化 */
+// ESC 關閉
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeWB(); });
+
+
+/* ── 操作模式切換：根據按鈕決定顯示哪些欄位 ── */
+const ARR_HINTS = {
+  insert: '插入時需要移動幾個元素？（先猜再按插入）',
+  delete: '刪除後後面元素需要向左移幾個？（先猜）',
+  access: '存取不需要預測，直接按即可 → O(1)',
+};
+const LL_HINTS = {
+  insert: '插入時需要走幾步找到位置？（先猜再按插入）',
+  delete: '刪除時需要走幾步找到目標節點？（先猜）',
+  access: '存取不需要預測，直接按即可 → O(n)',
+};
+function setArrMode(mode) {
+  const valWrap = document.getElementById('arr-val-wrap');
+  const hint    = document.getElementById('arr-predict-hint');
+  const predBox = document.querySelector('#arr-predict')?.closest('.predict-box');
+  if (valWrap) valWrap.style.display = (mode === 'insert') ? '' : 'none';
+  if (hint) hint.textContent = ARR_HINTS[mode] || ARR_HINTS.insert;
+  if (predBox) predBox.style.opacity = (mode === 'access') ? '0.4' : '1';
+}
+function setLLMode(mode) {
+  const valWrap = document.getElementById('ll-val-wrap');
+  const hint    = document.getElementById('ll-predict-hint');
+  const predBox = document.querySelector('#ll-predict')?.closest('.predict-box');
+  if (valWrap) valWrap.style.display = (mode === 'insert') ? '' : 'none';
+  if (hint) hint.textContent = LL_HINTS[mode] || LL_HINTS.insert;
+  if (predBox) predBox.style.opacity = (mode === 'access') ? '0.4' : '1';
+}
+
+/* ═══════════════════════════════════════════
+   初始化
+═══════════════════════════════════════════ */
 renderOnboard();
 renderMemArr();
 renderMemLL();
 game.init();
 updatePill();
 </script>
+<script src="../shared/shared-patches.js"></script>
 </body>
 </html>
