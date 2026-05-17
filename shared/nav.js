@@ -30,6 +30,7 @@ const NAV_PAGES = [
   { id: 'array-linked', label: 'Array & Linked', icon: '📋', href: BASE + '/pages/array-linked.html' },
   { id: 'stack-queue',  label: 'Stack & Queue',  icon: '📦', href: BASE + '/pages/stack-queue.html' },
   { id: 'tree',         label: 'Tree & BST',     icon: '🌳', href: BASE + '/pages/tree.html' },
+  { id: 'sort',         label: 'Sorting',          icon: '🔀', href: BASE + '/pages/sorting.html' },
   // ↓ 新增單元時，在這裡加一行，格式一樣
 ];
 

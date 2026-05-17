@@ -790,7 +790,7 @@
 
 /* ══ Tab 切換 ══ */
 function switchTab(btn,id){
-  if (window.DS) DS.trackTab(name);//加這行
+  if (window.DS) DS.trackTab(id);  // ← 用 id，不是 name
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
@@ -936,6 +936,8 @@ function resetBubble(){
   renderBars('bubble-bars',bubbleArr,{});
 }
 async function runBubble(){
+  if (window.DS) DS.trackSortStart('bubble');  // ← 加這行
+  
   if(bubbleRunning)return;
   bubbleRunning=true;bubbleStop=false;
   document.getElementById('bub-run-btn').disabled=true;
@@ -1050,6 +1052,7 @@ function resetSelect(){
   renderBars('sel-bars',selArr,{});
 }
 async function runSelect(){
+  if (window.DS) DS.trackSortStart('selection');  // ← 加這行
   if(selRunning)return;
   selRunning=true;selStop=false;
   document.getElementById('sel-run-btn').disabled=true;
@@ -1135,6 +1138,8 @@ const MOTIVATE={
 };
 const learningLog=[];
 function submitReflect(taId,ansId,rateId){
+  if (window.DS) DS.trackReflect(taId, document.getElementById(taId)?.value?.length||0);  // ← 加這行
+
   const ta=document.getElementById(taId);
   if(!ta.value.trim()){
     ta.style.borderColor='var(--red)';
@@ -1146,6 +1151,8 @@ function submitReflect(taId,ansId,rateId){
   if(rateEl)rateEl.style.display='block';
 }
 function selectRate(btn,groupId,topic){
+  if (window.DS) DS.trackRate(topic, parseInt(btn.getAttribute('data-r')));  // ← 加這行
+  
   document.querySelectorAll('#'+groupId+' .rate-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
   const r=parseInt(btn.getAttribute('data-r'));
@@ -1214,7 +1221,16 @@ const matchZones=[
   {key:'sorted',label:'✅ 已排好',chipClass:'sorted-chip',matchedId:'dz-sorted-matched'},
 ];
 const matchGame=new MatchGame(matchScenarios,matchZones,'scenarios-list');
-
+// 在這行後面加：
+const _origMatch = matchGame._submitAnswer.bind(matchGame);
+matchGame._submitAnswer = function(id, zoneKey) {
+  _origMatch(id, zoneKey);
+  const s = matchScenarios.find(s => s.id === id);
+  if (window.DS && s) DS.trackQuizAnswer(matchScenarios.indexOf(s), s.answer === zoneKey);
+  if (this.answered?.size === matchScenarios.length) {
+    if (window.DS) DS.trackQuizComplete(this.score, matchScenarios.length);
+  }
+};
 /* ══════════════════════════════════════════════════
    初始化
    ══════════════════════════════════════════════════ */
