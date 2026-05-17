@@ -202,6 +202,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/ds-algo/favicon_512.png">
 <link rel="icon" type="image/x-icon" href="/ds-algo/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/ds-algo/favicon_512.png">
+
+<script src="../shared/analytics.js"></script>
 </head>
 <body>
 
@@ -603,7 +605,8 @@ function renderOB(){var s=OB_STEPS[obStep];document.getElementById('ob-icon').te
 function onboardNext(){obStep++;if(obStep>=OB_STEPS.length){onboardSkip();return;}renderOB();}
 function onboardSkip(){document.getElementById('onboard-overlay').style.display='none';}
 renderOB();
-function switchTab(btn,id){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+id).classList.add('active');var idx={bst:0,traversal:1,terms:2,realworld:3}[id];document.querySelectorAll('.pill-dot').forEach(function(d,i){d.classList.toggle('active',i===idx);});}
+function switchTab(btn,id){if (window.DS) DS.trackTab(name);//加這行
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+id).classList.add('active');var idx={bst:0,traversal:1,terms:2,realworld:3}[id];document.querySelectorAll('.pill-dot').forEach(function(d,i){d.classList.toggle('active',i===idx);});}
 function markTabDone(idx){var dot=document.getElementById('pd-'+idx);if(dot&&!dot.classList.contains('done')){dot.classList.remove('active');dot.classList.add('done');}}
 var advOn=false;
 function toggleAdv(){advOn=!advOn;document.getElementById('adv-bst').classList.toggle('visible',advOn);var btn=document.getElementById('adv-btn');btn.classList.toggle('active',advOn);btn.innerHTML='<span class="adv-dot"></span> '+(advOn?'收起進階程式碼 ▲':'展開進階程式碼 ▼');if(advOn)document.getElementById('adv-bst').scrollIntoView({behavior:'smooth',block:'nearest'});}

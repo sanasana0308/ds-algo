@@ -397,7 +397,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/ds-algo/favicon_512.png">
 <link rel="icon" type="image/x-icon" href="/ds-algo/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/ds-algo/favicon_512.png">
-
+<script src="../shared/analytics.js"></script>
 </head>
 <body>
 
@@ -818,6 +818,7 @@
 const tabOrder = ['playground','compare','memory','usecase'];
 const visited  = new Set(['playground']);
 function switchTab(btn, name) {
+  if (window.DS) DS.trackTab(name);   // ← 加這行各頁面 JS 加追蹤呼叫
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
@@ -928,6 +929,7 @@ function renderArr() {
 /* P1 有益困難：arrInsert 逐步動畫
    步驟：① 標出插入位置 → ② 逐格後移動畫 → ③ 新元素滑入 */
 async function arrInsert() {
+  if (window.DS) DS.trackNodeOp('array', 'insert');  // ← 加這行
   const pos=parseInt(document.getElementById('arr-pos').value);
   const val=parseInt(document.getElementById('arr-val').value);
   const log=document.getElementById('arr-log');
@@ -973,6 +975,7 @@ async function arrInsert() {
 /* arrDelete 逐步動畫
    步驟：① 標出要刪除的元素 → ② 元素消失 → ③ 後面元素逐格左移 */
 async function arrDelete() {
+  if (window.DS) DS.trackNodeOp('array', 'delete');  // ← 加這行
   const pos=parseInt(document.getElementById('arr-pos').value);
   const log=document.getElementById('arr-log');
   if (pos<0||pos>=arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 無效</span>`; return; }
@@ -1007,6 +1010,7 @@ async function arrDelete() {
 }
 
 async function arrAccess() {
+  if (window.DS) DS.trackNodeOp('array', 'access');  // ← 加這行
   const pos=parseInt(document.getElementById('arr-pos').value);
   const log=document.getElementById('arr-log');
   if (pos<0||pos>=arrData.length){ log.innerHTML=`<span class="err">位置 ${pos} 超出範圍（目前 0~${arrData.length-1}）</span>`; return; }
@@ -1069,6 +1073,7 @@ function renderLL() {
    ③ 新節點從上方滑入（綠色）
    ④ 新箭頭（前→新，新→後）逐一出現（綠色） */
 async function llInsert() {
+  if (window.DS) DS.trackNodeOp('linked_list', 'insert');  // ← 加這行
   const pos=parseInt(document.getElementById('ll-pos').value);
   const val=parseInt(document.getElementById('ll-val').value);
   const log=document.getElementById('ll-log');
@@ -1145,6 +1150,7 @@ async function llInsert() {
    ④ 新箭頭（前→後，跳過目標）綠色出現
    ⑤ 目標節點向上飛走消失 */
 async function llDelete() {
+  if (window.DS) DS.trackNodeOp('linked_list', 'delete');  // ← 加這行
   const pos=parseInt(document.getElementById('ll-pos').value);
   const log=document.getElementById('ll-log');
   if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 無效（目前 0~${llData.length-1}）</span>`;return;}
@@ -1202,6 +1208,7 @@ async function llDelete() {
 }
 
 async function llAccess() {
+  if (window.DS) DS.trackNodeOp('linked_list', 'access');  // ← 加這行
   const pos=parseInt(document.getElementById('ll-pos').value);
   const log=document.getElementById('ll-log');
   if(pos<0||pos>=llData.length){log.innerHTML=`<span class="err">位置 ${pos} 超出範圍</span>`;return;}
@@ -1240,6 +1247,7 @@ function setOp(btn,op){document.querySelectorAll('.op-btn').forEach(b=>b.classLi
    Flavell (1979); Zimmerman (2002)
 ═══════════════════════════════════════════ */
 function showReflectAnswer(tab){
+  if (window.DS) DS.trackReflect(tab, input?.value?.length || 0);// ← 加這行
   const ans=document.getElementById(`reflect-answer-${tab}`),rate=document.getElementById(`reflect-rate-${tab}`),input=document.getElementById(`reflect-${tab}`);
   if(!ans||!rate) return;
   if(!input?.value.trim()){input.style.borderColor='var(--red)';setTimeout(()=>{if(input)input.style.borderColor=''},1500);return;}
@@ -1251,6 +1259,7 @@ function setRate(tab,r){
   const el=document.getElementById(`reflect-done-${tab}`); if(!el) return;
   el.style.display='block';
   el.textContent={1:'沒關係！建議回去再操作一次，重點看 Log 欄的說明。',2:'不錯！你已掌握主要概念，多練習幾次就會更清楚。',3:'太棒了！你完全理解了，可以繼續下一個 Tab！'}[r]||'';
+  if (window.DS) DS.trackRate(tab, r);  // ← 加這行
 }
 
 /* ═══════════════════════════════════════════
@@ -1347,6 +1356,7 @@ let wbBackdrop = null;
 let wbPopup = null;
 
 function showWB(chipEl, key) {
+  if (window.DS) DS.trackTerm(key);  // ← 加這行
   // 移除舊的
   if (wbPopup) { wbPopup.remove(); wbPopup=null; }
   if (wbBackdrop) { wbBackdrop.remove(); wbBackdrop=null; }
