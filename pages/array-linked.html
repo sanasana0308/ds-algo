@@ -436,7 +436,7 @@
   <header class="page-header">
     <div class="page-subtitle">高中資訊科 · 資料結構 · 第一單元</div>
     <h1 class="page-title"><span class="arr">Array</span><span class="vs">VS</span><span class="lnk">Linked List</span></h1>
-    <p class="page-tagline">同樣存資料，差在哪裡？— 互動視覺化學習 v2</p>
+    <p class="page-tagline">同樣存資料，差在哪裡？— 操作看差異！</p>
   </header>
 
 
@@ -461,10 +461,10 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab(this,'playground')">① 互動操作</button>
-    <button class="tab"        onclick="switchTab(this,'compare')">② 效能比較</button>
-    <button class="tab"        onclick="switchTab(this,'memory')">③ 記憶體示意</button>
-    <button class="tab"        onclick="switchTab(this,'usecase')">④ 連連看挑戰</button>
+    <button class="tab active" onclick="switchTab(this,'playground')">A 互動操作</button>
+    <button class="tab"        onclick="switchTab(this,'compare')">B 效能比較</button>
+    <button class="tab"        onclick="switchTab(this,'memory')">C 記憶體示意</button>
+    <button class="tab"        onclick="switchTab(this,'usecase')">D 連連看挑戰</button>
   </div>
 
   <!-- TAB 1 互動操作 -->
@@ -565,7 +565,7 @@
     <div id="playground-content" style="display:none">
       <div class="side-by-side">
         <div class="card">
-          <div class="card-header"><div class="dot arr-dot"></div><h3 class="arr">Array（陣列）</h3></div>
+          <div class="card-header"><span class="section-badge arr" style="min-width:32px;border-radius:6px;font-size:11px;">A-1</span><h3 class="arr" style="margin:0">Array（陣列）</h3></div>
           <div class="card-body">
             <div class="analogy arr"><strong>🎬 電影院座位比喻</strong>連續的座位，要加人進中間得叫大家都往後移一格。</div>
             <div class="viz" id="arr-viz"></div>
@@ -597,7 +597,8 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><span class="section-badge lnk" title="操作區 B">B</span><h3 class="lnk" style="margin:0">Linked List（鏈結串列）</h3></div>
+          <div class="card-header"><span class="section-badge lnk" style="min-width:32px;border-radius:6px;font-size:11px;">A-2</span><h3 class="lnk" style="margin:0">Linked List（鏈結串列）</h3></div>
+          
           <div class="card-body">
             <div class="analogy lnk"><strong>🗺️ 尋寶遊戲比喻</strong>每個節點帶著「下一個在哪」，插入新節點只要改指標，不用搬別人。</div>
             <div class="ll-traverse-note">

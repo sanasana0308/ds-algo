@@ -208,6 +208,7 @@ body::before {
   font-weight: 700;
   border-color: currentColor;
   background: var(--surface2);
+  font-family: var(--font-mono); letter-spacing: 1px; /*  active 狀態字體改用 Mono，增加識別度 */
 }
 
 /* 各頁 active 主題色 */
