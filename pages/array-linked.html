@@ -601,13 +601,7 @@
           
           <div class="card-body">
             <div class="analogy lnk"><strong>🗺️ 尋寶遊戲比喻</strong>每個節點帶著「下一個在哪」，插入新節點只要改指標，不用搬別人。</div>
-            <div class="ll-traverse-note">
-              <span class="note-q">❓ LL 也有「第幾個」的概念嗎？</span><br>
-              有的，但 LL <strong>沒有捷徑（沒有 index 公式）</strong>。<br>
-              要找第 n 個節點，必須從 head 走 n 步（O(n)）。<br>
-              所以 LL 的「插入/刪除」實際上是：<strong>先走 O(n) 找位置，再花 O(1) 改指標</strong>。<br>
-              LL 的優勢是「改指標那一步不需要搬移其他節點」，Array 則是每個元素都要搬。
-            </div>
+
             <div class="viz" id="ll-viz"></div>
             <!-- P1 有益困難 — LL 預測步驟數 -->
             <div class="predict-box">
@@ -627,6 +621,15 @@
             </div>
             <div class="anim-step-label" id="ll-step">等待你的操作...</div>
             <div class="log" id="ll-log">等待操作...</div>
+
+            <div class="ll-traverse-note">
+              <span class="note-q">❓ LL 也有「第幾個」的概念嗎？</span><br>
+              有的，但 LL <strong>沒有捷徑（沒有 index 公式）</strong>。<br>
+              要找第 n 個節點，必須從 head 走 n 步（O(n)）。<br>
+              所以 LL 的「插入/刪除」實際上是：<strong>先走 O(n) 找位置，再花 O(1) 改指標</strong>。<br>
+              LL 的優勢是「改指標那一步不需要搬移其他節點」，Array 則是每個元素都要搬。
+            </div>
+
           </div>
         </div>
       </div>
