@@ -281,7 +281,7 @@
 
   <div id="tab-bst" class="panel active">
     <div class="card" style="border-color:rgba(245,196,0,0.3);background:rgba(245,196,0,0.02)">
-      <div class="section-label"><span class="section-badge">D1</span><span>先猜再做——建出平衡樹後，插入 25 會走幾步？</span></div>
+      <div class="section-label"><span class="section-badge">A1</span><span>先猜再做——建出平衡樹後，插入 25 會走幾步？</span></div>
       <p style="font-size:var(--text-sm);color:var(--text-mid);margin-bottom:12px;line-height:1.8">用下方「推薦數列 → ✅ 平衡樹」建樹，猜猜看：要插入 <strong style="color:var(--yellow)">25</strong>，需要比較幾次才能找到位置？</p>
       <div class="predict-box" style="margin-bottom:0">
         <span class="section-badge lnk" >Q.</span>
@@ -294,7 +294,7 @@
     </div>
 
     <div class="card">
-      <div class="section-label"><span class="section-badge">D2</span><span>自己建一棵 BST — 規則：左 &lt; 根 &lt; 右</span></div>
+      <div class="section-label"><span class="section-badge">A2</span><span>自己建一棵 BST — 規則：左 &lt; 根 &lt; 右</span></div>
       <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:14px;line-height:1.8">每次插入一個數字，BST 自動比大小往左或右走，逐步長出樹的形狀。</p>
       <div class="seq-bar">
         <div class="seq-bar-top">
@@ -330,7 +330,7 @@
     </div>
 
     <div class="card">
-      <div class="section-label"><span class="section-badge">D3</span><span>「插入順序」決定樹的形狀 → 形狀決定搜尋速度</span></div>
+      <div class="section-label"><span class="section-badge">A3</span><span>「插入順序」決定樹的形狀 → 形狀決定搜尋速度</span></div>
       <div class="two-col">
         <div style="background:var(--surface2);border:1px solid rgba(52,211,153,0.2);border-radius:8px;padding:14px">
           <div style="font-size:var(--text-xs);color:var(--tree-color);font-family:var(--font-mono);margin-bottom:6px">✅ 平衡樹</div>
@@ -380,7 +380,7 @@
     </div>
 
     <div class="reflect-box">
-      <div class="reflect-header"><span class="section-badge">D4</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">P2 後設認知</span></div>
+      <div class="reflect-header"><span class="section-badge">A4</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">後設認知練習</span></div>
       <div class="reflect-body">
         <div class="reflect-q">BST 為什麼「從中間開始插」比「從小到大插」快很多？</div>
         <textarea class="reflect-textarea" id="reflect-bst" placeholder="寫下你的理解..."></textarea>
@@ -401,7 +401,7 @@
 
   <div id="tab-traversal" class="panel">
     <div class="card" style="margin-bottom:20px">
-      <div class="section-label"><span class="section-badge gold">👁</span><span>以下走訪說明都以這棵樹為例</span></div>
+      <div class="section-label"><span class="section-badge">B1</span><span>以下走訪說明都以這棵樹為例</span></div>
       <div class="mini-tree-wrap">
         <svg viewBox="0 0 380 205" xmlns="http://www.w3.org/2000/svg">
           <line x1="190" y1="36" x2="108" y2="100" stroke="rgba(52,211,153,0.3)" stroke-width="2"/>
@@ -433,8 +433,9 @@
       </div>
     </div>
     <div class="card">
-      <div class="section-label"><span class="section-badge tree">②</span><span>速記法 — 用「走路蓋章」來記走訪順序</span></div>
+      <div class="section-label"><span class="section-badge">B2</span><span>速記法 — 用「走路蓋章」來記走訪順序</span></div>
       <div class="predict-box">
+        <span class="section-badge lnk" >Q.</span>
         <span class="predict-label">🎯 先預測</span>
         <span class="predict-hint">對上面這棵樹做「前序走訪」，第三個輸出的數字是？</span>
         <input class="predict-input" id="predict-trav" type="number" placeholder="?" style="width:60px">
@@ -464,7 +465,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="section-label"><span class="section-badge tree">②</span><span>動畫 — 走訪順序一步步亮起，標上順序編號</span></div>
+      <div class="section-label"><span class="section-badge">B3</span><span>動畫 — 走訪順序一步步亮起，標上順序編號</span></div>
       <div class="tree-canvas-wrap" style="min-height:280px">
         <svg id="tree-svg2" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet"></svg>
       </div>
@@ -483,7 +484,7 @@
       <div class="analogy lnk"><strong>🔴 後序的生活例子</strong>刪資料夾：先刪裡面的檔案，再刪資料夾本身 → 後序！</div>
     </div>
     <div class="reflect-box">
-      <div class="reflect-header"><span class="reflect-header-icon">🪞</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">P2 後設認知</span></div>
+      <div class="reflect-header"><span class="section-badge">B4</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">後設認知練習</span></div>
       <div class="reflect-body">
         <div class="reflect-q">為什麼 BST 中序走訪輸出的一定是由小到大？</div>
         <textarea class="reflect-textarea" id="reflect-trav" placeholder="用 BST 的定義來解釋..."></textarea>
@@ -504,7 +505,7 @@
 
   <div id="tab-terms" class="panel">
     <div class="card">
-      <div class="section-label"><span class="section-badge tree">③</span><span>點選術語卡片，圖中對應位置亮起！</span></div>
+      <div class="section-label"><span class="section-badge">C1</span><span>點選術語卡片，圖中對應位置亮起！</span></div>
       <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:14px">點「高度 &amp; 層」時，圖中會顯示各層 Level 編號。</p>
       <div class="tree-canvas-wrap" style="min-height:260px">
         <svg id="tree-svg3" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid meet"></svg>
@@ -525,7 +526,7 @@
 
   <div id="tab-realworld" class="panel">
     <div class="card">
-      <div class="section-label"><span class="section-badge tree">④</span><span>樹在生活中無所不在</span></div>
+      <div class="section-label"><span class="section-badge">D1</span><span>樹在生活中無所不在</span></div>
       <div class="rw-grid">
         <div class="rw-card"><div class="rw-icon">📁</div><h4>電腦資料夾</h4><p>C:\ → 文件 → 作業 → 第一章.docx</p></div>
         <div class="rw-card"><div class="rw-icon">👨‍👩‍👧‍👦</div><h4>家族族譜</h4><p>曾祖父母→祖父母→父母→你</p></div>
@@ -540,7 +541,7 @@
       BST 每次搜尋砍掉一半——大學資料庫、作業系統都用到樹。<strong style="color:var(--yellow)">學好樹等於打通資訊的任督二脈！</strong>
     </div>
     <div class="reflect-box">
-      <div class="reflect-header"><span class="reflect-header-icon">🪞</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">P2 後設認知</span></div>
+      <div class="reflect-header"><span class="section-badge">D2</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">P2 後設認知</span></div>
       <div class="reflect-body">
         <div class="reflect-q">在你的生活或未來想做的事中，樹狀結構可能出現在哪裡？</div>
         <textarea class="reflect-textarea" id="reflect-rw" placeholder="例如：我想開發遊戲，技能樹..."></textarea>
