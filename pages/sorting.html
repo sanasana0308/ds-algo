@@ -790,6 +790,7 @@
 
 /* ══ Tab 切換 ══ */
 function switchTab(btn,id){
+  if (window.DS) DS.trackTab(name);//加這行
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');

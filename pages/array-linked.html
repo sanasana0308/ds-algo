@@ -1254,12 +1254,13 @@ function showReflectAnswer(tab){
   ans.style.display='block'; rate.style.display='block';
 }
 function setRate(tab,r){
+  if (window.DS) DS.trackRate(tab, r);  // ← 加這行
   document.querySelectorAll(`#reflect-rate-${tab} .rate-btn`).forEach(b=>b.classList.remove('selected'));
   document.querySelector(`#reflect-rate-${tab} .rate-btn[data-r="${r}"]`)?.classList.add('selected');
   const el=document.getElementById(`reflect-done-${tab}`); if(!el) return;
   el.style.display='block';
   el.textContent={1:'沒關係！建議回去再操作一次，重點看 Log 欄的說明。',2:'不錯！你已掌握主要概念，多練習幾次就會更清楚。',3:'太棒了！你完全理解了，可以繼續下一個 Tab！'}[r]||'';
-  if (window.DS) DS.trackRate(tab, r);  // ← 加這行
+  
 }
 
 /* ═══════════════════════════════════════════
@@ -1285,7 +1286,18 @@ const game = new MatchGame(SCENARIOS, ZONES, 'scenarios-list');
 const _orig = game._submitAnswer.bind(game);
 game._submitAnswer = function(id, zoneKey) {
   _orig(id, zoneKey);
+  // 記錄每次作答
+  const scenario = SCENARIOS.find(s => s.id === id);
+  if (window.DS && scenario) {
+    DS.trackQuizAnswer(
+      SCENARIOS.indexOf(scenario),
+      scenario.answer === zoneKey
+    );
+  }  
+
+
   if (this.answered.size === SCENARIOS.length) {
+    if (window.DS) DS.trackQuizComplete(this.score, SCENARIOS.length);   // ← 加這行
     setTimeout(() => showPriorReview(this.score, SCENARIOS.length), 900);
   }
 };
