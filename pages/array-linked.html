@@ -1449,7 +1449,22 @@ function setLLMode(mode) {
   if (hint) hint.textContent = LL_HINTS[mode] || LL_HINTS.insert;
   if (predBox) predBox.style.opacity = (mode === 'access') ? '0.4' : '1';
 }
-
+function showReflectAnswer(tab) {
+  // 要有內容才顯示答案
+  const ta = document.getElementById('reflect-' + tab);
+  if (!ta || !ta.value.trim()) {
+    ta.style.borderColor = 'var(--yellow)';
+    ta.focus();
+    setTimeout(() => ta.style.borderColor = '', 1500);
+    return;
+  }
+  // 顯示答案
+  const ans = document.getElementById('reflect-answer-' + tab);
+  if (ans) ans.style.display = 'block';
+  // 顯示自評
+  const rate = document.getElementById('reflect-rate-' + tab);
+  if (rate) rate.style.display = 'block';
+}
 /* ═══════════════════════════════════════════
    初始化
 ═══════════════════════════════════════════ */
