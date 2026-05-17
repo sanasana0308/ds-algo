@@ -281,9 +281,10 @@
 
   <div id="tab-bst" class="panel active">
     <div class="card" style="border-color:rgba(245,196,0,0.3);background:rgba(245,196,0,0.02)">
-      <div class="section-label"><span class="section-badge">Q.</span><span>先猜再做——建出平衡樹後，插入 25 會走幾步？</span></div>
+      <div class="section-label"><span class="section-badge">D1</span><span>先猜再做——建出平衡樹後，插入 25 會走幾步？</span></div>
       <p style="font-size:var(--text-sm);color:var(--text-mid);margin-bottom:12px;line-height:1.8">用下方「推薦數列 → ✅ 平衡樹」建樹，猜猜看：要插入 <strong style="color:var(--yellow)">25</strong>，需要比較幾次才能找到位置？</p>
       <div class="predict-box" style="margin-bottom:0">
+        <span class="section-badge lnk" >Q.</span>
         <span class="predict-label">🎯 我猜</span>
         <input class="predict-input" type="number" id="predict-steps" min="1" max="10" placeholder="?" style="width:60px">
         <span class="predict-hint">次比較（建好樹後按確認）</span>
@@ -293,7 +294,7 @@
     </div>
 
     <div class="card">
-      <div class="section-label"><span class="section-badge tree">Q.</span><span>自己建一棵 BST — 規則：左 &lt; 根 &lt; 右</span></div>
+      <div class="section-label"><span class="section-badge">D2</span><span>自己建一棵 BST — 規則：左 &lt; 根 &lt; 右</span></div>
       <p style="color:var(--text-mid);font-size:var(--text-sm);margin-bottom:14px;line-height:1.8">每次插入一個數字，BST 自動比大小往左或右走，逐步長出樹的形狀。</p>
       <div class="seq-bar">
         <div class="seq-bar-top">
@@ -329,7 +330,7 @@
     </div>
 
     <div class="card">
-      <div class="section-label"><span class="section-badge gold">關鍵觀念</span><span>「插入順序」決定樹的形狀 → 形狀決定搜尋速度</span></div>
+      <div class="section-label"><span class="section-badge">D3</span><span>「插入順序」決定樹的形狀 → 形狀決定搜尋速度</span></div>
       <div class="two-col">
         <div style="background:var(--surface2);border:1px solid rgba(52,211,153,0.2);border-radius:8px;padding:14px">
           <div style="font-size:var(--text-xs);color:var(--tree-color);font-family:var(--font-mono);margin-bottom:6px">✅ 平衡樹</div>
@@ -379,7 +380,7 @@
     </div>
 
     <div class="reflect-box">
-      <div class="reflect-header"><span class="reflect-header-icon">🪞</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">P2 後設認知</span></div>
+      <div class="reflect-header"><span class="section-badge">D4</span><span class="reflect-header-text">學習反思</span><span class="reflect-header-badge">P2 後設認知</span></div>
       <div class="reflect-body">
         <div class="reflect-q">BST 為什麼「從中間開始插」比「從小到大插」快很多？</div>
         <textarea class="reflect-textarea" id="reflect-bst" placeholder="寫下你的理解..."></textarea>
