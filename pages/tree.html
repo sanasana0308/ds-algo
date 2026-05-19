@@ -6,11 +6,11 @@
 <title>Tree & BST — DS課程</title>
 <link rel="stylesheet" href="../shared/style.css">
 <style>
-:root{--tree-color:#34d399;--tree-glow:rgba(52,211,153,0.22);}
+:root{--tree-color:#F59E0B;--tree-glow:rgba(245,158,11,0.22);}
 .page-title{color:var(--tree-color);}
 .tab.active{color:var(--tree-color);border-color:var(--tree-color);}
-.tab.active .tab-num{background:rgba(52,211,153,0.15);border-color:var(--tree-color);color:var(--tree-color);}
-.btn-tree{background:var(--tree-glow);color:var(--tree-color);border:1px solid rgba(52,211,153,0.4);}
+.tab.active .tab-num{background:rgba(245,158,11,0.15);border-color:var(--tree-color);color:var(--tree-color);}
+.btn-tree{background:var(--tree-glow);color:var(--tree-color);border:1px solid rgba(245,158,11,0.4);}
 .btn-preorder{background:rgba(167,139,250,0.1);color:var(--stack-color);border:1px solid rgba(167,139,250,0.3);}
 .btn-inorder{background:rgba(56,189,248,0.1);color:var(--array-color);border:1px solid rgba(56,189,248,0.3);}
 .btn-postorder{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
@@ -81,15 +81,15 @@
 .tree-canvas-wrap.scrollable{overflow-y:auto;max-height:420px;}
 .tree-canvas-wrap svg{width:100%;display:block;}
 .empty-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text-dim);font-size:var(--text-sm);text-align:center;pointer-events:none;width:85%;line-height:1.7;}
-.node-rect{fill:rgba(52,211,153,0.08);stroke:var(--tree-color);stroke-width:2;transition:all 0.4s;}
-.node-rect.highlight{fill:rgba(52,211,153,0.3);stroke:#6ee7b7;stroke-width:3;filter:drop-shadow(0 0 8px rgba(52,211,153,0.5));}
+.node-rect{fill:rgba(245,158,11,0.08);stroke:var(--tree-color);stroke-width:2;transition:all 0.4s;}
+.node-rect.highlight{fill:rgba(245,158,11,0.3);stroke:#FCD34D;stroke-width:3;filter:drop-shadow(0 0 8px rgba(245,158,11,0.5));}
 .node-rect.found{fill:rgba(245,196,0,0.25);stroke:var(--yellow);stroke-width:3;filter:drop-shadow(0 0 10px rgba(245,196,0,0.5));}
 .node-rect.trav-inorder{fill:rgba(56,189,248,0.35);stroke:var(--array-color);stroke-width:3;filter:drop-shadow(0 0 8px rgba(56,189,248,0.4));}
 .node-rect.trav-preorder{fill:rgba(167,139,250,0.35);stroke:var(--stack-color);stroke-width:3;filter:drop-shadow(0 0 8px rgba(167,139,250,0.4));}
 .node-rect.trav-postorder{fill:rgba(239,68,68,0.35);stroke:var(--red);stroke-width:3;filter:drop-shadow(0 0 8px rgba(239,68,68,0.4));}
 .node-rect.term-hl{fill:rgba(245,196,0,0.25);stroke:var(--yellow);stroke-width:3;filter:drop-shadow(0 0 12px rgba(245,196,0,0.5));}
 .node-text{fill:var(--tree-color);font-family:var(--font-mono);font-size:14px;font-weight:700;text-anchor:middle;dominant-baseline:central;pointer-events:none;}
-.edge-line{stroke:rgba(52,211,153,0.25);stroke-width:2;fill:none;}
+.edge-line{stroke:rgba(245,158,11,0.25);stroke-width:2;fill:none;}
 .stamp-label{font-family:var(--font-mono);font-size:11px;font-weight:900;transition:opacity 0.3s;}
 .stamp-label.trav-inorder{fill:var(--array-color);}
 .stamp-label.trav-preorder{fill:var(--stack-color);}
@@ -103,8 +103,8 @@
 .seq-expand{display:none;margin-top:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
 .seq-expand.open{display:block;}
 .seq-expand-nums{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
-.seq-num-chip{padding:4px 12px;border-radius:20px;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--tree-color);transition:all 0.3s;}
-.seq-num-chip.current{background:rgba(52,211,153,0.35);box-shadow:0 0 8px rgba(52,211,153,0.4);transform:scale(1.12);}
+.seq-num-chip{padding:4px 12px;border-radius:20px;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:700;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--tree-color);transition:all 0.3s;}
+.seq-num-chip.current{background:rgba(245,158,11,0.35);box-shadow:0 0 8px rgba(245,158,11,0.4);transform:scale(1.12);}
 .seq-num-chip.done{opacity:0.3;}
 .seq-desc{font-size:var(--text-xs);color:var(--text-dim);line-height:1.7;white-space:pre-line;}
 .batch-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}
@@ -332,7 +332,7 @@
     <div class="card">
       <div class="section-label"><span class="section-badge">A3</span><span>「插入順序」決定樹的形狀 → 形狀決定搜尋速度</span></div>
       <div class="two-col">
-        <div style="background:var(--surface2);border:1px solid rgba(52,211,153,0.2);border-radius:8px;padding:14px">
+        <div style="background:var(--surface2);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:14px">
           <div style="font-size:var(--text-xs);color:var(--tree-color);font-family:var(--font-mono);margin-bottom:6px">✅ 平衡樹</div>
           <div style="font-size:var(--text-sm);font-family:var(--font-mono);color:var(--text);margin-bottom:6px">50→30→70→20→40→60→80</div>
           <div style="font-size:var(--text-xs);color:var(--text-dim);line-height:1.6">高度=3，搜尋最多 <strong style="color:var(--tree-color)">3 次</strong></div>
@@ -404,31 +404,31 @@
       <div class="section-label"><span class="section-badge">B1</span><span>以下走訪說明都以這棵樹為例</span></div>
       <div class="mini-tree-wrap">
         <svg viewBox="0 0 380 205" xmlns="http://www.w3.org/2000/svg">
-          <line x1="190" y1="36" x2="108" y2="100" stroke="rgba(52,211,153,0.3)" stroke-width="2"/>
-          <line x1="190" y1="36" x2="272" y2="100" stroke="rgba(52,211,153,0.3)" stroke-width="2"/>
-          <line x1="108" y1="100" x2="66" y2="166" stroke="rgba(52,211,153,0.3)" stroke-width="2"/>
-          <line x1="108" y1="100" x2="150" y2="166" stroke="rgba(52,211,153,0.3)" stroke-width="2"/>
-          <line x1="272" y1="100" x2="230" y2="166" stroke="rgba(52,211,153,0.3)" stroke-width="2"/>
-          <line x1="272" y1="100" x2="314" y2="166" stroke="rgba(52,211,153,0.3)" stroke-width="2"/>
-          <rect x="164" y="20" width="52" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
-          <rect x="82" y="84" width="52" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
-          <rect x="246" y="84" width="52" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
-          <rect x="40" y="150" width="52" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
-          <rect x="124" y="150" width="52" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
-          <rect x="204" y="150" width="52" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
-          <rect x="288" y="150" width="52" height="32" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
-          <text x="190" y="36" text-anchor="middle" dominant-baseline="central" fill="#34d399" font-family="monospace" font-size="14" font-weight="700">50</text>
-          <text x="108" y="100" text-anchor="middle" dominant-baseline="central" fill="#34d399" font-family="monospace" font-size="14" font-weight="700">30</text>
-          <text x="272" y="100" text-anchor="middle" dominant-baseline="central" fill="#34d399" font-family="monospace" font-size="14" font-weight="700">70</text>
-          <text x="66" y="166" text-anchor="middle" dominant-baseline="central" fill="#34d399" font-family="monospace" font-size="14" font-weight="700">20</text>
-          <text x="150" y="166" text-anchor="middle" dominant-baseline="central" fill="#34d399" font-family="monospace" font-size="14" font-weight="700">40</text>
-          <text x="230" y="166" text-anchor="middle" dominant-baseline="central" fill="#34d399" font-family="monospace" font-size="14" font-weight="700">60</text>
-          <text x="314" y="166" text-anchor="middle" dominant-baseline="central" fill="#34d399" font-family="monospace" font-size="14" font-weight="700">80</text>
+          <line x1="190" y1="36" x2="108" y2="100" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <line x1="190" y1="36" x2="272" y2="100" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <line x1="108" y1="100" x2="66" y2="166" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <line x1="108" y1="100" x2="150" y2="166" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <line x1="272" y1="100" x2="230" y2="166" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <line x1="272" y1="100" x2="314" y2="166" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <rect x="164" y="20" width="52" height="32" rx="8" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="2"/>
+          <rect x="82" y="84" width="52" height="32" rx="8" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="2"/>
+          <rect x="246" y="84" width="52" height="32" rx="8" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="2"/>
+          <rect x="40" y="150" width="52" height="32" rx="8" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="2"/>
+          <rect x="124" y="150" width="52" height="32" rx="8" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="2"/>
+          <rect x="204" y="150" width="52" height="32" rx="8" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="2"/>
+          <rect x="288" y="150" width="52" height="32" rx="8" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="2"/>
+          <text x="190" y="36" text-anchor="middle" dominant-baseline="central" fill="#F59E0B" font-family="monospace" font-size="14" font-weight="700">50</text>
+          <text x="108" y="100" text-anchor="middle" dominant-baseline="central" fill="#F59E0B" font-family="monospace" font-size="14" font-weight="700">30</text>
+          <text x="272" y="100" text-anchor="middle" dominant-baseline="central" fill="#F59E0B" font-family="monospace" font-size="14" font-weight="700">70</text>
+          <text x="66" y="166" text-anchor="middle" dominant-baseline="central" fill="#F59E0B" font-family="monospace" font-size="14" font-weight="700">20</text>
+          <text x="150" y="166" text-anchor="middle" dominant-baseline="central" fill="#F59E0B" font-family="monospace" font-size="14" font-weight="700">40</text>
+          <text x="230" y="166" text-anchor="middle" dominant-baseline="central" fill="#F59E0B" font-family="monospace" font-size="14" font-weight="700">60</text>
+          <text x="314" y="166" text-anchor="middle" dominant-baseline="central" fill="#F59E0B" font-family="monospace" font-size="14" font-weight="700">80</text>
           <text x="190" y="7" text-anchor="middle" fill="#fbbf24" font-family="monospace" font-size="10">根 Root</text>
-          <text x="66" y="196" text-anchor="middle" fill="rgba(52,211,153,0.5)" font-family="monospace" font-size="9">葉</text>
-          <text x="150" y="196" text-anchor="middle" fill="rgba(52,211,153,0.5)" font-family="monospace" font-size="9">葉</text>
-          <text x="230" y="196" text-anchor="middle" fill="rgba(52,211,153,0.5)" font-family="monospace" font-size="9">葉</text>
-          <text x="314" y="196" text-anchor="middle" fill="rgba(52,211,153,0.5)" font-family="monospace" font-size="9">葉</text>
+          <text x="66" y="196" text-anchor="middle" fill="rgba(245,158,11,0.5)" font-family="monospace" font-size="9">葉</text>
+          <text x="150" y="196" text-anchor="middle" fill="rgba(245,158,11,0.5)" font-family="monospace" font-size="9">葉</text>
+          <text x="230" y="196" text-anchor="middle" fill="rgba(245,158,11,0.5)" font-family="monospace" font-size="9">葉</text>
+          <text x="314" y="196" text-anchor="middle" fill="rgba(245,158,11,0.5)" font-family="monospace" font-size="9">葉</text>
         </svg>
       </div>
     </div>

@@ -62,7 +62,8 @@ ds-algo/
 --linked-color: #FB923C; --linked-glow: rgba(251,146,60,0.12);
 --stack-color: #A78BFA;  --stack-glow: rgba(167,139,250,0.12);
 --queue-color: #34D399;  --queue-glow: rgba(52,211,153,0.12);
---tree-color: #34D399;   --tree-glow: rgba(52,211,153,0.12);
+--tree-color: #F59E0B;   --tree-glow: rgba(245,158,11,0.22);   /* 琥珀 — 已改，避免跟 queue 撞色 */
+--sort-color: #FB7185;   --sort-glow: rgba(251,113,133,0.12);  /* 玫瑰紅 — 第四單元 sorting */
 --adv-color: #818CF8;    --adv-glow: rgba(129,140,248,0.10); --adv-border: rgba(129,140,248,0.25);
 
 --font-mono: 'JetBrains Mono', monospace;
@@ -70,6 +71,16 @@ ds-algo/
 --text-base: 16px; --text-sm: 14px; --text-xs: 12px;
 --text-lg: 18px; --text-xl: 22px;
 ```
+
+---
+
+## 標號制度（2026-05 統一）
+
+**Tab 級**：`.tab-num` 一律用 **A / B / C / D** 大寫英文字母，**不**用 ①②③④。  
+**Section 級**：`.section-badge` 用 **A1 / A2 / B1 / B2 / C1 / D1**，**不**加連字號（不要寫 A-1）。  
+**預測框（P1）badge**：統一用 **`Q.`**，不用「預測」「猜」等中文字。  
+**Tab 名稱標準四段**：① 互動操作 ② 效能比較 ③ 生活應用 ④ 連連看挑戰。tree.html 因內容特殊保留例外。  
+**頁面標題**：一律 `emoji + 主名稱`（📦 / 🥞 / 🌳 / ⚡）。
 
 ---
 
