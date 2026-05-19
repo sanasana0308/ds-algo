@@ -22,7 +22,11 @@
  *  */
 // ── 設定你的 GitHub Pages 根路徑 ──────────────────
 // 【重要】如果換 repo 名稱，只需修改這一行
-const BASE = '/ds-algo';
+//const BASE = '/ds-algo';
+const BASE = location.hostname === 'localhost' || 
+             location.hostname.includes('vercel.app') || 
+             location.hostname.includes('crazybitwithyu')  // 未來自訂網域
+             ? '' : '/ds-algo';
 
 const NAV_PAGES = [
   { id: 'home',         label: '課程地圖',      icon: '🗺️', href: BASE + '/index.html' },
